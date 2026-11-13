@@ -4,6 +4,7 @@ window.RECIPES = [
     slug: "chicken-kuzhambu",
     title: "Chicken Kuzhambu",
     kicker: "Tamil Nadu",
+    author: "Jagadish",
     emoji: "🍛",
     blurb: "Village-style chicken gravy with a freshly roasted masala. Scales to your chicken weight.",
     time: "1 h 30 min",

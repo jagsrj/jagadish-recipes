@@ -3,18 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Jagadish's Recipes</title>
-<meta name="description" content="Home-style recipes by Jagadish, mostly from Tamil Nadu, that scale to the ingredients you have.">
-<meta property="og:title" content="Jagadish's Recipes">
+<title>Jagadish &amp; Manju's Kitchen</title>
+<meta name="description" content="Home-style recipes by Jagadish and Manju, mostly from Tamil Nadu, that scale to the ingredients you have.">
+<meta property="og:title" content="Jagadish &amp; Manju's Kitchen">
 <meta property="og:description" content="Home-style recipes that scale to what you have.">
 <link rel="stylesheet" href="/assets/style.css">
 </head>
 <body>
-<nav class="sitebar"><a class="brand" href="/">Jagadish's <span>Recipes</span></a></nav>
+<nav class="sitebar"><a class="brand" href="/">Jagadish &amp; Manju's <span>Kitchen</span></a></nav>
 <main class="wrap wide">
   <section class="hero">
-    <h1>Jagadish's Recipes</h1>
-    <p>Home-style cooking, mostly from Tamil Nadu. Every recipe adjusts to the amount you're cooking.</p>
+    <h1>Jagadish &amp; Manju's Kitchen</h1>
+    <p>Home-style cooking from our kitchen, mostly from Tamil Nadu. Every recipe adjusts to the amount you're cooking.</p>
   </section>
   <input class="search" id="q" type="search" placeholder="Search recipes…" aria-label="Search recipes">
   <div class="grid" id="grid"></div>
@@ -35,7 +35,7 @@
       return "<a class='rcard' href='/recipes/" + encodeURIComponent(r.slug) + "/'>" +
         "<div class='band'>" + esc(r.emoji || "🍽️") + "</div><div class='body'>" +
         "<div class='kicker'>" + esc(r.kicker || "") + (r.time ? " · " + esc(r.time) : "") + "</div>" +
-        "<h2>" + esc(r.title) + "</h2><p>" + esc(r.blurb || "") + "</p>" +
+        "<h2>" + esc(r.title) + "</h2>" + (r.author ? "<div class='byline'>By " + esc(r.author) + "</div>" : "") + "<p>" + esc(r.blurb || "") + "</p>" +
         "<div class='tags'>" + (r.tags || []).map(function (t) { return "<span class='tag'>" + esc(t) + "</span>"; }).join("") + "</div>" +
         "</div></a>";
     }).join("");

@@ -1,5 +1,5 @@
 /*
- * Jagadish's Recipes – shared recipe engine.
+ * Jagadish & Manju's Kitchen – shared recipe engine.
  * A recipe page defines window.RECIPE (see recipes/_template/index.html) and loads this file.
  *
  * Scaling: f = (amount entered) / (base amount).
@@ -46,12 +46,13 @@
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
 
   // ---------- build page shell ----------
-  document.title = R.title + " – Jagadish's Recipes";
+  document.title = R.title + " – Jagadish & Manju's Kitchen";
   var root = document.getElementById("recipe");
   var isWeight = scale.type === "weight";
   root.innerHTML =
     "<header>" + (R.native ? "<div class='native'>" + esc(R.native) + "</div>" : "") +
-    "<h1>" + esc(R.title) + "</h1><p class='lede'>" + esc(R.intro || "") + "</p></header>" +
+    "<h1>" + esc(R.title) + "</h1>" +
+    (R.author ? "<div class='byline'>By " + esc(R.author) + "</div>" : "") + "<p class='lede'>" + esc(R.intro || "") + "</p></header>" +
     "<section class='card scaler' aria-label='Recipe scaler'>" +
       "<label class='title' for='amt'>" + esc(isWeight ? scale.label : "How many servings?") + "</label>" +
       "<div class='row'><input id='amt' type='number' inputmode='decimal' min='0.1' step='" + (isWeight ? "0.1" : "1") + "'>" +

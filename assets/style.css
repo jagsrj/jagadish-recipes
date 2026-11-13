@@ -51,6 +51,7 @@ a { color: var(--accent); }
 /* recipe page */
 .native { color: var(--accent); font-weight: 600; letter-spacing: .02em; }
 header h1 { font-family: Georgia, serif; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; margin: 8px 0 6px; }
+.byline { color: var(--muted); font-size: .92rem; font-weight: 600; margin: -2px 0 10px; }
 .lede { color: var(--muted); margin: 0 0 20px; }
 .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px; margin-bottom: 18px; }
 .scaler { position: sticky; top: 0; z-index: 5; box-shadow: 0 6px 18px rgba(0,0,0,.06); }
