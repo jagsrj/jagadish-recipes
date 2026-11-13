@@ -65,6 +65,8 @@ input[type=number]:focus { outline: none; border-color: var(--accent); }
 .seg { display: inline-flex; border: 2px solid var(--line); border-radius: 10px; overflow: hidden; }
 .seg button { border: 0; background: transparent; color: var(--ink); padding: 9px 14px; font-size: .95rem; cursor: pointer; font-weight: 600; }
 .seg button.on { background: var(--accent); color: #fff; }
+.srvrow { margin-top: 10px; color: var(--muted); font-size: .95rem; }
+.srvrow input[type=number] { width: 80px; font-size: 1.1rem; padding: 6px 8px; }
 .stats { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 12px; color: var(--muted); font-size: .92rem; }
 .stats b { color: var(--ink); font-size: 1.05rem; }
 .spice { margin-top: 12px; }

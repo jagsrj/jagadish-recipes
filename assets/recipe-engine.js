@@ -6,7 +6,8 @@
  *   Ingredient  { id, name, amt, unit, exp?, spice?, spiceExp?, plural?, note? }
  *     unit: "tsp" | "tbsp" | "cup" | "g" | "count" | "sprig" | "main" (the main ingredient itself)
  *     exp:  how it grows with f (1 = linear, default). Use < 1 for water, oil, chilies.
- *   Step        { t, min, exp?, txt, bigNote? }
+ *   scale.servingsInput: true adds a "cooking for N people" box that sets the main-ingredient weight.
+ *   Step        { t, min, exp?, txt, bigNote?, parallel? }  (parallel: happens alongside another step, not counted in total time)
  *     txt can use {id} to show an ingredient's scaled quantity, e.g. "Add {water} water".
  *     bigNote is appended when the batch is more than 1.6× the base.
  */
@@ -58,9 +59,11 @@
       "<div class='row'><input id='amt' type='number' inputmode='decimal' min='0.1' step='" + (isWeight ? "0.1" : "1") + "'>" +
       (isWeight ? "<div class='seg' role='group' aria-label='Unit'><button type='button' data-unit='lb'>lb</button><button type='button' data-unit='kg'>kg</button></div>" : "") +
       "</div>" +
+      (isWeight && scale.servingsInput ? "<div class='row srvrow'><label for='srv'>or cooking for</label>" +
+        "<input id='srv' type='number' inputmode='numeric' min='1' step='1'><span>people</span></div>" : "") +
       (R.spiceLevels ? "<div class='spice'><span>Heat</span><div class='seg' role='group' aria-label='Spice level'>" +
         "<button type='button' data-spice='0.75'>Mild</button><button type='button' data-spice='1'>Medium</button><button type='button' data-spice='1.35'>Hot</button></div></div>" : "") +
-      "<div class='stats'>" + (isWeight ? "<div>Serves <b id='serves'></b></div>" : "") +
+      "<div class='stats'>" + (isWeight && !scale.servingsInput ? "<div>Serves <b id='serves'></b></div>" : "") +
       "<div>Total time <b id='total'></b></div>" + (R.pots ? "<div>Pot <b id='pot'></b></div>" : "") + "</div>" +
       "<div class='warn' id='warn'></div>" +
     "</section>" +
@@ -136,7 +139,7 @@
     var total = R.prepMin || 0, sh = "";
     R.steps.forEach(function (s, i) {
       var m = s.min * Math.pow(f, s.exp || 0);
-      total += m;
+      if (!s.parallel) total += m;
       var txt = esc(s.txt).replace(/\{(\w+)\}/g, function (_, k) {
         if (qty[k] != null) return "<span class='q'>" + qty[k] + "</span>";
         return extra[k] != null ? extra[k] : "";
@@ -150,7 +153,10 @@
     timers = {};
     document.querySelectorAll(".timer").forEach(function (b) { b.addEventListener("click", toggleTimer); });
 
-    if (isWeight) document.getElementById("serves").textContent = Math.max(1, Math.round(R.baseServings * f));
+    var srvN = Math.max(1, Math.round(R.baseServings * f));
+    if (isWeight && !scale.servingsInput) document.getElementById("serves").textContent = srvN;
+    var $srv = document.getElementById("srv");
+    if ($srv && document.activeElement !== $srv) $srv.value = srvN;
     document.getElementById("total").textContent = "~" + fmtMin(total);
     if (R.pots) document.getElementById("pot").textContent = pot;
 
@@ -211,6 +217,14 @@
     b.addEventListener("click", function () { state.spice = parseFloat(b.dataset.spice); setOn("[data-spice]", "data-spice", b.dataset.spice); render(); });
   });
   $amt.addEventListener("input", render);
+  var $srvIn = document.getElementById("srv");
+  if ($srvIn) $srvIn.addEventListener("input", function () {
+    var n = parseFloat($srvIn.value);
+    if (!(n > 0)) return;
+    var g = n * scale.baseGrams / R.baseServings;
+    $amt.value = state.unit === "lb" ? Math.round(g / LB * 100) / 100 : Math.round(g / 10) / 100;
+    render();
+  });
   setOn("[data-unit]", "data-unit", state.unit);
   setOn("[data-spice]", "data-spice", state.spice);
   render();

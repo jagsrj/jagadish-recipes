@@ -9,5 +9,15 @@ window.RECIPES = [
     blurb: "Village-style chicken gravy with a freshly roasted masala. Scales to your chicken weight.",
     time: "1 h 30 min",
     tags: ["Chicken", "Gravy", "South Indian"]
+  },
+  {
+    slug: "chicken-biryani",
+    title: "Chennai-Style Chicken Biryani",
+    kicker: "Jabbar Bhai style",
+    author: "Jagadish",
+    emoji: "🍚",
+    blurb: "Rice parboiled to 75% and finished on dum over a spicy mint masala, with an extra spoon of sambar powder.",
+    time: "2 h",
+    tags: ["Chicken", "Biryani", "Rice", "South Indian"]
   }
 ];
