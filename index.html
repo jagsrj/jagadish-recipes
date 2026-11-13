@@ -18,7 +18,7 @@
   </section>
   <div id="feature"></div>
   <input class="search" id="q" type="search" placeholder="Search recipes…" aria-label="Search recipes">
-  <h2 class="section-title">All recipes</h2>
+  <h2 class="section-title" id="more">More recipes</h2>
   <div class="grid" id="grid"></div>
   <p class="empty" id="empty">No recipes match that search.</p>
   <footer>Made with love in Waterloo, Ontario.</footer>
@@ -31,6 +31,7 @@
   function draw() {
     var term = q.value.trim().toLowerCase();
     var list = (window.RECIPES || []).filter(function (r) {
+      if (!term && f && r.slug === f.slug) return false;   // already shown in the banner
       return !term || [r.title, r.kicker, r.blurb].concat(r.tags || []).join(" ").toLowerCase().indexOf(term) > -1;
     });
     grid.innerHTML = list.map(function (r) {
