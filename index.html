@@ -16,7 +16,9 @@
     <h1>Jagadish &amp; Manju's Kitchen</h1>
     <p>Home-style cooking from our kitchen, mostly from Tamil Nadu. Every recipe adjusts to the amount you're cooking.</p>
   </section>
+  <div id="feature"></div>
   <input class="search" id="q" type="search" placeholder="Search recipes…" aria-label="Search recipes">
+  <h2 class="section-title">All recipes</h2>
   <div class="grid" id="grid"></div>
   <p class="empty" id="empty">No recipes match that search.</p>
   <footer>Made with love in Waterloo, Ontario.</footer>
@@ -33,13 +35,22 @@
     });
     grid.innerHTML = list.map(function (r) {
       return "<a class='rcard' href='/recipes/" + encodeURIComponent(r.slug) + "/'>" +
-        "<div class='band'>" + esc(r.emoji || "🍽️") + "</div><div class='body'>" +
-        "<div class='kicker'>" + esc(r.kicker || "") + (r.time ? " · " + esc(r.time) : "") + "</div>" +
+        (r.image
+          ? "<div class='photo'><img src='" + esc(r.image) + "' alt='" + esc(r.title) + "' loading='lazy'>" + (r.time ? "<span class='badge'>⏱ " + esc(r.time) + "</span>" : "") + "</div>"
+          : "<div class='band'>" + esc(r.emoji || "🍽️") + "</div>") +
+        "<div class='body'><div class='kicker'>" + esc(r.kicker || "") + (!r.image && r.time ? " · " + esc(r.time) : "") + "</div>" +
         "<h2>" + esc(r.title) + "</h2>" + (r.author ? "<div class='byline'>By " + esc(r.author) + "</div>" : "") + "<p>" + esc(r.blurb || "") + "</p>" +
         "<div class='tags'>" + (r.tags || []).map(function (t) { return "<span class='tag'>" + esc(t) + "</span>"; }).join("") + "</div>" +
         "</div></a>";
     }).join("");
     empty.style.display = list.length ? "none" : "block";
+  }
+  var all = window.RECIPES || [];
+  var f = all.filter(function (r) { return r.featured && (r.hero || r.image); })[0];
+  if (f) {
+    document.getElementById("feature").innerHTML =
+      "<a class='feature' href='/recipes/" + encodeURIComponent(f.slug) + "/'><img src='" + esc(f.hero || f.image) + "' alt='" + esc(f.title) + "' fetchpriority='high'>" +
+      "<div class='ftext'><span class='flabel'>Chef's special</span><h2>" + esc(f.title) + "</h2><p>" + esc(f.blurb || "") + "</p><span class='cta'>Cook it →</span></div></a>";
   }
   q.addEventListener("input", draw);
   draw();

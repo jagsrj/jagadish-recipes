@@ -6,6 +6,7 @@
  *   Ingredient  { id, name, amt, unit, exp?, spice?, spiceExp?, plural?, note? }
  *     unit: "tsp" | "tbsp" | "cup" | "g" | "count" | "sprig" | "main" (the main ingredient itself)
  *     exp:  how it grows with f (1 = linear, default). Use < 1 for water, oil, chilies.
+ *   image: optional hero photo, e.g. "/images/my-dish.jpg" (16:10 works best).
  *   scale.servingsInput: true adds a "cooking for N people" box that sets the main-ingredient weight.
  *   Step        { t, min, exp?, txt, bigNote?, parallel? }  (parallel: happens alongside another step, not counted in total time)
  *     txt can use {id} to show an ingredient's scaled quantity, e.g. "Add {water} water".
@@ -51,9 +52,14 @@
   var root = document.getElementById("recipe");
   var isWeight = scale.type === "weight";
   root.innerHTML =
-    "<header>" + (R.native ? "<div class='native'>" + esc(R.native) + "</div>" : "") +
-    "<h1>" + esc(R.title) + "</h1>" +
-    (R.author ? "<div class='byline'>By " + esc(R.author) + "</div>" : "") + "<p class='lede'>" + esc(R.intro || "") + "</p></header>" +
+    (R.image
+      ? "<header class='rhero'><img src='" + esc(R.image) + "' alt='" + esc(R.title) + "' fetchpriority='high'>" +
+        "<div class='rhero-text'>" + (R.native ? "<div class='native'>" + esc(R.native) + "</div>" : "") +
+        "<h1>" + esc(R.title) + "</h1>" + (R.author ? "<div class='byline'>By " + esc(R.author) + "</div>" : "") +
+        "</div></header><p class='lede'>" + esc(R.intro || "") + "</p>"
+      : "<header>" + (R.native ? "<div class='native'>" + esc(R.native) + "</div>" : "") +
+        "<h1>" + esc(R.title) + "</h1>" +
+        (R.author ? "<div class='byline'>By " + esc(R.author) + "</div>" : "") + "<p class='lede'>" + esc(R.intro || "") + "</p></header>") +
     "<section class='card scaler' aria-label='Recipe scaler'>" +
       "<label class='title' for='amt'>" + esc(isWeight ? scale.label : "How many servings?") + "</label>" +
       "<div class='row'><input id='amt' type='number' inputmode='decimal' min='0.1' step='" + (isWeight ? "0.1" : "1") + "'>" +

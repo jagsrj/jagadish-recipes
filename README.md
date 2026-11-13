@@ -20,6 +20,16 @@ recipes/_template/            copy this to start a new recipe
 
 For Google recipe results, also copy the `application/ld+json` block from `recipes/chicken-kuzhambu/index.html` and update it.
 
+## Photos
+
+Put dish photos in `images/`. For each recipe you need:
+- `images/<slug>.jpg`, a landscape photo about 1600×1000, used as the top of the recipe page
+- `images/<slug>-card.jpg`, about 800×500, used on the home page card
+
+Then set `image` in the recipe page and `image` / `hero` in `assets/recipes.js`. Add `featured: true` to show a recipe as the large "Chef's special" banner on the home page.
+
+**Shooting tips:** take photos in daylight near a window with no flash, shoot from directly above or at 45°, use a dark wooden board or a banana leaf underneath, and add a garnish and a side dish to the frame.
+
 ## Preview locally
 
 ```
