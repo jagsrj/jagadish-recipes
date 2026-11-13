@@ -1,0 +1,36 @@
+# Jagadish's Recipes
+
+A static recipe site where every recipe scales to the amount you're cooking. It has no build step and no server, so it can go straight onto Cloudflare Pages.
+
+```
+index.html                    home page (cards and search)
+assets/style.css              shared look
+assets/recipe-engine.js       scaling, timers, rendering (shared)
+assets/recipes.js             list of recipes shown on the home page
+recipes/chicken-kuzhambu/     one folder per recipe
+recipes/_template/            copy this to start a new recipe
+```
+
+## Add a new recipe
+
+1. Copy `recipes/_template/` to `recipes/<slug>/`, for example `recipes/mutton-kuzhambu/`.
+2. Edit `window.RECIPE` in the new `index.html`. Set `slug` to the folder name and fill in the ingredients and steps. The comments in the template explain each field.
+3. Add an entry to `assets/recipes.js` so it appears on the home page.
+4. Commit and push. Cloudflare redeploys automatically.
+
+For Google recipe results, also copy the `application/ld+json` block from `recipes/chicken-kuzhambu/index.html` and update it.
+
+## Preview locally
+
+```
+npx serve .
+```
+
+Then open http://localhost:3000. Paths start with `/`, so open the pages through a server rather than double-clicking the file.
+
+## Deploy on Cloudflare Pages
+
+1. Push this folder to a GitHub repo, for example `jagsrj/jagadish-recipes`.
+2. In Cloudflare, go to **Workers & Pages → Create → Pages → Connect to Git** and pick the repo.
+3. Build settings: framework preset **None**, build command left empty, output directory `/`.
+4. Deploy. The site goes live at `<project>.pages.dev`. You can add your own domain under **Custom domains**.

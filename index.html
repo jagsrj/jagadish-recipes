@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jagadish's Recipes</title>
+<meta name="description" content="Home-style recipes by Jagadish, mostly from Tamil Nadu, that scale to the ingredients you have.">
+<meta property="og:title" content="Jagadish's Recipes">
+<meta property="og:description" content="Home-style recipes that scale to what you have.">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<nav class="sitebar"><a class="brand" href="/">Jagadish's <span>Recipes</span></a></nav>
+<main class="wrap wide">
+  <section class="hero">
+    <h1>Jagadish's Recipes</h1>
+    <p>Home-style cooking, mostly from Tamil Nadu. Every recipe adjusts to the amount you're cooking.</p>
+  </section>
+  <input class="search" id="q" type="search" placeholder="Search recipes…" aria-label="Search recipes">
+  <div class="grid" id="grid"></div>
+  <p class="empty" id="empty">No recipes match that search.</p>
+  <footer>Made with love in Waterloo, Ontario.</footer>
+</main>
+<script src="/assets/recipes.js"></script>
+<script>
+(function () {
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  var grid = document.getElementById("grid"), q = document.getElementById("q"), empty = document.getElementById("empty");
+  function draw() {
+    var term = q.value.trim().toLowerCase();
+    var list = (window.RECIPES || []).filter(function (r) {
+      return !term || [r.title, r.kicker, r.blurb].concat(r.tags || []).join(" ").toLowerCase().indexOf(term) > -1;
+    });
+    grid.innerHTML = list.map(function (r) {
+      return "<a class='rcard' href='/recipes/" + encodeURIComponent(r.slug) + "/'>" +
+        "<div class='band'>" + esc(r.emoji || "🍽️") + "</div><div class='body'>" +
+        "<div class='kicker'>" + esc(r.kicker || "") + (r.time ? " · " + esc(r.time) : "") + "</div>" +
+        "<h2>" + esc(r.title) + "</h2><p>" + esc(r.blurb || "") + "</p>" +
+        "<div class='tags'>" + (r.tags || []).map(function (t) { return "<span class='tag'>" + esc(t) + "</span>"; }).join("") + "</div>" +
+        "</div></a>";
+    }).join("");
+    empty.style.display = list.length ? "none" : "block";
+  }
+  q.addEventListener("input", draw);
+  draw();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- 1. Change the title and description -->
+<title>RECIPE NAME – Jagadish's Recipes</title>
+<meta name="description" content="One-line description of the dish.">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<nav class="sitebar">
+  <a class="brand" href="/">Jagadish's <span>Recipes</span></a>
+  <a class="back" href="/">← All recipes</a>
+</nav>
+<main class="wrap" id="recipe"></main>
+
+<script>
+/*
+ * 2. Fill in the recipe below.
+ *
+ * scale — pick ONE:
+ *   Weight-based (meat, fish, veg):  { type: "weight", label: "How much mutton do you have?", baseGrams: 500, defaultUnit: "lb", defaultValue: 1.1 }
+ *   Servings-based (rice, dosa):     { type: "servings", base: 4 }
+ *
+ * Ingredient units: "tsp", "tbsp", "cup", "g", "count", "sprig", or "main" (the main ingredient, weight recipes only).
+ * exp: how fast it grows with batch size. 1 (default) = linear. Use about 0.8 for water and chilies, 0.85 for oil.
+ * spice: true → follows the Mild/Medium/Hot buttons (needs spiceLevels: true).
+ * id: give an ingredient an id to show its scaled quantity in a step, e.g. "Add {water} water".
+ * Step min = minutes at the base amount. exp: about 0.4–0.6 for frying or simmering, 0 for fixed times.
+ * bigNote: extra advice shown only for big batches.
+ */
+window.RECIPE = {
+  slug: "my-new-recipe",            // must match the folder name
+  title: "My New Recipe",
+  native: "",                       // optional, e.g. "மட்டன் குழம்பு · Tamil Nadu"
+  intro: "Short intro about the dish.",
+  scale: { type: "servings", base: 4 },
+  baseServings: 4,
+  spiceLevels: false,
+  prepMin: 10,
+  pots: null,                       // optional: [[1.2, "3–4 L"], [99, "6 L+"]]
+  serveWith: "",
+  groups: [
+    { title: "Ingredients", items: [
+      { name: "rice", amt: 1, unit: "cup" },
+      { id: "water", name: "water", amt: 2, unit: "cup", exp: 0.9 },
+      { name: "salt", amt: 1, unit: "tsp" }
+    ]}
+  ],
+  steps: [
+    { t: "First step", min: 5, txt: "Describe the step. Add {water} water." }
+  ],
+  tips: []
+};
+</script>
+<script src="/assets/recipe-engine.js"></script>
+</body>
+</html>

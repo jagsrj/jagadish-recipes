@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tamil Nadu Chicken Kuzhambu – Jagadish's Recipes</title>
+<meta name="description" content="Village-style Tamil Nadu chicken kuzhambu with a freshly roasted masala. Enter your chicken weight and every ingredient, quantity and cook time adjusts automatically.">
+<meta property="og:title" content="Tamil Nadu Chicken Kuzhambu – Jagadish's Recipes">
+<meta property="og:description" content="Enter your chicken weight — the whole recipe scales to match.">
+<meta property="og:type" content="article">
+<link rel="stylesheet" href="/assets/style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Recipe",
+  "name": "Tamil Nadu Chicken Kuzhambu (Kozhi Kuzhambu)",
+  "description": "Village-style Tamil Nadu chicken gravy with a freshly roasted spice and coconut masala, cooked in sesame oil with shallots.",
+  "author": {"@type": "Person", "name": "Jagadish"},
+  "recipeCuisine": "Tamil, South Indian",
+  "recipeCategory": "Main course",
+  "keywords": "chicken kuzhambu, kozhi kuzhambu, Tamil Nadu chicken curry, chicken gravy",
+  "recipeYield": "4 servings",
+  "prepTime": "PT40M",
+  "cookTime": "PT50M",
+  "totalTime": "PT1H30M",
+  "recipeIngredient": [
+    "750 g bone-in chicken, curry cut", "3 tbsp plain yogurt", "1/2 tsp turmeric powder", "1 1/2 tsp salt",
+    "2 tbsp coriander seeds", "6 dried red chilies", "1 tsp black peppercorns", "1 tsp cumin seeds",
+    "1 tsp fennel seeds", "1-inch cinnamon stick", "4 cloves", "2 cardamom pods", "1/2 cup grated coconut",
+    "1 tbsp poppy seeds or cashews (optional)", "3 tbsp gingelly (sesame) oil", "1 bay leaf", "2 sprigs curry leaves",
+    "15 shallots, sliced", "1 large onion, sliced", "1 1/2 tbsp ginger-garlic paste", "2 medium tomatoes, chopped",
+    "1 tsp Kashmiri red chili powder", "1 1/2 cups water", "2 tbsp chopped coriander leaves"
+  ],
+  "recipeInstructions": [
+    {"@type": "HowToStep", "text": "Marinate the chicken with yogurt, turmeric and part of the salt for 30 minutes."},
+    {"@type": "HowToStep", "text": "Dry-roast the whole spices until fragrant."},
+    {"@type": "HowToStep", "text": "Toast coconut and poppy seeds, cool, and grind everything to a smooth paste."},
+    {"@type": "HowToStep", "text": "Heat sesame oil, temper bay leaf and curry leaves."},
+    {"@type": "HowToStep", "text": "Fry shallots and onion until deep golden."},
+    {"@type": "HowToStep", "text": "Add ginger-garlic paste, tomatoes and chili powder; cook until oil separates."},
+    {"@type": "HowToStep", "text": "Sear the marinated chicken on high heat."},
+    {"@type": "HowToStep", "text": "Add masala paste, water and remaining salt; simmer covered until tender and oil floats."},
+    {"@type": "HowToStep", "text": "Garnish with coriander and rest 10 minutes before serving."}
+  ]
+}
+</script>
+</head>
+<body>
+<nav class="sitebar">
+  <a class="brand" href="/">Jagadish's <span>Recipes</span></a>
+  <a class="back" href="/">← All recipes</a>
+</nav>
+<main class="wrap" id="recipe"></main>
+
+<script>
+window.RECIPE = {
+  slug: "chicken-kuzhambu",
+  title: "Chicken Kuzhambu",
+  native: "கோழி குழம்பு · Tamil Nadu",
+  intro: "A rustic, spicy village-style chicken gravy with a freshly roasted masala, sesame oil and shallots. Enter how much chicken you have and the whole recipe, including cook times, adjusts to it.",
+  scale: { type: "weight", label: "How much chicken do you have?", baseGrams: 750, defaultUnit: "lb", defaultValue: 1.65 },
+  baseServings: 4,
+  spiceLevels: true,
+  prepMin: 15,
+  pots: [[1.2, "3–4 L"], [2.3, "5–6 L"], [3.5, "7–8 L"], [99, "10 L+"]],
+  serveWith: "Serve with rice, idli, dosa or parotta.",
+  groups: [
+    { title: "For the marinade", items: [
+      { id: "chicken", name: "bone-in chicken, curry cut", unit: "main" },
+      { name: "plain yogurt", amt: 3, unit: "tbsp" },
+      { name: "turmeric powder", amt: 0.5, unit: "tsp" },
+      { id: "salt1", name: "salt", amt: 0.5, unit: "tsp", note: "the rest goes in at the simmer" }
+    ]},
+    { title: "Roasted masala", items: [
+      { name: "coriander seeds", amt: 2, unit: "tbsp" },
+      { name: "dried red chilies", amt: 6, unit: "count", exp: 0.8, spice: true },
+      { name: "black peppercorns", amt: 1, unit: "tsp" },
+      { name: "cumin seeds", amt: 1, unit: "tsp" },
+      { name: "fennel seeds (sombu)", amt: 1, unit: "tsp" },
+      { name: "cinnamon stick, 1-inch piece", amt: 1, unit: "count", plural: "cinnamon sticks, 1-inch pieces" },
+      { name: "cloves", amt: 4, unit: "count" },
+      { name: "cardamom pods", amt: 2, unit: "count" },
+      { name: "grated coconut (fresh or frozen)", amt: 0.5, unit: "cup" },
+      { name: "poppy seeds or cashews", amt: 1, unit: "tbsp", note: "optional, for a thicker gravy" }
+    ]},
+    { title: "Gravy", items: [
+      { id: "oil", name: "gingelly (sesame) oil", amt: 3, unit: "tbsp", exp: 0.85 },
+      { name: "bay leaf", amt: 1, unit: "count", plural: "bay leaves" },
+      { name: "curry leaves", amt: 2, unit: "sprig" },
+      { name: "shallots (small onions), sliced", amt: 15, unit: "count" },
+      { name: "large onion, sliced", amt: 1, unit: "count", plural: "large onions, sliced" },
+      { name: "ginger-garlic paste", amt: 1.5, unit: "tbsp" },
+      { name: "medium tomato, chopped", amt: 2, unit: "count", plural: "medium tomatoes, chopped" },
+      { name: "Kashmiri red chili powder", amt: 1, unit: "tsp", spice: true, spiceExp: 0.5 },
+      { id: "salt2", name: "salt", amt: 1, unit: "tsp", note: "adjust to taste at the end" },
+      { id: "water", name: "water", amt: 1.5, unit: "cup", exp: 0.8, note: "add more later if needed" },
+      { name: "fresh coriander leaves, chopped", amt: 2, unit: "tbsp" }
+    ]}
+  ],
+  steps: [
+    { t: "Marinate the chicken", min: 30,
+      txt: "Mix the {chicken} chicken with the yogurt, turmeric and {salt1} salt. Set it aside while you make the masala." },
+    { t: "Roast the spices", min: 4, exp: 0.3,
+      txt: "In a dry pan on medium-low heat, roast the coriander seeds, chilies, pepper, cumin, fennel, cinnamon, cloves and cardamom until they smell fragrant and turn a shade darker. Keep stirring so nothing burns." },
+    { t: "Toast the coconut and grind", min: 3, exp: 0.3,
+      txt: "Add the coconut (and poppy seeds or cashews) to the pan and toast until light golden. Let everything cool, then grind with a splash of water into a smooth paste.",
+      bigNote: "With this much masala, grind it in two batches." },
+    { t: "Temper", min: 0.5,
+      txt: "Heat the {oil} sesame oil in a {pot} heavy pot. Add the bay leaf and curry leaves and let them splutter." },
+    { t: "Fry the onions", min: 8, exp: 0.5,
+      txt: "Add the shallots and onion. Fry until deep golden. This step gives the gravy its sweetness and colour, so don't rush it." },
+    { t: "Ginger-garlic and tomatoes", min: 6, exp: 0.4,
+      txt: "Stir in the ginger-garlic paste and cook until the raw smell goes. Add the tomatoes and chili powder, then cook until they turn mushy and oil separates." },
+    { t: "Sear the chicken", min: 5, exp: 0.6,
+      txt: "Add the marinated chicken on high heat and stir until it's no longer pink on the outside.",
+      bigNote: "If the pot is crowded, sear it in two batches so it browns instead of steaming." },
+    { t: "Simmer with the masala", min: 25, exp: 0.4,
+      txt: "Add the ground masala paste, {water} water and {salt2} salt. Cover and simmer on low, stirring now and then, until the chicken is tender, the gravy thickens and oil floats on top. Taste, and adjust the salt and water." },
+    { t: "Finish and rest", min: 10,
+      txt: "Garnish with the coriander leaves. Rest for 10 minutes before serving so the flavours settle." }
+  ],
+  tips: [
+    "<b>Don't skip the sesame oil and shallots.</b> They're what make it taste authentically Tamil.",
+    function (f) { return "<b>Chettinad style:</b> add " + Math.max(1, Math.round(f)) + " star anise and a pinch of kalpasi (stone flower) when you roast the spices."; },
+    function (f, q, vol) { return "<b>Thinner gravy for rice:</b> add up to " + vol(0.5 * Math.pow(f, 0.8), "cup") + " more water at the end."; },
+    "<b>Heat:</b> start lower on chilies. You can add chili powder later, but you can't take spice back out.",
+    "It tastes even better the next day."
+  ]
+};
+</script>
+<script src="/assets/recipe-engine.js"></script>
+</body>
+</html>
