@@ -24,5 +24,15 @@ window.RECIPES = [
     blurb: "Rice parboiled to 75% and finished on dum over a spicy mint masala, with an extra spoon of sambar powder.",
     time: "2 h",
     tags: ["Chicken", "Biryani", "Rice", "South Indian"]
+  },
+  {
+    slug: "nandu-kuzhambu",
+    title: "Nandu Kuzhambu (Crab Gravy)",
+    kicker: "Tamil Nadu village style",
+    author: "Jagadish",
+    emoji: "🦀",
+    blurb: "Peppery, tangy crab gravy with a roasted coconut masala, tamarind and sesame oil. Scales to your crab weight.",
+    time: "1 h 30 min",
+    tags: ["Crab", "Seafood", "Gravy", "South Indian"]
   }
 ];
