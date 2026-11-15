@@ -88,6 +88,25 @@
   window.addEventListener("hashchange", function () { if (/^#(weekday|weekend)$/.test(location.hash)) { menu = location.hash.slice(1); draw(); } });
   q.addEventListener("input", draw);
   draw();
+
+  // When you come back to an open page (or a Home Screen shortcut resumes it),
+  // check for an updated recipe list and redraw without a full reload.
+  var lastList = null, checking = false;
+  function checkForUpdates() {
+    if (checking || document.visibilityState !== "visible") return;
+    checking = true;
+    fetch("/assets/recipes.js", { cache: "no-store" }).then(function (r) { return r.ok ? r.text() : null; }).then(function (txt) {
+      if (txt == null) return;
+      if (lastList === null) { lastList = txt; return; }
+      if (txt === lastList) return;
+      lastList = txt;
+      var w = {}; new Function("window", txt)(w);
+      if (Array.isArray(w.RECIPES)) { all = window.RECIPES = w.RECIPES; draw(); }
+    }).catch(function () {}).then(function () { checking = false; });
+  }
+  checkForUpdates();
+  document.addEventListener("visibilitychange", checkForUpdates);
+  window.addEventListener("pageshow", function (e) { if (e.persisted) location.reload(); });
 })();
 </script>
 </body>

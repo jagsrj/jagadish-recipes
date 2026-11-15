@@ -1,0 +1,4 @@
+# Always check for a newer version so updates show up straight away,
+# including when the site is opened from a Home Screen shortcut.
+/*
+  Cache-Control: no-cache
