@@ -35,6 +35,8 @@ window.RECIPES = [
     kicker: "Tamil Nadu village style",
     author: "Jagadish",
     emoji: "🦀",
+    image: "/images/nandu-kuzhambu-card.jpg",
+    hero: "/images/nandu-kuzhambu.jpg",
     blurb: "Peppery, tangy crab gravy with a roasted coconut masala, tamarind and sesame oil. Scales to your crab weight.",
     time: "1 h 30 min",
     tags: ["Crab", "Seafood", "Gravy", "South Indian"]
