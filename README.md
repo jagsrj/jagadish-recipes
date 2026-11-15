@@ -15,7 +15,13 @@ recipes/_template/            copy this to start a new recipe
 
 1. Copy `recipes/_template/` to `recipes/<slug>/`, for example `recipes/mutton-kuzhambu/`.
 2. Edit `window.RECIPE` in the new `index.html`. Set `slug` to the folder name and `author` to whoever is posting it, and fill in the ingredients and steps. The comments in the template explain each field.
-3. Add an entry to `assets/recipes.js`, including `author`, so it appears on the home page.
+3. Add an entry to `assets/recipes.js`, including `author` and `menu`, so it appears on the home page.
+
+## Weekday and weekend menus
+
+The home page has two tabs. It opens on **Weekday** (healthy keto, high protein and fiber) Monday to Friday and **Weekend** (Tamil Nadu village style) on Saturday and Sunday. Set `menu: "weekday"` or `menu: "weekend"` in both the recipe page and `assets/recipes.js`. Links like `/#weekday` open a tab directly. Search looks across both menus.
+
+For weekday recipes, add `nutrition` (per serving: `kcal`, `protein`, `fiber`, `netCarbs`, `fat`) to the recipe page, and `protein`, `fiber`, `netCarbs` to the home page entry. Net carbs = total carbs minus fiber.
 4. Commit and push. Cloudflare redeploys automatically.
 
 For Google recipe results, also copy the `application/ld+json` block from `recipes/chicken-kuzhambu/index.html` and update it.

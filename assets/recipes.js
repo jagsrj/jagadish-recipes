@@ -1,7 +1,9 @@
 // The list shown on the home page. Add one entry per recipe folder in /recipes/.
+// menu: "weekday" (healthy keto) or "weekend" (village style). nutrition is per serving, shown on weekday cards.
 window.RECIPES = [
   {
     slug: "chicken-kuzhambu",
+    menu: "weekend",
     title: "Chicken Kuzhambu",
     kicker: "Tamil Nadu",
     author: "Jagadish",
@@ -14,6 +16,7 @@ window.RECIPES = [
   },
   {
     slug: "chicken-biryani",
+    menu: "weekend",
     title: "Chennai-Style Chicken Biryani",
     kicker: "Jabbar Bhai style",
     author: "Jagadish",
@@ -27,6 +30,7 @@ window.RECIPES = [
   },
   {
     slug: "nandu-kuzhambu",
+    menu: "weekend",
     title: "Nandu Kuzhambu (Crab Gravy)",
     kicker: "Tamil Nadu village style",
     author: "Jagadish",
@@ -37,6 +41,7 @@ window.RECIPES = [
   },
   {
     slug: "meen-kuzhambu",
+    menu: "weekend",
     title: "Meen Kuzhambu (Fish Gravy)",
     kicker: "Tamil Nadu village style",
     author: "Jagadish",
@@ -46,5 +51,65 @@ window.RECIPES = [
     blurb: "Tangy tamarind fish gravy with sesame oil, shallots, garlic and fenugreek. Scales to your fish weight.",
     time: "1 h 30 min",
     tags: ["Fish", "Seafood", "Gravy", "South Indian"]
+  },
+  {
+    slug: "keerai-chicken",
+    menu: "weekday",
+    title: "Keerai Chicken (Spinach Chicken)",
+    kicker: "Chicken + spinach",
+    author: "Jagadish",
+    emoji: "🥬",
+    blurb: "Chicken in a garlicky spinach and yogurt gravy. A pot of protein and greens, no rice needed.",
+    time: "50 min",
+    nutrition: { protein: 38, fiber: 5, netCarbs: 8 },
+    tags: ["Chicken", "Keto", "High protein"]
+  },
+  {
+    slug: "pepper-chicken-poriyal",
+    menu: "weekday",
+    title: "Pepper Chicken with Cabbage-Beans Poriyal",
+    kicker: "Chettinad pepper",
+    author: "Jagadish",
+    emoji: "🌶️",
+    blurb: "Dry pepper chicken with a big cabbage-beans poriyal in place of rice.",
+    time: "50 min",
+    nutrition: { protein: 32, fiber: 6, netCarbs: 9 },
+    tags: ["Chicken", "Keto", "High fiber"]
+  },
+  {
+    slug: "cauliflower-chicken-biryani",
+    menu: "weekday",
+    title: "Cauliflower Rice Chicken Biryani",
+    kicker: "Low-carb biryani",
+    author: "Jagadish",
+    emoji: "🥦",
+    blurb: "Mint and ghee chicken biryani with cauliflower rice. Biryani on a weeknight.",
+    time: "1 h",
+    nutrition: { protein: 38, fiber: 6, netCarbs: 12 },
+    tags: ["Chicken", "Keto", "Biryani"]
+  },
+  {
+    slug: "paneer-broccoli-tikka",
+    menu: "weekday",
+    title: "Paneer & Broccoli Tikka Tray Bake",
+    kicker: "Vegetarian",
+    author: "Jagadish",
+    emoji: "🧀",
+    blurb: "Paneer, broccoli and peppers roasted in tandoori yogurt on one tray.",
+    time: "45 min",
+    nutrition: { protein: 26, fiber: 5, netCarbs: 12 },
+    tags: ["Paneer", "Vegetarian", "Keto"]
+  },
+  {
+    slug: "egg-spinach-bhurji",
+    menu: "weekday",
+    title: "Egg, Spinach & Mushroom Bhurji",
+    kicker: "Breakfast or quick dinner",
+    author: "Jagadish",
+    emoji: "🍳",
+    blurb: "Masala eggs with spinach, mushrooms, paneer and flaxseed in 20 minutes.",
+    time: "20 min",
+    nutrition: { protein: 30, fiber: 6, netCarbs: 8 },
+    tags: ["Eggs", "Keto", "Breakfast"]
   }
 ];

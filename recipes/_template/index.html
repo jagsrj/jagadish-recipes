@@ -32,6 +32,7 @@
  */
 window.RECIPE = {
   slug: "my-new-recipe",            // must match the folder name
+  menu: "weekday",                  // "weekday" (healthy keto) or "weekend" (village style)
   image: "/images/my-new-recipe.jpg", // a landscape photo; delete this line if you have none yet
   title: "My New Recipe",
   author: "Manju",                 // "Jagadish", "Manju" or "Jagadish & Manju"
@@ -43,6 +44,8 @@ window.RECIPE = {
   prepMin: 10,
   pots: null,                       // optional: [[1.2, "3–4 L"], [99, "6 L+"]]
   serveWith: "",
+  // optional, per serving — shown as a panel on the page (use it for weekday recipes):
+  // nutrition: { kcal: 350, protein: 35, fiber: 6, netCarbs: 8, fat: 18, note: "Estimated from standard values." },
   groups: [
     { title: "Ingredients", items: [
       { name: "rice", amt: 1, unit: "cup" },

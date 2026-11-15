@@ -73,10 +73,19 @@
       "<div>Total time <b id='total'></b></div>" + (R.pots ? "<div>Pot <b id='pot'></b></div>" : "") + "</div>" +
       "<div class='warn' id='warn'></div>" +
     "</section>" +
+    (R.nutrition ? "<section class='card nutri' aria-label='Nutrition per serving'><h2>Per serving <span class='note' style='display:inline'>(approx.)</span></h2><div class='macros'>" +
+      [["protein", "g", "Protein"], ["fiber", "g", "Fiber"], ["netCarbs", "g", "Net carbs"], ["fat", "g", "Fat"], ["kcal", "", "kcal"]].map(function (m) {
+        return R.nutrition[m[0]] == null ? "" : "<div class='m m-" + m[0] + "'><b>" + R.nutrition[m[0]] + m[1] + "</b><span>" + m[2] + "</span></div>";
+      }).join("") + "</div>" + (R.nutrition.note ? "<p class='note'>" + R.nutrition.note + "</p>" : "") + "</section>" : "") +
     "<section class='card'><h2>Ingredients</h2><p class='note' style='margin:-6px 0 6px'>Tap an item to tick it off.</p><div id='ingredients'></div></section>" +
     "<section class='card'><h2>Method</h2><ol class='steps' id='steps'></ol></section>" +
     (R.tips && R.tips.length ? "<section class='card'><h2>Tips</h2><ul class='tips' id='tips'></ul></section>" : "") +
     (R.serveWith ? "<footer>" + esc(R.serveWith) + "</footer>" : "");
+
+  // back link goes to the recipe's menu on the home page
+  var MENUS = { weekday: "Weekday recipes", weekend: "Weekend recipes" };
+  var back = document.querySelector(".sitebar .back");
+  if (back && MENUS[R.menu]) { back.href = "/#" + R.menu; back.textContent = "← " + MENUS[R.menu]; }
 
   // ---------- state ----------
   var state = isWeight ? { unit: scale.defaultUnit || "lb", value: scale.defaultValue, spice: 1 }
