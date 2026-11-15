@@ -82,6 +82,7 @@
     (R.tips && R.tips.length ? "<section class='card'><h2>Tips</h2><ul class='tips' id='tips'></ul></section>" : "") +
     (R.serveWith ? "<footer>" + esc(R.serveWith) + "</footer>" : "") +
     "<nav class='endnav' aria-label='Page navigation'><a class='btn' id='endback' href='/'>← All recipes</a>" +
+      "<button type='button' class='btn ghost' id='share'>Share recipe</button>" +
       "<a class='btn ghost' href='#' id='totop'>↑ Back to top</a></nav>";
 
   // back link goes to the recipe's menu on the home page
@@ -92,6 +93,13 @@
     if (back) { back.href = "/#" + R.menu; back.innerHTML = "<span aria-hidden='true'>‹</span> " + R.menu.charAt(0).toUpperCase() + R.menu.slice(1); back.setAttribute("aria-label", "Back to " + MENUS[R.menu]); }
     endback.href = "/#" + R.menu; endback.textContent = "← Back to " + MENUS[R.menu].toLowerCase();
   } else if (back) { back.innerHTML = "<span aria-hidden='true'>‹</span> All recipes"; }
+  document.getElementById("share").addEventListener("click", function () {
+    var btn = this, data = { title: R.title + " – Jagadish & Manju's Kitchen", text: R.title, url: location.href.split("#")[0] };
+    if (navigator.share) { navigator.share(data).catch(function () {}); return; }
+    var done = function () { btn.textContent = "Link copied ✓"; setTimeout(function () { btn.textContent = "Share recipe"; }, 2000); };
+    if (navigator.clipboard) navigator.clipboard.writeText(data.url).then(done, function () { prompt("Copy this link:", data.url); });
+    else prompt("Copy this link:", data.url);
+  });
   document.getElementById("totop").addEventListener("click", function (e) { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); });
 
   // ---------- state ----------

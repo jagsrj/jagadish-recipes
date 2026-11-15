@@ -50,3 +50,10 @@ Then open http://localhost:3000. Paths start with `/`, so open the pages through
 2. In Cloudflare, go to **Workers & Pages → Create → Pages → Connect to Git** and pick the repo.
 3. Build settings: framework preset **None**, build command left empty, output directory `/`.
 4. Deploy. The site goes live at `<project>.pages.dev`. You can add your own domain under **Custom domains**.
+
+## Search engines and sharing
+
+- `functions/` runs on Cloudflare Pages. It serves `/sitemap.xml` and `/robots.txt`, both built automatically from `assets/recipes.js`, and adds canonical links and full image URLs to every page. It uses whatever domain the site is on, so nothing needs changing if you add a custom domain.
+- New recipe? Copy the icon/manifest/`og:` tags from the template's `<head>`, then run `python3 tools/make-share-cards.py` to draw its link-preview card (used when shared on WhatsApp etc.) if it has no photo yet.
+- Register the site in [Google Search Console](https://search.google.com/search-console) and submit `https://<your-domain>/sitemap.xml` so Google finds new recipes quickly.
+- Preview with functions locally: `npx wrangler pages dev .`
