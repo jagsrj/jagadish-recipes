@@ -34,5 +34,17 @@ window.RECIPES = [
     blurb: "Peppery, tangy crab gravy with a roasted coconut masala, tamarind and sesame oil. Scales to your crab weight.",
     time: "1 h 30 min",
     tags: ["Crab", "Seafood", "Gravy", "South Indian"]
+  },
+  {
+    slug: "meen-kuzhambu",
+    title: "Meen Kuzhambu (Fish Gravy)",
+    kicker: "Tamil Nadu village style",
+    author: "Jagadish",
+    emoji: "🐟",
+    image: "/images/meen-kuzhambu-card.jpg",
+    hero: "/images/meen-kuzhambu.jpg",
+    blurb: "Tangy tamarind fish gravy with sesame oil, shallots, garlic and fenugreek. Scales to your fish weight.",
+    time: "1 h 30 min",
+    tags: ["Fish", "Seafood", "Gravy", "South Indian"]
   }
 ];
