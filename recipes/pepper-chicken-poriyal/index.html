@@ -130,20 +130,20 @@ window.RECIPE = {
     ]}
   ],
   steps: [
-    { t: "Marinate the chicken", min: 10, exp: 0,
+    { t: "Marinate the chicken", uses: ["Pepper chicken: boneless", "Pepper chicken: turmeric", "Pepper chicken: ginger-garlic", "Pepper chicken: salt"], min: 10, exp: 0,
       txt: "Mix the {chicken} chicken with the turmeric, ginger-garlic paste and {salt1} salt." },
-    { t: "Start the poriyal", min: 3, exp: 0.3,
+    { t: "Start the poriyal", uses: ["Cabbage-beans poriyal: coconut oil", "Cabbage-beans poriyal: mustard", "Cabbage-beans poriyal: curry leaves", "Cabbage-beans poriyal: green chilies"], min: 3, exp: 0.3,
       txt: "In a second pan, heat the {oil2} coconut oil. Add mustard seeds; when they splutter, add the curry leaves and green chilies." },
-    { t: "Cook the poriyal", min: 10, exp: 0.4,
+    { t: "Cook the poriyal", uses: ["Cabbage-beans poriyal: green beans", "Cabbage-beans poriyal: turmeric", "Cabbage-beans poriyal: cabbage", "Cabbage-beans poriyal: salt", "Cabbage-beans poriyal: grated coconut"], min: 10, exp: 0.4,
       txt: "Add the {beans} beans, turmeric and a splash of water. Cover and cook 4 minutes, then add the {cabbage} cabbage and {salt2} salt. Stir-fry uncovered on medium-high until tender but still crunchy. Turn off the heat and mix in the coconut." },
-    { t: "Temper for the chicken", min: 1,
+    { t: "Temper for the chicken", uses: ["Pepper chicken: coconut oil or sesame", "Pepper chicken: fennel", "Pepper chicken: curry leaves"], min: 1,
       txt: "Meanwhile, heat the {oil} oil in a {pot}. Add the fennel seeds and curry leaves." },
-    { t: "Fry the onion", min: 5, exp: 0.5,
+    { t: "Fry the onion", uses: ["Pepper chicken: small onion"], min: 5, exp: 0.5,
       txt: "Add the onion and fry until soft and golden." },
     { t: "Cook the chicken", min: 12, exp: 0.4,
       txt: "Add the chicken and cook on high for a few minutes to sear, then lower the heat, cover and cook until done, stirring now and then.",
       bigNote: "Cook the chicken in batches or in two pans so it browns instead of stewing." },
-    { t: "Pepper and roast", min: 5, exp: 0.3,
+    { t: "Pepper and roast", uses: ["Pepper chicken: black pepper", "Pepper chicken: coriander powder", "Pepper chicken: lemon"], min: 5, exp: 0.3,
       txt: "Add the crushed pepper and coriander powder. Roast uncovered, stirring, until the chicken is dry and coated. Finish with the lemon juice." }
   ],
   tips: [

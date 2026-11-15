@@ -120,18 +120,18 @@ window.RECIPE = {
     ]}
   ],
   steps: [
-    { t: "Mix the flours and spices", min: 3,
+    { t: "Mix the flours and spices", uses: ["Dough: besan", "Dough: rice flour", "Dough: black pepper", "Dough: red chili", "Dough: garlic", "Dough: asafoetida", "Dough: baking soda", "Dough: salt"], min: 3,
       txt: "Sift the besan and rice flour into a wide bowl. Add the crushed pepper, chili powder, garlic paste, asafoetida, baking soda and {salt} salt and mix well." },
-    { t: "Rub in the butter", min: 2,
+    { t: "Rub in the butter", uses: ["Dough: butter"], min: 2,
       txt: "Add the {butter} butter or hot oil and rub it in with your fingertips." },
-    { t: "Make the dough", min: 3,
+    { t: "Make the dough", uses: ["Dough: water"], min: 3,
       txt: "Add the {water} water a little at a time to make a soft dough, softer than murukku dough, that spreads easily when rubbed." },
-    { t: "Heat the oil", min: 5, exp: 0.3,
+    { t: "Heat the oil", uses: ["For frying: oil"], min: 5, exp: 0.3,
       txt: "Heat the {oil} oil in a kadai on medium heat to about 175°C (350°F)." },
     { t: "Rub through the ladle and fry", min: 20, exp: 0.9,
       txt: "Hold a karasev ladle (a flat perforated ladle with big holes) over the oil. Place a lump of dough on it and rub it through the holes with your palm so short strands drop into the oil. Fry on medium until the sizzling stops and they're golden and crisp, turning once, about 3–4 minutes per batch. Drain on paper towels.",
       bigNote: "No karasev ladle? Use a murukku press with the ribbon or big-hole plate and press short lengths into the oil." },
-    { t: "Fry the curry leaves", min: 1,
+    { t: "Fry the curry leaves", uses: ["Dough: curry leaves"], min: 1,
       txt: "Fry the curry leaves in the same oil for a few seconds until crisp and mix them into the karasev." },
     { t: "Break and store", min: 15, exp: 0,
       txt: "Once cool, break the strands into 1–2 inch pieces and store airtight." }

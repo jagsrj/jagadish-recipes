@@ -172,3 +172,31 @@ button.btn { font: inherit; font-weight: 700; cursor: pointer; }
 @media print { .endnav { display: none; } }
 .unitlbl { color: var(--muted); font-weight: 600; align-self: center; }
 @media (max-width: 480px) { .tabs { gap: 6px; } .tabs button { padding: 9px 9px; } .tabs button b { font-size: .95rem; } .tabs button span { font-size: .72rem; } }
+
+/* ---------- amounts used in each step ---------- */
+.uses { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 2px; align-items: center; }
+.uses-h { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-right: 2px; }
+.chip { font-size: .84rem; background: var(--accent-soft); color: var(--ink); border-radius: 999px; padding: 3px 10px; line-height: 1.4; }
+.chip b { color: var(--accent); }
+.chip i { color: var(--muted); font-style: normal; font-size: .78rem; }
+
+/* ---------- ask about this recipe ---------- */
+.ask .note { margin-top: -4px; }
+.ask-log { display: flex; flex-direction: column; gap: 8px; margin: 10px 0; }
+.msg { padding: 10px 14px; border-radius: 16px; max-width: 92%; line-height: 1.5; font-size: .95rem; }
+.msg.me { align-self: flex-end; background: var(--accent); color: #fff; border-bottom-right-radius: 4px; }
+.msg.bot { align-self: flex-start; background: var(--bg); border: 1px solid var(--line); border-bottom-left-radius: 4px; }
+.msg.thinking { color: var(--muted); font-style: italic; }
+.ask-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 10px; }
+.ask-idea { border: 1px solid var(--line); cursor: pointer; font: inherit; font-size: .84rem; }
+.ask-form { display: flex; gap: 8px; }
+.ask-form input { flex: 1; min-width: 0; font-size: 16px; padding: 11px 14px; border: 2px solid var(--line); border-radius: 999px; background: var(--bg); color: var(--ink); }
+.ask-form input:focus { outline: none; border-color: var(--accent); }
+.ask-form .btn { padding: 10px 18px; }
+.ask-form .btn:disabled { opacity: .5; }
+.ask-foot { margin: 10px 0 0; font-size: .75rem; }
+@media print { .ask, .uses { display: none; } }
+.ask-fab { position: fixed; right: 16px; bottom: calc(18px + env(safe-area-inset-bottom)); z-index: 20; background: var(--accent); color: #fff;
+  text-decoration: none; font-weight: 700; padding: 11px 16px; border-radius: 999px; box-shadow: 0 8px 22px rgba(0,0,0,.22); transition: opacity .2s, transform .2s; }
+.ask-fab.hide { opacity: 0; transform: translateY(12px); pointer-events: none; }
+@media print { .ask-fab { display: none; } }

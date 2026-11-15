@@ -129,14 +129,14 @@ window.RECIPE = {
   steps: [
     { t: "Heat the oven", min: 1,
       txt: "Heat the oven to 230°C (450°F), or 220°C (425°F) on convection. Line a large baking tray with parchment." },
-    { t: "Make the marinade", min: 3,
+    { t: "Make the marinade", uses: ["Tikka marinade: plain greek yogurt", "Tikka marinade: mustard oil", "Tikka marinade: ginger-garlic", "Tikka marinade: kashmiri", "Tikka marinade: garam masala", "Tikka marinade: cumin powder", "Tikka marinade: turmeric", "Tikka marinade: kasuri", "Tikka marinade: salt", "Tikka marinade: lemon"], min: 3,
       txt: "Whisk the yogurt, {oil} oil, ginger-garlic paste, chili powder, garam masala, cumin, turmeric, kasuri methi, {salt} salt and lemon juice into a thick paste." },
-    { t: "Coat and marinate", min: 15, exp: 0,
+    { t: "Coat and marinate", uses: ["Tray: paneer", "Tray: broccoli", "Tray: bell peppers", "Tray: small red onion"], min: 15, exp: 0,
       txt: "Toss the {paneer} paneer, {broc} broccoli, peppers and onion in the marinade until everything is coated. Leave it for 15 minutes (or overnight in the fridge)." },
     { t: "Roast", min: 20, exp: 0.15,
       txt: "Spread everything in a single layer with space between pieces. Roast until the broccoli edges are charred and the paneer is golden, turning once halfway.",
       bigNote: "Use two trays and swap their positions halfway. A crowded tray steams instead of charring." },
-    { t: "Finish under the broiler", min: 2,
+    { t: "Finish under the broiler", uses: ["Tikka marinade: chaat masala"], min: 2,
       txt: "For extra char, broil for 2 minutes, watching closely. Sprinkle with chaat masala and serve hot." }
   ],
   tips: [

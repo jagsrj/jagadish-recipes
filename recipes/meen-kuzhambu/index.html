@@ -75,6 +75,7 @@ window.RECIPE = {
   spiceLevels: true,
   prepMin: 5,
   pots: [[1.2, "28 cm wide pan or 3–4 L clay pot"], [2.3, "32 cm wide pan or 5–6 L pot"], [99, "two wide pans"]],
+  askIdeas: ["How do I stop the fish from breaking?", "My gravy is too sour. How do I fix it?"],
   serveWith: "Serve with hot rice, idli or dosa. Many families pair it with a simple poriyal or appalam.",
   groups: [
     { title: "Fish", items: [
@@ -111,26 +112,26 @@ window.RECIPE = {
     ]}
   ],
   steps: [
-    { t: "Clean the fish", min: 10, exp: 0.5,
+    { t: "Clean the fish", uses: ["Fish: fish steaks", "Fish: turmeric", "Fish: salt"], min: 10, exp: 0.5,
       txt: "Rub the {fish} fish steaks with the turmeric and salt for cleaning, leave for a few minutes, then rinse well and drain. This removes the fishy smell." },
-    { t: "Make the tamarind base", min: 10, exp: 0,
+    { t: "Make the tamarind base", uses: ["Tamarind base: tamarind", "Tamarind base: warm water", "Tamarind base: red chili", "Tamarind base: coriander powder", "Tamarind base: turmeric", "Tamarind base: salt"], min: 10, exp: 0,
       txt: "Soak the {tamarind} tamarind in {tamwater} warm water, then squeeze and strain out the juice. Whisk the chili powder, coriander powder, turmeric and {salt} salt into the tamarind water. Mixing the powders in first, the village way, keeps them from burning in the oil and gives a smooth gravy." },
-    { t: "Grind the coconut paste", min: 3, exp: 0.3,
+    { t: "Grind the coconut paste", uses: ["Coconut paste: grated coconut", "Coconut paste: cumin", "Coconut paste: shallots"], min: 3, exp: 0.3,
       txt: "Grind the coconut, cumin and shallots with a little water into a fine paste. Keep aside." },
-    { t: "Temper", min: 1.5,
+    { t: "Temper", uses: ["Gravy: gingelly", "Gravy: mustard", "Gravy: fenugreek", "Gravy: cumin", "Gravy: curry leaves"], min: 1.5,
       txt: "Heat the {oil} sesame oil in a {pot}. Add the mustard seeds; when they splutter, add the fenugreek and cumin and let the fenugreek turn reddish-brown. Don't let it go black or the gravy turns bitter. Add the curry leaves." },
-    { t: "Fry shallots and garlic", min: 7, exp: 0.5,
+    { t: "Fry shallots and garlic", uses: ["Gravy: shallots", "Gravy: garlic", "Gravy: green chilies"], min: 7, exp: 0.5,
       txt: "Add the shallots, garlic and green chilies. Fry until the shallots turn soft and golden at the edges." },
-    { t: "Cook the tomatoes", min: 5, exp: 0.4,
+    { t: "Cook the tomatoes", uses: ["Gravy: medium tomato"], min: 5, exp: 0.4,
       txt: "Add the tomatoes and cook until mushy and broken down." },
-    { t: "Boil the kuzhambu", min: 15, exp: 0.4,
+    { t: "Boil the kuzhambu", uses: ["Gravy: water"], min: 15, exp: 0.4,
       txt: "Pour in the tamarind mixture and {water} water. Bring to a boil, then simmer on medium until the raw tamarind smell goes, the gravy thickens slightly and oil starts floating on top. Don't rush this step; it's where the flavour comes from." },
     { t: "Add the coconut paste", min: 3,
       txt: "Stir in the coconut paste and simmer for a few minutes. The gravy should be pourable, like in a village kitchen, not thick like a curry. Add a splash of water if needed." },
     { t: "Cook the fish", min: 8, exp: 0.2,
       txt: "Slide the fish steaks into the gravy in a single layer. Don't stir from here on; instead, gently swirl the pan or spoon gravy over the top. Simmer on low until the fish turns opaque and flakes easily.",
       bigNote: "Keep the fish in a single layer. Use a second pan if needed so the pieces don't break." },
-    { t: "Finish and rest", min: 20, exp: 0,
+    { t: "Finish and rest", uses: ["Gravy: jaggery", "Gravy: fresh coriander"], min: 20, exp: 0,
       txt: "Add the jaggery, a few fresh curry leaves and the coriander leaves. Check the salt and sourness. Turn off the heat, cover and rest for at least 20 minutes so the fish soaks up the gravy." }
   ],
   tips: [

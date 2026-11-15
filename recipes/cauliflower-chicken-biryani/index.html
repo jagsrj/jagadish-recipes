@@ -146,18 +146,18 @@ window.RECIPE = {
     ]}
   ],
   steps: [
-    { t: "Marinate the chicken", min: 15, exp: 0,
+    { t: "Marinate the chicken", uses: ["Chicken masala: boneless", "Chicken masala: plain greek yogurt", "Chicken masala: ginger-garlic", "Chicken masala: red chili", "Chicken masala: biryani masala", "Chicken masala: turmeric", "Chicken masala: salt", "Cauliflower rice: cauliflower"], min: 15, exp: 0,
       txt: "Mix the {chicken} chicken with the yogurt, ginger-garlic paste, chili powder, biryani masala, turmeric and {salt1} salt. Meanwhile, pulse the {cauli} cauliflower in a food processor (or grate it) to rice-sized bits." },
-    { t: "Whole spices and onions", min: 8, exp: 0.5,
+    { t: "Whole spices and onions", uses: ["Chicken masala: ghee", "Chicken masala: bay leaf", "Chicken masala: cinnamon", "Chicken masala: cloves", "Chicken masala: cardamom", "Chicken masala: medium onion"], min: 8, exp: 0.5,
       txt: "Heat the {ghee} ghee in a {pot}. Add the bay leaf, cinnamon, cloves and cardamom, then fry the onion until golden brown." },
-    { t: "Tomato, mint and chilies", min: 4, exp: 0.4,
+    { t: "Tomato, mint and chilies", uses: ["Chicken masala: small tomato", "Chicken masala: green chilies", "Chicken masala: mint|half", "Chicken masala: coriander leaves|half"], min: 4, exp: 0.4,
       txt: "Add the tomato, green chilies and half the mint and coriander. Cook until the tomato softens." },
     { t: "Cook the chicken", min: 15, exp: 0.4,
       txt: "Add the marinated chicken, cover and cook on medium-low until tender and the masala is thick and clinging, not watery." },
-    { t: "Make the cauliflower rice", min: 5, exp: 0.4,
+    { t: "Make the cauliflower rice", uses: ["Cauliflower rice: ghee", "Cauliflower rice: cumin", "Cauliflower rice: salt", "Cauliflower rice: biryani masala"], min: 5, exp: 0.4,
       txt: "In a separate wide pan, heat the {ghee2} ghee, add cumin, then the cauliflower, {salt2} salt and biryani masala. Stir-fry on high, uncovered, for 4–5 minutes until just tender. Don't cover it or it turns mushy.",
       bigNote: "Cook the cauliflower in batches so it toasts instead of steaming." },
-    { t: "Layer and dum", min: 8, exp: 0.2,
+    { t: "Layer and dum", uses: ["Chicken masala: mint|the rest", "Chicken masala: coriander leaves|the rest", "Cauliflower rice: lemon juice"], min: 8, exp: 0.2,
       txt: "Spread the cauliflower rice over the chicken masala. Sprinkle the rest of the mint and coriander and the lemon juice. Cover tightly and cook on the lowest heat so the flavours mingle." },
     { t: "Rest and serve", min: 5,
       txt: "Turn off the heat, rest covered for 5 minutes, then gently fold the layers together as you serve." }

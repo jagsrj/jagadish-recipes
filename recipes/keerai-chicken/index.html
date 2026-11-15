@@ -140,20 +140,20 @@ window.RECIPE = {
     ]}
   ],
   steps: [
-    { t: "Marinate the chicken", min: 10, exp: 0,
+    { t: "Marinate the chicken", uses: ["Chicken: boneless", "Chicken: plain greek yogurt", "Chicken: turmeric", "Chicken: red chili", "Chicken: salt"], min: 10, exp: 0,
       txt: "Mix the {chicken} chicken with the yogurt, turmeric, chili powder and {salt1} salt. Leave it while you prepare the spinach." },
-    { t: "Blanch and blend the spinach", min: 5, exp: 0.4,
+    { t: "Blanch and blend the spinach", uses: ["Spinach gravy: spinach", "Spinach gravy: green chilies"], min: 5, exp: 0.4,
       txt: "Drop the {spinach} spinach and green chilies into boiling water for 2 minutes, then into cold water so it stays bright green. Squeeze lightly and blend to a coarse purée.",
       bigNote: "Blanch the spinach in batches so the water keeps boiling." },
-    { t: "Temper and fry the onion", min: 7, exp: 0.5,
+    { t: "Temper and fry the onion", uses: ["Spinach gravy: ghee", "Spinach gravy: cumin", "Spinach gravy: medium onion"], min: 7, exp: 0.5,
       txt: "Heat the {ghee} ghee in a {pot} pot. Add the cumin and let it sizzle, then fry the onion until golden." },
-    { t: "Masala", min: 5, exp: 0.4,
+    { t: "Masala", uses: ["Spinach gravy: ginger-garlic", "Spinach gravy: medium tomato", "Spinach gravy: coriander powder", "Spinach gravy: garam masala"], min: 5, exp: 0.4,
       txt: "Add the ginger-garlic paste and cook until the raw smell goes. Add the tomato, coriander powder and garam masala and cook until soft." },
     { t: "Cook the chicken", min: 10, exp: 0.4,
       txt: "Add the marinated chicken and cook on medium-high, stirring, until it's no longer pink outside and the masala coats it." },
-    { t: "Add the spinach and simmer", min: 8, exp: 0.3,
+    { t: "Add the spinach and simmer", uses: ["Spinach gravy: salt"], min: 8, exp: 0.3,
       txt: "Stir in the spinach purée and {salt2} salt. Cover and simmer on low until the chicken is cooked through. Add a splash of water if it gets too thick." },
-    { t: "Finish", min: 2,
+    { t: "Finish", uses: ["Spinach gravy: plain greek yogurt", "Spinach gravy: kasuri", "Spinach gravy: lemon"], min: 2,
       txt: "Turn the heat to the lowest setting and stir in the whisked yogurt, crushed kasuri methi and lemon juice. Don't boil after adding yogurt, or it can split." }
   ],
   tips: [

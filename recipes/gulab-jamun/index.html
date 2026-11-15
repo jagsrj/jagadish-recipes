@@ -111,13 +111,13 @@ window.RECIPE = {
     ]}
   ],
   steps: [
-    { t: "Make the syrup", min: 8, exp: 0.3,
+    { t: "Make the syrup", uses: ["Syrup: sugar", "Syrup: water", "Syrup: cardamom", "Syrup: saffron", "Syrup: lemon", "Syrup: rose water"], min: 8, exp: 0.3,
       txt: "Boil the {sugar} sugar and {swater} water with the cardamom and saffron for 5–6 minutes until slightly sticky between your fingers, but not stringy. Add the lemon juice and rose water and keep it warm." },
-    { t: "Make the dough", min: 4,
+    { t: "Make the dough", uses: ["Jamun dough: full-fat milk powder", "Jamun dough: all-purpose", "Jamun dough: baking soda", "Jamun dough: ghee, melted", "Jamun dough: milk, warm"], min: 4,
       txt: "Mix the milk powder, flour and baking soda. Add the {ghee} melted ghee and rub it in, then add the {milk} warm milk a spoon at a time and gently bring it together into a soft, sticky dough. Don't knead hard. Rest it covered for 10 minutes." },
     { t: "Shape the balls", min: 8, exp: 0.7,
       txt: "Grease your palms with ghee and roll small balls, about 1 inch across, completely smooth with no cracks. They double in size, so keep them small." },
-    { t: "Fry slowly", min: 15, exp: 0.7,
+    { t: "Fry slowly", uses: ["Jamun dough: ghee or oil"], min: 15, exp: 0.7,
       txt: "Heat the {oil} ghee or oil on low heat. It's ready when a small piece of dough rises slowly from the bottom. Fry the balls a few at a time on low heat, gently swirling the oil rather than touching them, until evenly deep brown, about 7–8 minutes per batch.",
       bigNote: "Fry in small batches. If the oil gets too hot, take the pan off the heat for a minute." },
     { t: "Soak in syrup", min: 120, exp: 0,

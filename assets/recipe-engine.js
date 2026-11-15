@@ -80,6 +80,13 @@
     "<section class='card'><h2>Ingredients</h2><p class='note' style='margin:-6px 0 6px'>Tap an item to tick it off.</p><div id='ingredients'></div></section>" +
     "<section class='card'><h2>Method</h2><ol class='steps' id='steps'></ol></section>" +
     (R.tips && R.tips.length ? "<section class='card'><h2>Tips</h2><ul class='tips' id='tips'></ul></section>" : "") +
+    "<section class='card ask' id='ask' aria-label='Ask about this recipe'><h2>Ask about this recipe</h2>" +
+      "<p class='note'>Stuck on a step? Ask anything, like substitutes, spice, gravy thickness or storing. Answers use your current quantities.</p>" +
+      "<div class='ask-log' id='asklog' aria-live='polite'></div>" +
+      "<div class='ask-chips' id='askchips'></div>" +
+      "<form class='ask-form' id='askform'><input id='askq' type='text' maxlength='500' autocomplete='off' placeholder='e.g. Is my gravy too thick?' aria-label='Your question'>" +
+      "<button class='btn' type='submit' id='asksend'>Ask</button></form>" +
+      "<p class='note ask-foot'>AI answers can be wrong, so use your judgement, especially about food safety.</p></section>" +
     (R.serveWith ? "<footer>" + esc(R.serveWith) + "</footer>" : "") +
     "<nav class='endnav' aria-label='Page navigation'><a class='btn' id='endback' href='/'>← All recipes</a>" +
       "<button type='button' class='btn ghost' id='share'>Share recipe</button>" +
@@ -100,6 +107,53 @@
     if (navigator.clipboard) navigator.clipboard.writeText(data.url).then(done, function () { prompt("Copy this link:", data.url); });
     else prompt("Copy this link:", data.url);
   });
+  // ---------- ask about this recipe ----------
+  (function () {
+    var log = document.getElementById("asklog"), form = document.getElementById("askform"), input = document.getElementById("askq"),
+        send = document.getElementById("asksend"), chips = document.getElementById("askchips"), history = [];
+    var defaults = R.menu === "festival"
+      ? ["How do I know the oil is at the right temperature?", "How long will these keep?", "What can I substitute if I'm missing something?"]
+      : ["How can I make it less spicy?", "What can I substitute if I'm missing something?", "How do I store and reheat leftovers?"];
+    var ideas = (R.askIdeas || []).concat(defaults).slice(0, 3);
+    chips.innerHTML = ideas.map(function (q) { return "<button type='button' class='chip ask-idea'>" + esc(q) + "</button>"; }).join("");
+    chips.addEventListener("click", function (e) { var b = e.target.closest(".ask-idea"); if (b) { input.value = b.textContent; ask(); } });
+    form.addEventListener("submit", function (e) { e.preventDefault(); ask(); });
+    var fab = document.createElement("a");
+    fab.href = "#ask"; fab.className = "ask-fab"; fab.textContent = "💬 Ask"; fab.setAttribute("aria-label", "Ask a question about this recipe");
+    fab.addEventListener("click", function (e) { e.preventDefault(); document.getElementById("ask").scrollIntoView({ behavior: "smooth" }); setTimeout(function () { input.focus(); }, 450); });
+    document.body.appendChild(fab);
+    if ("IntersectionObserver" in window) new IntersectionObserver(function (en) { fab.classList.toggle("hide", en[0].isIntersecting); }).observe(document.getElementById("ask"));
+    function fmt(t) {
+      return esc(t).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/^\s*[-*•]\s+/gm, "• ").replace(/\n/g, "<br>");
+    }
+    function context() {
+      var amt = document.getElementById("amt").value, unit = isWeight ? " " + state.unit : (scale.unitLabel ? " " + scale.unitLabel : " servings");
+      var heat = R.spiceLevels ? (state.spice < 1 ? "Mild" : state.spice > 1 ? "Hot" : "Medium") : "";
+      return "Recipe: " + R.title + (R.native ? " (" + R.native + ")" : "") + "\nCooking: " + amt + unit + (heat ? ", heat " + heat : "") +
+        "\n\nINGREDIENTS\n" + document.getElementById("ingredients").innerText +
+        "\n\nMETHOD\n" + document.getElementById("steps").innerText.replace(/▶ Start [^\n]+ timer/g, "") +
+        (document.getElementById("tips") ? "\n\nTIPS\n" + document.getElementById("tips").innerText : "");
+    }
+    function ask() {
+      var q = input.value.trim();
+      if (q.length < 3 || send.disabled) return;
+      input.value = ""; send.disabled = true; chips.style.display = "none";
+      log.insertAdjacentHTML("beforeend", "<div class='msg me'>" + esc(q) + "</div>");
+      var bubble = document.createElement("div"); bubble.className = "msg bot thinking"; bubble.textContent = "Thinking…"; log.appendChild(bubble);
+      fetch("/api/ask", { method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ question: q, recipe: context(), slug: R.slug, history: history }) })
+        .then(function (r) { return r.json().catch(function () { return { error: "unavailable" }; }); })
+        .then(function (d) {
+          bubble.classList.remove("thinking");
+          if (d.answer) { bubble.innerHTML = fmt(d.answer); history.push({ q: q, a: d.answer }); }
+          else bubble.textContent = d.error === "not_configured" ? "The recipe assistant isn't switched on yet. Please check back soon."
+                                                                 : "Sorry, I couldn't answer that right now. Please try again in a minute.";
+        })
+        .catch(function () { bubble.classList.remove("thinking"); bubble.textContent = "You seem to be offline. Try again when you're connected."; })
+        .then(function () { send.disabled = false; });
+    }
+  })();
+
   document.getElementById("totop").addEventListener("click", function (e) { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); });
 
   // ---------- state ----------
@@ -119,6 +173,24 @@
     var g = state.unit === "lb" ? v * LB : v * 1000;
     return { f: g / scale.baseGrams, g: g };
   }
+
+  // Find an ingredient for a step's `uses` list.
+  function findIng(ref) {
+    ref = ref.trim();
+    var all = [], m = ref.match(/^([^:]+):\s*(.+)$/), grp = m ? m[1].toLowerCase() : null, name = (m ? m[2] : ref).toLowerCase();
+    R.groups.forEach(function (g) {
+      if (grp && g.title.toLowerCase().indexOf(grp) !== 0) return;
+      g.items.forEach(function (it) { all.push(it); });
+    });
+    if (!grp) for (var i = 0; i < all.length; i++) if (all[i].id === ref) return all[i];
+    var n = function (it) { return (it.name || "").toLowerCase(); };
+    var exact = all.filter(function (it) { return n(it) === name; });
+    if (exact.length) return exact[0];
+    var starts = all.filter(function (it) { return n(it).indexOf(name) === 0; });
+    if (starts.length) return starts[0];
+    return all.filter(function (it) { return n(it).indexOf(name) > -1; })[0] || null;
+  }
+  window.__findIng = findIng;
 
   // ---------- render ----------
   var timers = {};
@@ -152,6 +224,7 @@
           }
         }
         if (it.id) qty[it.id] = q;
+        it._q = q; it._label = label;
         html += "<li tabindex='0'><span class='qty'>" + q + "</span><span>" + esc(label) +
                 (it.note ? "<span class='note'>" + esc(it.note) + "</span>" : "") + "</span></li>";
       });
@@ -175,6 +248,13 @@
         return extra[k] != null ? extra[k] : "";
       });
       if (s.bigNote && f > 1.6) txt += " " + esc(s.bigNote);
+      var used = (s.uses || []).map(function (u) {
+        var parts = u.split("|"), it = findIng(parts[0]);
+        if (!it) return "";
+        var short = it._label.split(/,| \(/)[0];
+        return "<span class='chip'><b>" + it._q + "</b> " + esc(short) + (parts[1] ? " <i>(" + esc(parts[1]) + ")</i>" : "") + "</span>";
+      }).join("");
+      if (used) txt += "<div class='uses'><span class='uses-h'>In this step</span>" + used + "</div>";
       sh += "<li><span class='st'>" + esc(s.t) + " · " + fmtMin(m) + "</span>" + txt +
             "<br><button class='timer' data-i='" + i + "' data-sec='" + Math.round(m * 60) + "'>▶ Start " + fmtMin(m) + " timer</button></li>";
     });

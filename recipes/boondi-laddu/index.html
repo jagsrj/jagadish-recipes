@@ -123,16 +123,16 @@ window.RECIPE = {
     ]}
   ],
   steps: [
-    { t: "Make the batter", min: 3,
+    { t: "Make the batter", uses: ["Boondi: besan", "Boondi: rice flour", "Boondi: baking soda", "Boondi: orange", "Boondi: water"], min: 3,
       txt: "Whisk the besan, rice flour, baking soda and food colour with the {bwater} water into a smooth, lump-free batter that flows like dosa batter." },
-    { t: "Fry the boondi", min: 12, exp: 0.8,
+    { t: "Fry the boondi", uses: ["Boondi: oil"], min: 12, exp: 0.8,
       txt: "Heat the {oil} oil on medium. Hold a boondi ladle (a perforated ladle) about 6 inches above the oil and pour a ladleful of batter on it, tapping gently so round drops fall in. Fry for about a minute, just until they stop sizzling; they should stay soft, not crisp. Drain and repeat, wiping the ladle clean between batches.",
       bigNote: "Wipe the ladle after every batch, or the drops will come out with tails instead of round." },
-    { t: "Make the syrup", min: 6, exp: 0.3,
+    { t: "Make the syrup", uses: ["Sugar syrup: sugar", "Sugar syrup: water", "cardamom powder", "edible camphor"], min: 6, exp: 0.3,
       txt: "Boil the {sugar} sugar and {swater} water until it reaches one-string consistency: a drop pressed between thumb and finger forms a single thread. Turn off the heat and add the cardamom and camphor." },
     { t: "Soak the boondi", min: 10, exp: 0,
       txt: "Add the boondi to the warm syrup and mix. Cover and leave for 10 minutes so it soaks up the syrup." },
-    { t: "Roast the nuts", min: 2,
+    { t: "Roast the nuts", uses: ["To finish: ghee", "cashews", "raisins", "To finish: cloves", "rock sugar"], min: 2,
       txt: "Heat the {ghee} ghee and fry the cashews until golden, then the raisins until they puff, and the cloves. Pour everything, ghee included, into the boondi with the rock sugar and mix." },
     { t: "Shape the laddus", min: 10, exp: 0.8,
       txt: "While the mixture is still warm, grease your palms with ghee and press handfuls firmly into round laddus. If it cools and won't hold, sprinkle a spoon of hot water and mix." }

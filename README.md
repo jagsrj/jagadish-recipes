@@ -57,3 +57,13 @@ Then open http://localhost:3000. Paths start with `/`, so open the pages through
 - New recipe? Copy the icon/manifest/`og:` tags from the template's `<head>`, then run `python3 tools/make-share-cards.py` to draw its link-preview card (used when shared on WhatsApp etc.) if it has no photo yet.
 - Register the site in [Google Search Console](https://search.google.com/search-console) and submit `https://<your-domain>/sitemap.xml` so Google finds new recipes quickly.
 - Preview with functions locally: `npx wrangler pages dev .`
+
+## Recipe assistant ("Ask about this recipe")
+
+Each recipe page has a question box backed by `functions/api/ask.js`, which sends the question plus the recipe (with the visitor's current quantities) to Cloudflare Workers AI.
+
+One-time setup: Cloudflare dashboard → **Workers & Pages** → this project → **Settings** → **Bindings** → **Add** → **Workers AI**, variable name `AI` → Save, then redeploy (or push any commit). Until then the box says the assistant isn't switched on yet. Workers AI has a free daily allowance.
+
+## Amounts in each step
+
+Add `uses: [...]` to a step to show the scaled amounts of the ingredients it needs, under the step text. See the template for the format.

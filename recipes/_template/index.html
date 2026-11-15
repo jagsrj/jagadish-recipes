@@ -38,6 +38,9 @@
  * id: give an ingredient an id to show its scaled quantity in a step, e.g. "Add {water} water".
  * Step min = minutes at the base amount. exp: about 0.4–0.6 for frying or simmering, 0 for fixed times.
  * bigNote: extra advice shown only for big batches.
+ * uses: ingredients this step needs, shown as amounts under the step, e.g. uses: ["Gravy: shallots", "salt"]
+ *   — write "Group title: part of the ingredient name", or just part of the name if it's unique. Add "|half" for a note.
+ * askIdeas: optional suggested questions for the "Ask about this recipe" box.
  */
 window.RECIPE = {
   slug: "my-new-recipe",            // must match the folder name
@@ -63,7 +66,7 @@ window.RECIPE = {
     ]}
   ],
   steps: [
-    { t: "First step", min: 5, txt: "Describe the step. Add {water} water." }
+    { t: "First step", uses: ["rice", "water", "salt"], min: 5, txt: "Describe the step. Add {water} water." }
   ],
   tips: []
 };
