@@ -80,12 +80,19 @@
     "<section class='card'><h2>Ingredients</h2><p class='note' style='margin:-6px 0 6px'>Tap an item to tick it off.</p><div id='ingredients'></div></section>" +
     "<section class='card'><h2>Method</h2><ol class='steps' id='steps'></ol></section>" +
     (R.tips && R.tips.length ? "<section class='card'><h2>Tips</h2><ul class='tips' id='tips'></ul></section>" : "") +
-    (R.serveWith ? "<footer>" + esc(R.serveWith) + "</footer>" : "");
+    (R.serveWith ? "<footer>" + esc(R.serveWith) + "</footer>" : "") +
+    "<nav class='endnav' aria-label='Page navigation'><a class='btn' id='endback' href='/'>← All recipes</a>" +
+      "<a class='btn ghost' href='#' id='totop'>↑ Back to top</a></nav>";
 
   // back link goes to the recipe's menu on the home page
   var MENUS = { weekday: "Weekday recipes", weekend: "Weekend recipes" };
   var back = document.querySelector(".sitebar .back");
-  if (back && MENUS[R.menu]) { back.href = "/#" + R.menu; back.textContent = "← " + MENUS[R.menu]; }
+  var endback = document.getElementById("endback");
+  if (MENUS[R.menu]) {
+    if (back) { back.href = "/#" + R.menu; back.innerHTML = "<span aria-hidden='true'>‹</span> " + R.menu.charAt(0).toUpperCase() + R.menu.slice(1); back.setAttribute("aria-label", "Back to " + MENUS[R.menu]); }
+    endback.href = "/#" + R.menu; endback.textContent = "← Back to " + MENUS[R.menu].toLowerCase();
+  } else if (back) { back.innerHTML = "<span aria-hidden='true'>‹</span> All recipes"; }
+  document.getElementById("totop").addEventListener("click", function (e) { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); });
 
   // ---------- state ----------
   var state = isWeight ? { unit: scale.defaultUnit || "lb", value: scale.defaultValue, spice: 1 }

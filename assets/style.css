@@ -18,10 +18,17 @@ a { color: var(--accent); }
 .wide { max-width: 1000px; }
 
 /* site bar */
-.sitebar { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; max-width: 1000px; margin: 0 auto; }
+.sitebar { position: sticky; top: 0; z-index: 10; display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  padding: 10px max(18px, calc((100% - 964px) / 2)); min-height: 56px;
+  background: color-mix(in srgb, var(--bg) 88%, transparent); -webkit-backdrop-filter: saturate(1.6) blur(14px); backdrop-filter: saturate(1.6) blur(14px);
+  border-bottom: 1px solid var(--line); }
 .brand { font-family: Georgia, "Times New Roman", serif; font-weight: 700; font-size: 1.15rem; text-decoration: none; color: var(--ink); }
 .brand span { color: var(--accent); }
-.back { font-size: .9rem; text-decoration: none; font-weight: 600; }
+.back { order: -1; display: inline-flex; align-items: center; gap: 4px; font-size: .95rem; text-decoration: none; font-weight: 700;
+  padding: 7px 14px 7px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); white-space: nowrap; }
+.back span { font-size: 1.35rem; line-height: 1; margin-top: -2px; }
+.back:active { transform: scale(.97); }
+.sitebar:has(.back) .brand { font-size: 1rem; text-align: right; }
 
 /* home */
 .hero { text-align: center; padding: 30px 0 18px; }
@@ -54,7 +61,8 @@ header h1 { font-family: Georgia, serif; font-size: clamp(1.8rem, 5vw, 2.5rem); 
 .byline { color: var(--muted); font-size: .92rem; font-weight: 600; margin: -2px 0 10px; }
 .lede { color: var(--muted); margin: 0 0 20px; }
 .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px; margin-bottom: 18px; }
-.scaler { position: sticky; top: 0; z-index: 5; box-shadow: 0 6px 18px rgba(0,0,0,.06); }
+.scaler { position: sticky; top: 64px; z-index: 5; box-shadow: 0 6px 18px rgba(0,0,0,.06); }
+@media (max-width: 700px), (max-height: 760px) { .scaler { position: static; box-shadow: none; } }
 .scaler label.title { font-weight: 700; display: block; margin-bottom: 8px; }
 .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
 input[type=number] {
@@ -154,3 +162,10 @@ footer { text-align: center; color: var(--muted); font-size: .85rem; margin-top:
 .nutri .m-protein b, .nutri .m-fiber b { color: var(--ok); }
 .nutri .note { margin: 10px 0 0; }
 @media (max-width: 420px) { .nutri .macros { grid-template-columns: repeat(3, 1fr); } }
+
+/* ---------- end-of-page navigation ---------- */
+.endnav { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin: 22px 0 10px; }
+.btn { display: inline-block; text-decoration: none; font-weight: 700; padding: 12px 20px; border-radius: 999px;
+  background: var(--accent); color: #fff; border: 2px solid var(--accent); }
+.btn.ghost { background: transparent; color: var(--accent); }
+@media print { .endnav { display: none; } }
