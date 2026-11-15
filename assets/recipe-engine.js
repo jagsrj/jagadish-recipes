@@ -193,7 +193,6 @@
   window.__findIng = findIng;
 
   // ---------- render ----------
-  var timers = {};
   function render() {
     var fx = factor(), warn = document.getElementById("warn");
     if (!fx) { warn.style.display = "block"; warn.textContent = "Enter an amount to see the recipe."; return; }
@@ -259,9 +258,8 @@
             "<br><button class='timer' data-i='" + i + "' data-sec='" + Math.round(m * 60) + "'>▶ Start " + fmtMin(m) + " timer</button></li>";
     });
     document.getElementById("steps").innerHTML = sh;
-    Object.keys(timers).forEach(function (k) { clearInterval(timers[k]); });
-    timers = {};
     document.querySelectorAll(".timer").forEach(function (b) { b.addEventListener("click", toggleTimer); });
+    tickTimers();
 
     var srvN = Math.max(1, Math.round(R.baseServings * f));
     if (isWeight && !scale.servingsInput) document.getElementById("serves").textContent = srvN;
@@ -284,30 +282,102 @@
     } catch (e) {}
   }
 
+  // ---------- timers ----------
+  // Each timer stores the time it ends (saved on this phone), not a countdown, so it stays
+  // right when the screen locks, you switch apps, reload, or leave and come back to the page.
+  var timerKey = "timers:" + (R.slug || location.pathname), T = {};
+  try { T = JSON.parse(localStorage.getItem(timerKey) || "{}") || {}; } catch (e) { T = {}; }
+  function saveTimers() { try { localStorage.setItem(timerKey, JSON.stringify(T)); } catch (e) {} }
+  function mmss(sec) { var m = Math.floor(sec / 60), x = sec % 60; return (m >= 60 ? Math.floor(m / 60) + ":" + ("0" + (m % 60)).slice(-2) : m) + ":" + (x < 10 ? "0" : "") + x; }
+  function stepTitle(i) { return R.steps[i] ? R.steps[i].t : "Timer"; }
+
   function toggleTimer(e) {
-    var b = e.currentTarget, i = b.dataset.i;
-    if (timers[i]) { clearInterval(timers[i]); delete timers[i]; b.classList.remove("running"); b.textContent = "▶ Restart timer"; return; }
-    var left = parseInt(b.dataset.sec, 10);
-    b.classList.remove("finished"); b.classList.add("running");
-    function tick() {
-      var mm = Math.floor(left / 60), ss = left % 60;
-      b.textContent = "⏸ " + mm + ":" + (ss < 10 ? "0" : "") + ss;
-      if (left <= 0) {
-        clearInterval(timers[i]); delete timers[i];
-        b.classList.remove("running"); b.classList.add("finished"); b.textContent = "✓ Done";
-        try { if (navigator.vibrate) navigator.vibrate([300, 150, 300]); } catch (err) {}
-        beep();
-      }
-      left--;
-    }
-    tick(); timers[i] = setInterval(tick, 1000);
+    var b = e.currentTarget, i = b.dataset.i, t = T[i];
+    if (t && !t.done) { delete T[i]; saveTimers(); tickTimers(); b.textContent = "▶ Restart timer"; return; }
+    T[i] = { end: Date.now() + parseInt(b.dataset.sec, 10) * 1000 };
+    unlockAudio(); saveTimers(); tickTimers();
   }
-  function beep() {
+
+  var baseTitle = document.title, banner = null, pill = null;
+  function tickTimers() {
+    var now = Date.now(), running = [], newlyDone = [];
+    Object.keys(T).forEach(function (i) {
+      var t = T[i];
+      if (!t.done && t.end <= now) { t.done = true; newlyDone.push(i); }
+      if (!t.done) running.push({ i: i, left: Math.ceil((t.end - now) / 1000) });
+    });
+    if (newlyDone.length) { saveTimers(); alarm(newlyDone, now); }
+    document.querySelectorAll(".timer").forEach(function (b) {
+      var t = T[b.dataset.i];
+      b.classList.toggle("running", !!(t && !t.done));
+      b.classList.toggle("finished", !!(t && t.done));
+      if (t && !t.done) b.textContent = "⏸ " + mmss(Math.ceil((t.end - now) / 1000)) + " · tap to stop";
+      else if (t && t.done) b.textContent = "✓ Done · tap to restart";
+      else if (!/Restart/.test(b.textContent)) b.textContent = "▶ Start " + fmtMin(parseInt(b.dataset.sec, 10) / 60) + " timer";
+    });
+    running.sort(function (a, b2) { return a.left - b2.left; });
+    if (!pill) {
+      pill = document.createElement("button"); pill.type = "button"; pill.className = "timer-pill";
+      pill.addEventListener("click", function () {
+        var b = document.querySelector(".timer[data-i='" + pill.dataset.i + "']");
+        if (b) b.closest("li").scrollIntoView({ behavior: "smooth", block: "center" });
+      });
+      document.body.appendChild(pill);
+    }
+    if (running.length) {
+      pill.dataset.i = running[0].i;
+      pill.innerHTML = "⏱ <b>" + mmss(running[0].left) + "</b> " + esc(stepTitle(running[0].i)) + (running.length > 1 ? " <i>+" + (running.length - 1) + "</i>" : "");
+      pill.style.display = "block";
+      document.title = "⏱ " + mmss(running[0].left) + " · " + R.title;
+    } else { pill.style.display = "none"; document.title = baseTitle; }
+    keepAwake(running.length > 0);
+  }
+  setInterval(tickTimers, 1000);
+  document.addEventListener("visibilitychange", function () { if (document.visibilityState === "visible") { tickTimers(); keepAwake(hasRunning(), true); } });
+  window.addEventListener("pageshow", tickTimers);
+  function hasRunning() { return Object.keys(T).some(function (i) { return !T[i].done; }); }
+
+  function alarm(list, now) {
+    var late = list.map(function (i) { return now - T[i].end; }), mins = Math.round(Math.max.apply(null, late) / 60000);
+    var names = list.map(stepTitle).join(", ");
+    if (!banner) {
+      banner = document.createElement("div"); banner.className = "timer-banner"; banner.setAttribute("role", "alert");
+      banner.addEventListener("click", function () { banner.style.display = "none"; });
+      document.body.appendChild(banner);
+    }
+    banner.innerHTML = "⏰ <b>" + esc(names) + "</b> timer is done" + (mins >= 1 ? " (finished " + mins + " min ago)" : "") + ". <u>OK</u>";
+    banner.style.display = "block";
+    try { if (navigator.vibrate) navigator.vibrate([400, 200, 400, 200, 400]); } catch (err) {}
+    beep(3);
+  }
+
+  // Sound needs a tap first on phones, so the audio is unlocked when a timer is started.
+  var actx = null;
+  function unlockAudio() {
     try {
-      var C = window.AudioContext || window.webkitAudioContext, ctx = new C(), o = ctx.createOscillator(), gN = ctx.createGain();
-      o.frequency.value = 880; o.connect(gN); gN.connect(ctx.destination); gN.gain.value = 0.15;
-      o.start(); o.stop(ctx.currentTime + 0.6);
+      if (!actx) { var C = window.AudioContext || window.webkitAudioContext; actx = new C(); }
+      if (actx.state === "suspended") actx.resume();
     } catch (e) {}
+  }
+  function beep(times) {
+    try {
+      unlockAudio(); if (!actx) return;
+      for (var k = 0; k < (times || 1); k++) {
+        var o = actx.createOscillator(), g = actx.createGain(), t0 = actx.currentTime + k * 0.8;
+        o.frequency.value = 880; o.connect(g); g.connect(actx.destination);
+        g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(0.25, t0 + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.55);
+        o.start(t0); o.stop(t0 + 0.6);
+      }
+    } catch (e) {}
+  }
+
+  // Keep the screen on while a timer runs, so the phone doesn't lock mid-cook.
+  var wake = null;
+  function keepAwake(on, force) {
+    if (!("wakeLock" in navigator)) return;
+    if (on && (!wake || force) && document.visibilityState === "visible") {
+      navigator.wakeLock.request("screen").then(function (w) { wake = w; w.addEventListener("release", function () { if (wake === w) wake = null; }); }).catch(function () {});
+    } else if (!on && wake) { wake.release().catch(function () {}); wake = null; }
   }
 
   // ---------- controls ----------
