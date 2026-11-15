@@ -19,7 +19,7 @@ recipes/_template/            copy this to start a new recipe
 
 ## Weekday and weekend menus
 
-The home page has two tabs. It opens on **Weekday** (healthy keto, high protein and fiber) Monday to Friday and **Weekend** (Tamil Nadu village style) on Saturday and Sunday. Set `menu: "weekday"` or `menu: "weekend"` in both the recipe page and `assets/recipes.js`. Links like `/#weekday` open a tab directly. Search looks across both menus.
+The home page has three tabs: Weekday, Weekend and **Festival** (Diwali sweets and snacks; set `menu: "festival"`). It opens on **Weekday** (healthy keto, high protein and fiber) Monday to Friday and **Weekend** (Tamil Nadu village style) on Saturday and Sunday. Set `menu: "weekday"` or `menu: "weekend"` in both the recipe page and `assets/recipes.js`. Links like `/#weekday` open a tab directly. Search looks across both menus.
 
 For weekday recipes, add `nutrition` (per serving: `kcal`, `protein`, `fiber`, `netCarbs`, `fat`) to the recipe page, and `protein`, `fiber`, `netCarbs` to the home page entry. Net carbs = total carbs minus fiber.
 4. Commit and push. Cloudflare redeploys automatically.

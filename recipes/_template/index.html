@@ -22,6 +22,7 @@
  * scale — pick ONE:
  *   Weight-based (meat, fish, veg):  { type: "weight", label: "How much mutton do you have?", baseGrams: 500, defaultUnit: "lb", defaultValue: 1.1 }
  *   Servings-based (rice, dosa):     { type: "servings", base: 4 }
+ *   Count-based (sweets, snacks):    { type: "servings", base: 20, step: 5, label: "How many laddus do you want to make?", unitLabel: "laddus" }
  *
  * Ingredient units: "tsp", "tbsp", "cup", "g", "count", "sprig", or "main" (the main ingredient, weight recipes only).
  * exp: how fast it grows with batch size. 1 (default) = linear. Use about 0.8 for water and chilies, 0.85 for oil.
@@ -32,7 +33,7 @@
  */
 window.RECIPE = {
   slug: "my-new-recipe",            // must match the folder name
-  menu: "weekday",                  // "weekday" (healthy keto) or "weekend" (village style)
+  menu: "weekday",                  // "weekday" (healthy keto), "weekend" (village style) or "festival"
   image: "/images/my-new-recipe.jpg", // a landscape photo; delete this line if you have none yet
   title: "My New Recipe",
   author: "Manju",                 // "Jagadish", "Manju" or "Jagadish & Manju"

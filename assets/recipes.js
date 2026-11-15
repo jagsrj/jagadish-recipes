@@ -1,5 +1,5 @@
 // The list shown on the home page. Add one entry per recipe folder in /recipes/.
-// menu: "weekday" (healthy keto) or "weekend" (village style). nutrition is per serving, shown on weekday cards.
+// menu: "weekday" (healthy keto), "weekend" (village style) or "festival" (Diwali sweets and snacks). nutrition is per serving, shown on weekday cards.
 window.RECIPES = [
   {
     slug: "chicken-kuzhambu",
@@ -111,5 +111,49 @@ window.RECIPES = [
     time: "20 min",
     nutrition: { protein: 30, fiber: 6, netCarbs: 8 },
     tags: ["Eggs", "Keto", "Breakfast"]
+  },
+  {
+    slug: "murukku",
+    menu: "festival",
+    title: "Murukku",
+    kicker: "Diwali savoury",
+    author: "Jagadish & Manju",
+    emoji: "🌀",
+    blurb: "Crisp rice-flour spirals with roasted urad dal, sesame and cumin.",
+    time: "1 h 15 min",
+    tags: ["Snack", "Diwali", "Fried"]
+  },
+  {
+    slug: "karasev",
+    menu: "festival",
+    title: "Karasev",
+    kicker: "Diwali savoury",
+    author: "Jagadish & Manju",
+    emoji: "🌶️",
+    blurb: "Tirunelveli-style peppery, garlicky besan sev rubbed straight into hot oil.",
+    time: "55 min",
+    tags: ["Snack", "Diwali", "Fried"]
+  },
+  {
+    slug: "boondi-laddu",
+    menu: "festival",
+    title: "Boondi Laddu",
+    kicker: "Diwali sweet",
+    author: "Jagadish & Manju",
+    emoji: "🟠",
+    blurb: "Soft boondi in cardamom syrup with ghee-roasted cashews and raisins.",
+    time: "50 min",
+    tags: ["Sweet", "Diwali", "Laddu"]
+  },
+  {
+    slug: "gulab-jamun",
+    menu: "festival",
+    title: "Gulab Jamun",
+    kicker: "Diwali sweet",
+    author: "Jagadish & Manju",
+    emoji: "🍯",
+    blurb: "Milk-powder jamuns fried slowly and soaked in rose-cardamom syrup.",
+    time: "2 h 45 min",
+    tags: ["Sweet", "Diwali", "Dessert"]
   }
 ];

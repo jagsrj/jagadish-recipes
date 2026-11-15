@@ -61,8 +61,8 @@
         "<h1>" + esc(R.title) + "</h1>" +
         (R.author ? "<div class='byline'>By " + esc(R.author) + "</div>" : "") + "<p class='lede'>" + esc(R.intro || "") + "</p></header>") +
     "<section class='card scaler' aria-label='Recipe scaler'>" +
-      "<label class='title' for='amt'>" + esc(isWeight ? scale.label : "How many servings?") + "</label>" +
-      "<div class='row'><input id='amt' type='number' inputmode='decimal' min='0.1' step='" + (isWeight ? "0.1" : "1") + "'>" +
+      "<label class='title' for='amt'>" + esc(scale.label || (isWeight ? "How much do you have?" : "How many servings?")) + "</label>" +
+      "<div class='row'><input id='amt' type='number' inputmode='decimal' min='0.1' step='" + (isWeight ? "0.1" : (scale.step || 1)) + "'>" + (!isWeight && scale.unitLabel ? "<span class='unitlbl'>" + esc(scale.unitLabel) + "</span>" : "") +
       (isWeight ? "<div class='seg' role='group' aria-label='Unit'><button type='button' data-unit='lb'>lb</button><button type='button' data-unit='kg'>kg</button></div>" : "") +
       "</div>" +
       (isWeight && scale.servingsInput ? "<div class='row srvrow'><label for='srv'>or cooking for</label>" +
@@ -85,7 +85,7 @@
       "<a class='btn ghost' href='#' id='totop'>↑ Back to top</a></nav>";
 
   // back link goes to the recipe's menu on the home page
-  var MENUS = { weekday: "Weekday recipes", weekend: "Weekend recipes" };
+  var MENUS = { weekday: "Weekday recipes", weekend: "Weekend recipes", festival: "Festival recipes" };
   var back = document.querySelector(".sitebar .back");
   var endback = document.getElementById("endback");
   if (MENUS[R.menu]) {

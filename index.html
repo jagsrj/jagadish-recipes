@@ -14,11 +14,12 @@
 <main class="wrap wide">
   <section class="hero">
     <h1>Jagadish &amp; Manju's Kitchen</h1>
-    <p>Healthy keto meals for weekdays, Tamil Nadu village cooking for weekends. Every recipe adjusts to the amount you're cooking.</p>
+    <p>Healthy keto meals for weekdays, Tamil Nadu village cooking for weekends, and sweets and snacks for festivals. Every recipe adjusts to the amount you're cooking.</p>
   </section>
   <div class="tabs" role="tablist" aria-label="Menu">
-    <button type="button" role="tab" data-menu="weekday"><b>Weekday</b><span>Healthy keto · Mon–Fri</span></button>
-    <button type="button" role="tab" data-menu="weekend"><b>Weekend</b><span>Village style · Sat–Sun</span></button>
+    <button type="button" role="tab" data-menu="weekday"><b>Weekday</b><span>Healthy keto</span></button>
+    <button type="button" role="tab" data-menu="weekend"><b>Weekend</b><span>Village style</span></button>
+    <button type="button" role="tab" data-menu="festival"><b>Festival</b><span>Diwali &amp; more</span></button>
   </div>
   <p class="menu-intro" id="menu-intro"></p>
   <div id="feature"></div>
@@ -33,14 +34,15 @@
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
   var MENUS = {
     weekday: { title: "Weekday · Healthy keto", intro: "Quick weeknight meals built on protein and fiber, with only the carbs the vegetables bring. Each recipe shows protein, fiber and net carbs per serving." },
-    weekend: { title: "Weekend · Village style", intro: "Slow-cooked Tamil Nadu village favourites for the weekend: kuzhambu, biryani and more, cooked the traditional way." }
+    weekend: { title: "Weekend · Village style", intro: "Slow-cooked Tamil Nadu village favourites for the weekend: kuzhambu, biryani and more, cooked the traditional way." },
+    festival: { title: "Festival · Sweets & snacks", intro: "The sweets and savouries we make for Diwali and other festivals, the way they're made at home in Tamil Nadu." }
   };
   var all = window.RECIPES || [];
   var sections = document.getElementById("sections"), q = document.getElementById("q"), empty = document.getElementById("empty");
   var featureEl = document.getElementById("feature"), introEl = document.getElementById("menu-intro");
   var tabs = [].slice.call(document.querySelectorAll(".tabs button"));
   var day = new Date().getDay();
-  var menu = /^#(weekday|weekend)$/.test(location.hash) ? location.hash.slice(1) : (day === 0 || day === 6 ? "weekend" : "weekday");
+  var menu = /^#(weekday|weekend|festival)$/.test(location.hash) ? location.hash.slice(1) : (day === 0 || day === 6 ? "weekend" : "weekday");
 
   function card(r) {
     var n = r.nutrition;
@@ -65,7 +67,7 @@
         "<div class='ftext'><span class='flabel'>Chef's special</span><h2>" + esc(f.title) + "</h2><p>" + esc(f.blurb || "") + "</p><span class='cta'>Cook it →</span></div></a>"
       : "";
     var shown = 0, html = "";
-    (term ? ["weekday", "weekend"] : [menu]).forEach(function (m) {
+    (term ? ["weekday", "weekend", "festival"] : [menu]).forEach(function (m) {
       var list = all.filter(function (r) {
         if ((r.menu || "weekend") !== m) return false;
         if (!term) return !(f && r.slug === f.slug);   // already shown in the banner
@@ -85,7 +87,7 @@
       draw();
     });
   });
-  window.addEventListener("hashchange", function () { if (/^#(weekday|weekend)$/.test(location.hash)) { menu = location.hash.slice(1); draw(); } });
+  window.addEventListener("hashchange", function () { if (/^#(weekday|weekend|festival)$/.test(location.hash)) { menu = location.hash.slice(1); draw(); } });
   q.addEventListener("input", draw);
   draw();
 
