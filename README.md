@@ -62,6 +62,10 @@ Then open http://localhost:3000. Paths start with `/`, so open the pages through
 
 Each recipe page has a question box backed by `functions/api/ask.js`, which sends the question plus the recipe (with the visitor's current quantities) to Cloudflare Workers AI.
 
+Guardrails (see the top of `functions/api/ask.js`): same-site requests only, rate limits (6 a minute and 40 a day per visitor, 500 a day site-wide), input length limits, recipe must be one of ours, Llama Guard safety screen on questions, a cooking-only system prompt that treats the recipe text as data, and links/markup stripped from answers.
+
+Optional: add a **KV namespace** binding named `RATE` (Settings → Bindings → KV namespace) so rate limits hold across all of Cloudflare's servers.
+
 One-time setup: Cloudflare dashboard → **Workers & Pages** → this project → **Settings** → **Bindings** → **Add** → **Workers AI**, variable name `AI` → Save, then redeploy (or push any commit). Until then the box says the assistant isn't switched on yet. Workers AI has a free daily allowance.
 
 ## Amounts in each step

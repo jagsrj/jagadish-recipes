@@ -84,7 +84,7 @@
       "<p class='note'>Stuck on a step? Ask anything, like substitutes, spice, gravy thickness or storing. Answers use your current quantities.</p>" +
       "<div class='ask-log' id='asklog' aria-live='polite'></div>" +
       "<div class='ask-chips' id='askchips'></div>" +
-      "<form class='ask-form' id='askform'><input id='askq' type='text' maxlength='500' autocomplete='off' placeholder='e.g. Is my gravy too thick?' aria-label='Your question'>" +
+      "<form class='ask-form' id='askform'><input id='askq' type='text' maxlength='400' autocomplete='off' placeholder='e.g. Is my gravy too thick?' aria-label='Your question'>" +
       "<button class='btn' type='submit' id='asksend'>Ask</button></form>" +
       "<p class='note ask-foot'>AI answers can be wrong, so use your judgement, especially about food safety.</p></section>" +
     (R.serveWith ? "<footer>" + esc(R.serveWith) + "</footer>" : "") +
@@ -137,6 +137,7 @@
     function ask() {
       var q = input.value.trim();
       if (q.length < 3 || send.disabled) return;
+      if (history.length >= 15) { log.insertAdjacentHTML("beforeend", "<div class='msg bot'>That's the limit for this page. Reload the page to start a new conversation.</div>"); return; }
       input.value = ""; send.disabled = true; chips.style.display = "none";
       log.insertAdjacentHTML("beforeend", "<div class='msg me'>" + esc(q) + "</div>");
       var bubble = document.createElement("div"); bubble.className = "msg bot thinking"; bubble.textContent = "Thinking…"; log.appendChild(bubble);
@@ -146,8 +147,14 @@
         .then(function (d) {
           bubble.classList.remove("thinking");
           if (d.answer) { bubble.innerHTML = fmt(d.answer); history.push({ q: q, a: d.answer }); }
-          else bubble.textContent = d.error === "not_configured" ? "The recipe assistant isn't switched on yet. Please check back soon."
-                                                                 : "Sorry, I couldn't answer that right now. Please try again in a minute.";
+          else bubble.textContent = ({
+            not_configured: "The recipe assistant isn't switched on yet. Please check back soon.",
+            rate_limited: d.scope === "minute" ? "That's a lot of questions at once. Please wait a minute and try again."
+                        : d.scope === "site" ? "The assistant has had a busy day. Please try again tomorrow."
+                        : "You've reached today's limit for questions. Please try again tomorrow.",
+            forbidden: "Please ask from the recipe page on this site.",
+            empty: "Please type a question first."
+          })[d.error] || "Sorry, I couldn't answer that right now. Please try again in a minute.";
         })
         .catch(function () { bubble.classList.remove("thinking"); bubble.textContent = "You seem to be offline. Try again when you're connected."; })
         .then(function () { send.disabled = false; });
