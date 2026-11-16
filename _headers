@@ -1,4 +1,17 @@
-# Always check for a newer version so updates show up straight away,
-# including when the site is opened from a Home Screen shortcut.
+# Pages, scripts and styles: always check for a newer version so updates show up straight away,
+# including when the site is opened from a Home Screen shortcut. (Unchanged files are not
+# downloaded again; the browser just gets a quick "still the same" answer.)
 /*
+  Cache-Control: no-cache
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+
+# Photos and icons rarely change: keep them for a day, then refresh in the background.
+/images/*
+  ! Cache-Control
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+
+# The offline helper must always be fresh.
+/sw.js
+  ! Cache-Control
   Cache-Control: no-cache

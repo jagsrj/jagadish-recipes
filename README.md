@@ -24,7 +24,7 @@ The home page has three tabs: Weekday, Weekend and **Festival** (Diwali sweets a
 For weekday recipes, add `nutrition` (per serving: `kcal`, `protein`, `fiber`, `netCarbs`, `fat`) to the recipe page, and `protein`, `fiber`, `netCarbs` to the home page entry. Net carbs = total carbs minus fiber.
 4. Commit and push. Cloudflare redeploys automatically.
 
-For Google recipe results, also copy the `application/ld+json` block from `recipes/chicken-kuzhambu/index.html` and update it.
+For Google recipe results, also copy the `application/ld+json` block from `recipes/chicken-kuzhambu/index.html` and update it, including `image` and `datePublished`. Google needs an image to show a recipe result; use the share card (`/images/og/<slug>.png`) until you have a photo. The site also writes the ingredients and method from this block into the page as plain HTML, so search engines see the recipe without running JavaScript.
 
 ## Photos
 
@@ -32,7 +32,7 @@ Put dish photos in `images/`. For each recipe you need:
 - `images/<slug>.jpg`, a landscape photo about 1600×1000, used as the top of the recipe page
 - `images/<slug>-card.jpg`, about 800×500, used on the home page card
 
-Then set `image` in the recipe page and `image` / `hero` in `assets/recipes.js`. Add `featured: true` to show a recipe as the large "Chef's special" banner on the home page.
+Then run `python3 tools/make-webp.py` to make smaller WebP copies (browsers that support WebP get those automatically; keep the `.jpg` too), and set `image` in the recipe page and `image` / `hero` in `assets/recipes.js`. Also change the recipe's `application/ld+json` `image` from the `/images/og/...png` card to the photo, so Google shows the real dish. Add `featured: true` to show a recipe as the large "Chef's special" banner on the home page.
 
 **Shooting tips:** take photos in daylight near a window with no flash, shoot from directly above or at 45°, use a dark wooden board or a banana leaf underneath, and add a garnish and a side dish to the frame.
 
@@ -67,6 +67,27 @@ Guardrails (see the top of `functions/api/ask.js`): same-site requests only, rat
 Optional: add a **KV namespace** binding named `RATE` (Settings → Bindings → KV namespace) so rate limits hold across all of Cloudflare's servers.
 
 One-time setup: Cloudflare dashboard → **Workers & Pages** → this project → **Settings** → **Bindings** → **Add** → **Workers AI**, variable name `AI` → Save, then redeploy (or push any commit). Until then the box says the assistant isn't switched on yet. Workers AI has a free daily allowance.
+
+## Ratings
+
+Recipe pages have a "Made it?" star rating, the average shows under the photo and on the home page cards, and Google gets it for the star line in search results. One rating per visitor per recipe (rating again replaces it).
+
+One-time setup: Cloudflare dashboard → **Workers & Pages** → this project → **Settings** → **Bindings** → **Add** → **KV namespace**, variable name `RATINGS`, create a new namespace (e.g. `jmk-ratings`) → Save, then redeploy. Until then the stars say ratings aren't switched on yet.
+
+## Cook mode, shopping list and weekly planner
+
+- **Cook mode** (button at the top of every recipe) shows one step at a time in big text with its timer and scaled amounts, and keeps the screen on. Swipe or use the arrow keys to move between steps.
+- **Tap a step's number** in the method to mark it done.
+- **Add to shopping list** saves the recipe's ingredients, at the amount you're cooking, to the list at `/plan/#list`.
+- **`/plan/`** lets you pick a recipe for each day of the week and turn the week into one shopping list. The same ingredient in different recipes is added together. Plans and lists are saved on the phone.
+
+## Home page filters and Tamil names
+
+Quick filters (under 1 hour, 30 g+ protein, chicken, seafood, veg & egg) work from `time`, `nutrition` and `tags` in `assets/recipes.js`. Add `tamil: "..."` to an entry to show the Tamil name on its card; search finds Tamil names too.
+
+## Offline
+
+`sw.js` saves the site on the phone, including every recipe page, so recipes open with weak or no Wi-Fi. If you change the list of core files in `sw.js`, bump `VERSION` at the top.
 
 ## Amounts in each step
 

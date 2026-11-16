@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Weekly planner &amp; shopping list – Jagadish &amp; Manju's Kitchen</title>
+<meta name="description" content="Plan the week's meals from Jagadish &amp; Manju's Kitchen and get one combined shopping list, scaled to how many people you're cooking for.">
+<link rel="icon" type="image/png" href="/images/favicon.png">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#fbf6ef">
+<meta property="og:site_name" content="Jagadish &amp; Manju's Kitchen">
+<meta property="og:title" content="Weekly planner &amp; shopping list">
+<meta property="og:image" content="/images/og/home.png">
+<link rel="stylesheet" href="/assets/style.css">
+<style>
+  .ptabs { margin-top: 8px; }
+  .day { display: grid; grid-template-columns: 70px 1fr 104px; gap: 10px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .day:last-child { border-bottom: 0; }
+  .day b { font-size: .95rem; }
+  .day b span { display: block; font-weight: 400; font-size: .75rem; color: var(--muted); }
+  .day select, .day input { font: inherit; width: 100%; padding: 8px 10px; border-radius: 10px; border: 1.5px solid var(--line); background: var(--card); color: var(--ink); }
+  .day .amt { display: flex; align-items: center; gap: 4px; }
+  .day input[type=number] { width: 100%; min-width: 0; font-size: 1rem; padding: 8px 4px; text-align: center; }
+  .day .amt small { color: var(--muted); font-size: .72rem; line-height: 1.1; }
+  .day a { font-size: .8rem; }
+  .week-macros { display: flex; gap: 14px; flex-wrap: wrap; font-size: .92rem; color: var(--muted); margin-top: 10px; }
+  .week-macros b { color: var(--ink); }
+  .plan-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+  .shop li { display: flex; gap: 10px; align-items: flex-start; padding: 9px 0; border-bottom: 1px solid var(--line); list-style: none; cursor: pointer; }
+  .shop { padding: 0; margin: 0; }
+  .shop input { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--accent); flex: none; }
+  .shop .qty { font-weight: 700; color: var(--accent); min-width: 92px; }
+  .shop .from { display: block; color: var(--muted); font-size: .78rem; }
+  .shop li.have > span { text-decoration: line-through; opacity: .5; }
+  .src { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 12px; }
+  .src .chip button { border: 0; background: none; color: var(--muted); cursor: pointer; font: inherit; padding: 0 0 0 4px; }
+  .empty-list { color: var(--muted); text-align: center; padding: 18px 0; }
+  @media (max-width: 480px) { .day { grid-template-columns: 52px 1fr 96px; gap: 8px; } }
+  @media print { .tabs, .plan-actions, .src button, .sitebar, #planview { display: none !important; } #listview { display: block !important; } }
+</style>
+</head>
+<body>
+<nav class="sitebar">
+  <a class="brand" href="/">Jagadish &amp; Manju's <span>Kitchen</span></a>
+  <a class="back" href="/"><span aria-hidden="true">‹</span> Recipes</a>
+</nav>
+<main class="wrap" id="planner">
+  <header><h1>Plan &amp; shop</h1><p class="lede">Pick a recipe for each day, then turn the week into one shopping list. Amounts are scaled to how many you're cooking for. Your plan is saved on this phone.</p></header>
+  <div class="tabs ptabs" role="tablist" aria-label="Planner">
+    <button type="button" role="tab" data-view="plan"><b>Weekly plan</b><span>What's for dinner</span></button>
+    <button type="button" role="tab" data-view="list"><b>Shopping list</b><span id="listcount">Nothing yet</span></button>
+  </div>
+
+  <section id="planview">
+    <section class="card"><h2>This week</h2><div id="days"></div>
+      <div class="week-macros" id="macros"></div>
+      <div class="plan-actions">
+        <button type="button" class="btn" id="tolist">🛒 Make shopping list</button>
+        <button type="button" class="btn ghost" id="suggest">✨ Fill empty days</button>
+        <button type="button" class="btn ghost" id="clearplan">Clear week</button>
+      </div>
+      <p class="note" id="planmsg" aria-live="polite"></p>
+    </section>
+  </section>
+
+  <section id="listview" hidden>
+    <section class="card"><h2>Shopping list</h2>
+      <div class="src" id="sources"></div>
+      <ul class="shop" id="shop"></ul>
+      <div class="plan-actions">
+        <button type="button" class="btn" id="sharelist">Share list</button>
+        <button type="button" class="btn ghost" id="cleardone">Remove ticked</button>
+        <button type="button" class="btn ghost" id="clearall">Clear list</button>
+      </div>
+      <p class="note">Salt and water are left out. Tap an item when it's in the basket or already in the cupboard.</p>
+    </section>
+  </section>
+  <footer>Made with love in Waterloo, Ontario.</footer>
+</main>
+<script src="/assets/recipes.js"></script>
+<script src="/assets/recipe-engine.js"></script>
+<script src="/assets/planner.js"></script>
+</body>
+</html>

@@ -23,7 +23,7 @@
 <link rel="stylesheet" href="/assets/style.css">
 </head>
 <body>
-<nav class="sitebar"><a class="brand" href="/">Jagadish &amp; Manju's <span>Kitchen</span></a></nav>
+<nav class="sitebar"><a class="brand" href="/">Jagadish &amp; Manju's <span>Kitchen</span></a><a class="plan-link" href="/plan/">🗓 Plan &amp; shop</a></nav>
 <main class="wrap wide">
   <section class="hero">
     <h1>Jagadish &amp; Manju's Kitchen</h1>
@@ -36,7 +36,14 @@
   </div>
   <p class="menu-intro" id="menu-intro"></p>
   <div id="feature"></div>
-  <input class="search" id="q" type="search" placeholder="Search all recipes…" aria-label="Search recipes">
+  <input class="search" id="q" type="search" placeholder="Search all recipes, in English or தமிழ்…" aria-label="Search recipes">
+  <div class="filters" role="group" aria-label="Quick filters">
+    <button type="button" data-f="quick" aria-pressed="false">⏱ Under 1 hour</button>
+    <button type="button" data-f="protein" aria-pressed="false">💪 30 g+ protein</button>
+    <button type="button" data-f="chicken" aria-pressed="false">🍗 Chicken</button>
+    <button type="button" data-f="seafood" aria-pressed="false">🐟 Seafood</button>
+    <button type="button" data-f="veg" aria-pressed="false">🥚 Veg &amp; egg</button>
+  </div>
   <div id="sections"></div>
   <p class="empty" id="empty">No recipes match that search.</p>
   <footer>Made with love in Waterloo, Ontario.</footer>
@@ -61,37 +68,61 @@
     var n = r.nutrition;
     return "<a class='rcard' href='/recipes/" + encodeURIComponent(r.slug) + "/'>" +
       (r.image
-        ? "<div class='photo'><img src='" + esc(r.image) + "' alt='" + esc(r.title) + "' loading='lazy'>" + (r.time ? "<span class='badge'>⏱ " + esc(r.time) + "</span>" : "") + "</div>"
+        ? "<div class='photo'><img src='" + esc(r.image) + "' alt='" + esc(r.title) + "' width='800' height='500' loading='lazy' decoding='async'>" + (r.time ? "<span class='badge'>⏱ " + esc(r.time) + "</span>" : "") + "</div>"
         : "<div class='band'>" + esc(r.emoji || "🍽️") + "</div>") +
       "<div class='body'><div class='kicker'>" + esc(r.kicker || "") + (!r.image && r.time ? " · " + esc(r.time) : "") + "</div>" +
-      "<h2>" + esc(r.title) + "</h2>" + (r.author ? "<div class='byline'>By " + esc(r.author) + "</div>" : "") +
+      "<h2>" + esc(r.title) + "</h2>" + (r.tamil ? "<div class='native' lang='ta'>" + esc(r.tamil) + "</div>" : "") +
+      (ratings[r.slug] && ratings[r.slug].count ? "<div class='stars-line'>★ " + ratings[r.slug].avg.toFixed(1) + " <span>(" + ratings[r.slug].count + ")</span></div>" : "") + (r.author ? "<div class='byline'>By " + esc(r.author) + "</div>" : "") +
       (n ? "<div class='macro-line'>" + n.protein + "g protein · " + n.fiber + "g fiber · " + n.netCarbs + "g net carbs</div>" : "") +
       "<p>" + esc(r.blurb || "") + "</p>" +
       "<div class='tags'>" + (r.tags || []).map(function (t) { return "<span class='tag'>" + esc(t) + "</span>"; }).join("") + "</div>" +
       "</div></a>";
   }
+  // quick filters
+  var ratings = {}, active = {};
+  function minutes(t) { var h = /(\d+)\s*h/.exec(t || ""), m = /(\d+)\s*min/.exec(t || ""); return (h ? +h[1] * 60 : 0) + (m ? +m[1] : 0); }
+  function has(r, words) { var t = (r.tags || []).join(" ").toLowerCase(); return words.some(function (w) { return t.indexOf(w) > -1; }); }
+  var FILTERS = {
+    quick: function (r) { var m = minutes(r.time); return m > 0 && m <= 60; },
+    protein: function (r) { return r.nutrition && r.nutrition.protein >= 30; },
+    chicken: function (r) { return has(r, ["chicken"]); },
+    seafood: function (r) { return has(r, ["seafood", "fish", "crab", "prawn"]); },
+    veg: function (r) { return has(r, ["vegetarian", "egg", "paneer"]); }
+  };
+  var filterBtns = [].slice.call(document.querySelectorAll(".filters button"));
+  filterBtns.forEach(function (b) {
+    b.addEventListener("click", function () {
+      var k = b.getAttribute("data-f"); active[k] = !active[k]; if (!active[k]) delete active[k];
+      b.classList.toggle("on", !!active[k]); b.setAttribute("aria-pressed", !!active[k]); draw();
+    });
+  });
+  fetch("/api/rate").then(function (r) { return r.ok ? r.json() : {}; }).then(function (d) { if (d && !d.error) { ratings = d; draw(); } }).catch(function () {});
+
   function draw() {
-    var term = q.value.trim().toLowerCase();
+    var term = q.value.trim().toLowerCase(), filtering = Object.keys(active).length > 0;
     tabs.forEach(function (b) { var on = b.getAttribute("data-menu") === menu; b.className = on ? "on" : ""; b.setAttribute("aria-selected", on); });
-    introEl.textContent = term ? "" : MENUS[menu].intro;
-    var f = !term && all.filter(function (r) { return r.featured && (r.menu || "weekend") === menu && (r.hero || r.image); })[0];
+    var anyMenu = term || filtering;
+    introEl.textContent = anyMenu ? "" : MENUS[menu].intro;
+    var f = !anyMenu && all.filter(function (r) { return r.featured && (r.menu || "weekend") === menu && (r.hero || r.image); })[0];
     featureEl.innerHTML = f
-      ? "<a class='feature' href='/recipes/" + encodeURIComponent(f.slug) + "/'><img src='" + esc(f.hero || f.image) + "' alt='" + esc(f.title) + "' fetchpriority='high'>" +
+      ? "<a class='feature' href='/recipes/" + encodeURIComponent(f.slug) + "/'><img src='" + esc(f.hero || f.image) + "' alt='" + esc(f.title) + "' width='1600' height='1000' fetchpriority='high'>" +
         "<div class='ftext'><span class='flabel'>Chef's special</span><h2>" + esc(f.title) + "</h2><p>" + esc(f.blurb || "") + "</p><span class='cta'>Cook it →</span></div></a>"
       : "";
     var shown = 0, html = "";
-    (term ? ["weekday", "weekend", "festival"] : [menu]).forEach(function (m) {
+    (anyMenu ? ["weekday", "weekend", "festival"] : [menu]).forEach(function (m) {
       var list = all.filter(function (r) {
         if ((r.menu || "weekend") !== m) return false;
+        for (var k in active) if (!FILTERS[k](r)) return false;
         if (!term) return !(f && r.slug === f.slug);   // already shown in the banner
-        return [r.title, r.kicker, r.blurb].concat(r.tags || []).join(" ").toLowerCase().indexOf(term) > -1;
+        return [r.title, r.tamil || "", r.kicker, r.blurb].concat(r.tags || []).join(" ").toLowerCase().indexOf(term) > -1;
       });
       if (!list.length) return;
       shown += list.length;
-      html += "<h2 class='section-title'>" + (term ? MENUS[m].title : (f ? "More recipes" : "Recipes")) + "</h2><div class='grid'>" + list.map(card).join("") + "</div>";
+      html += "<h2 class='section-title'>" + (anyMenu ? MENUS[m].title : (f ? "More recipes" : "Recipes")) + "</h2><div class='grid'>" + list.map(card).join("") + "</div>";
     });
     sections.innerHTML = html;
-    empty.style.display = shown || !term ? "none" : "block";
+    empty.style.display = shown || !anyMenu ? "none" : "block";
+    empty.textContent = term ? "No recipes match that search." : "No recipes match those filters yet.";
   }
   tabs.forEach(function (b) {
     b.addEventListener("click", function () {
@@ -122,6 +153,11 @@
   checkForUpdates();
   document.addEventListener("visibilitychange", checkForUpdates);
   window.addEventListener("pageshow", function (e) { if (e.persisted) location.reload(); });
+
+  // Offline support: save the site on this phone (see /sw.js).
+  if ("serviceWorker" in navigator && window.isSecureContext) {
+    window.addEventListener("load", function () { navigator.serviceWorker.register("/sw.js").catch(function () {}); });
+  }
 })();
 </script>
 </body>

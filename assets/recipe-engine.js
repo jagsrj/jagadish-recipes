@@ -15,10 +15,12 @@
 (function () {
   "use strict";
   var R = window.RECIPE;
-  if (!R) return;
   var LB = 453.592;
-  var scale = R.scale; // { type: "weight", label, baseGrams, defaultUnit, defaultValue } or { type: "servings", base }
-  var storeKey = "jr-" + R.slug;
+
+  // Offline support: save the site on this phone (see /sw.js).
+  if ("serviceWorker" in navigator && window.isSecureContext) {
+    window.addEventListener("load", function () { navigator.serviceWorker.register("/sw.js").catch(function () {}); });
+  }
 
   // ---------- formatting ----------
   var FR = { 0.25: "¼", 0.33: "⅓", 0.5: "½", 0.67: "⅔", 0.75: "¾" };
@@ -47,19 +49,51 @@
   }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
 
+  // One ingredient's scaled quantity. Shared by recipe pages and the weekly planner.
+  // f = batch factor, g = grams of main ingredient (weight recipes) or null, sp = spice factor.
+  function ingQty(it, f, g, sc, sp) {
+    var q, label = it.name, num = null, unit = it.unit;
+    if (it.unit === "main") {
+      q = g ? fmtWeight(g) : fmtGrams(sc.baseGrams * f); num = g || sc.baseGrams * f; unit = "g";
+    } else {
+      var a = it.amt * Math.pow(f, it.exp != null ? it.exp : 1);
+      if (it.spice) a *= Math.pow(sp || 1, it.spiceExp != null ? it.spiceExp : 1);
+      num = a;
+      if (it.unit === "count" || it.unit === "sprig") {
+        var n = Math.max(1, Math.round(a));
+        q = String(n); num = n;
+        if (it.unit === "sprig") label = (n === 1 ? "sprig " : "sprigs ") + label;
+        else if (n > 1 && it.plural) label = it.plural;
+      } else if (it.unit === "g") {
+        q = fmtGrams(a);
+      } else {
+        q = volume(a, it.unit);
+      }
+    }
+    return { q: q, label: label, num: num, unit: unit };
+  }
+  window.RecipeKit = { ingQty: ingQty, volume: volume, fmtGrams: fmtGrams, fmtWeight: fmtWeight, fmtMin: fmtMin, frac: frac, esc: esc, LB: LB };
+  if (!R) return;
+  var scale = R.scale; // { type: "weight", label, baseGrams, defaultUnit, defaultValue } or { type: "servings", base }
+  var storeKey = "jr-" + R.slug;
+
   // ---------- build page shell ----------
   document.title = R.title + " – Jagadish & Manju's Kitchen";
   var root = document.getElementById("recipe");
   var isWeight = scale.type === "weight";
   root.innerHTML =
     (R.image
-      ? "<header class='rhero'><img src='" + esc(R.image) + "' alt='" + esc(R.title) + "' fetchpriority='high'>" +
+      ? "<header class='rhero'><img src='" + esc(R.image) + "' alt='" + esc(R.title) + "' width='1600' height='1000' fetchpriority='high'>" +
         "<div class='rhero-text'>" + (R.native ? "<div class='native'>" + esc(R.native) + "</div>" : "") +
         "<h1>" + esc(R.title) + "</h1>" + (R.author ? "<div class='byline'>By " + esc(R.author) + "</div>" : "") +
         "</div></header><p class='lede'>" + esc(R.intro || "") + "</p>"
       : "<header>" + (R.native ? "<div class='native'>" + esc(R.native) + "</div>" : "") +
         "<h1>" + esc(R.title) + "</h1>" +
         (R.author ? "<div class='byline'>By " + esc(R.author) + "</div>" : "") + "<p class='lede'>" + esc(R.intro || "") + "</p></header>") +
+    "<div class='rating' id='rating' hidden></div>" +
+    "<div class='actions'><button type='button' class='btn' id='cookbtn'>👩‍🍳 Cook mode</button>" +
+      "<button type='button' class='btn ghost' id='listbtn'>🛒 Add to shopping list</button>" +
+      "<button type='button' class='btn ghost' id='printbtn'>🖨 Print</button></div>" +
     "<section class='card scaler' aria-label='Recipe scaler'>" +
       "<label class='title' for='amt'>" + esc(scale.label || (isWeight ? "How much do you have?" : "How many servings?")) + "</label>" +
       "<div class='row'><input id='amt' type='number' inputmode='decimal' min='0.1' step='" + (isWeight ? "0.1" : (scale.step || 1)) + "'>" + (!isWeight && scale.unitLabel ? "<span class='unitlbl'>" + esc(scale.unitLabel) + "</span>" : "") +
@@ -78,7 +112,7 @@
         return R.nutrition[m[0]] == null ? "" : "<div class='m m-" + m[0] + "'><b>" + R.nutrition[m[0]] + m[1] + "</b><span>" + m[2] + "</span></div>";
       }).join("") + "</div>" + (R.nutrition.note ? "<p class='note'>" + R.nutrition.note + "</p>" : "") + "</section>" : "") +
     "<section class='card'><h2>Ingredients</h2><p class='note' style='margin:-6px 0 6px'>Tap an item to tick it off.</p><div id='ingredients'></div></section>" +
-    "<section class='card'><h2>Method</h2><ol class='steps' id='steps'></ol></section>" +
+    "<section class='card'><h2>Method</h2><p class='note' style='margin:-6px 0 6px'>Tap a step's number to mark it done.</p><ol class='steps' id='steps'></ol></section>" +
     (R.tips && R.tips.length ? "<section class='card'><h2>Tips</h2><ul class='tips' id='tips'></ul></section>" : "") +
     "<section class='card ask' id='ask' aria-label='Ask about this recipe'><h2>Ask about this recipe</h2>" +
       "<p class='note'>Stuck on a step? Ask anything, like substitutes, spice, gravy thickness or storing. Answers use your current quantities.</p>" +
@@ -87,6 +121,11 @@
       "<form class='ask-form' id='askform'><input id='askq' type='text' maxlength='400' autocomplete='off' placeholder='e.g. Is my gravy too thick?' aria-label='Your question'>" +
       "<button class='btn' type='submit' id='asksend'>Ask</button></form>" +
       "<p class='note ask-foot'>AI answers can be wrong, so use your judgement, especially about food safety.</p></section>" +
+    "<section class='card made' id='made' aria-label='Rate this recipe'><h2>Made it?</h2>" +
+      "<p class='note'>Tap the stars to rate it. It helps other cooks pick a recipe.</p>" +
+      "<div class='stars' id='stars' role='radiogroup' aria-label='Your rating'>" +
+      [1, 2, 3, 4, 5].map(function (n) { return "<button type='button' role='radio' aria-checked='false' data-star='" + n + "' aria-label='" + n + " star" + (n > 1 ? "s" : "") + "'>★</button>"; }).join("") +
+      "</div><p class='note' id='ratemsg' aria-live='polite'></p></section>" +
     (R.serveWith ? "<footer>" + esc(R.serveWith) + "</footer>" : "") +
     "<nav class='endnav' aria-label='Page navigation'><a class='btn' id='endback' href='/'>← All recipes</a>" +
       "<button type='button' class='btn ghost' id='share'>Share recipe</button>" +
@@ -163,6 +202,124 @@
 
   document.getElementById("totop").addEventListener("click", function (e) { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); });
 
+  // ---------- steps marked done (kept until the tab is closed) ----------
+  var doneKey = "done:" + R.slug, doneSteps = {};
+  try { doneSteps = JSON.parse(sessionStorage.getItem(doneKey) || "{}") || {}; } catch (e) {}
+
+  // ---------- cook mode: one step at a time, big text, screen stays on ----------
+  var cook = { open: false, i: 0, steps: [] };
+  (function () {
+    var ov = document.createElement("div");
+    ov.className = "cook"; ov.setAttribute("role", "dialog"); ov.setAttribute("aria-modal", "true"); ov.setAttribute("aria-label", "Cook mode"); ov.hidden = true;
+    ov.innerHTML = "<div class='cook-top'><span id='cookpos'></span><button type='button' class='cook-x' id='cookx' aria-label='Close cook mode'>✕</button></div>" +
+      "<div class='cook-bar'><i id='cookbar'></i></div>" +
+      "<div class='cook-body' id='cookbody' aria-live='polite'></div>" +
+      "<div class='cook-nav'><button type='button' class='btn ghost' id='cookprev'>← Back</button><button type='button' class='btn' id='cooknext'>Next →</button></div>";
+    document.body.appendChild(ov);
+    var body = document.getElementById("cookbody"), key = "cookstep:" + R.slug;
+    cook.draw = function () {
+      var n = cook.steps.length; if (!n) return;
+      cook.i = Math.max(0, Math.min(n, cook.i));
+      document.getElementById("cookbar").style.width = (Math.min(cook.i + 1, n) / n * 100) + "%";
+      document.getElementById("cookprev").disabled = cook.i === 0;
+      var next = document.getElementById("cooknext");
+      if (cook.i >= n) {
+        document.getElementById("cookpos").textContent = "Done";
+        body.innerHTML = "<div class='cook-done'><div class='big'>🎉</div><h2>Enjoy your " + esc(R.title) + "!</h2>" +
+          (R.serveWith ? "<p>" + esc(R.serveWith) + "</p>" : "") + "<p>Rate it below so others know how it turned out.</p></div>";
+        next.textContent = "Finish"; return;
+      }
+      var s = cook.steps[cook.i];
+      document.getElementById("cookpos").textContent = "Step " + (cook.i + 1) + " of " + n;
+      body.innerHTML = "<h2>" + esc(s.t) + "</h2><div class='cook-text'>" + s.html + "</div>" +
+        "<button class='timer big' data-i='" + cook.i + "' data-sec='" + s.sec + "'>▶ Start " + fmtMin(s.min) + " timer</button>";
+      body.querySelector(".timer").addEventListener("click", toggleTimer);
+      next.textContent = cook.i === n - 1 ? "Finish →" : "Next →";
+      try { localStorage.setItem(key, String(cook.i)); } catch (e) {}
+      tickTimers();
+    };
+    function go(d) {
+      if (d > 0 && cook.i < cook.steps.length) { doneSteps[cook.i] = true; try { sessionStorage.setItem(doneKey, JSON.stringify(doneSteps)); } catch (e) {} }
+      if (d > 0 && cook.i >= cook.steps.length) { close(); document.getElementById("made").scrollIntoView({ behavior: "smooth" }); return; }
+      cook.i += d; cook.draw();
+    }
+    function open() {
+      var saved = parseInt(localStorage.getItem(key) || "0", 10);
+      cook.i = saved > 0 && saved < cook.steps.length ? saved : 0;
+      cook.open = true; ov.hidden = false; document.documentElement.classList.add("cooking");
+      cook.draw(); keepAwake(true, true);
+      document.getElementById("cooknext").focus();
+    }
+    function close() {
+      cook.open = false; ov.hidden = true; document.documentElement.classList.remove("cooking");
+      keepAwake(hasRunning()); render();
+    }
+    document.getElementById("cookbtn").addEventListener("click", open);
+    document.getElementById("cookx").addEventListener("click", close);
+    document.getElementById("cookprev").addEventListener("click", function () { go(-1); });
+    document.getElementById("cooknext").addEventListener("click", function () { go(1); });
+    document.addEventListener("keydown", function (e) {
+      if (!cook.open) return;
+      if (e.key === "ArrowRight") go(1); else if (e.key === "ArrowLeft") go(-1); else if (e.key === "Escape") close();
+    });
+    var x0 = null, y0 = null;
+    ov.addEventListener("touchstart", function (e) { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+    ov.addEventListener("touchend", function (e) {
+      if (x0 == null) return;
+      var dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0; x0 = null;
+      if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) go(dx < 0 ? 1 : -1);
+    });
+  })();
+
+  // ---------- shopping list (saved on this phone, shown at /plan/#list) ----------
+  document.getElementById("listbtn").addEventListener("click", function () {
+    var btn = this, items = [];
+    R.groups.forEach(function (g) { g.items.forEach(function (it) {
+      if (/^water$/i.test(it.name) || /^salt$/i.test(it.name)) return;   // everyone has these
+      items.push({ name: it._label, q: it._q, base: it.name, unit: it._unit, num: it._num });
+    }); });
+    var list = [];
+    try { list = JSON.parse(localStorage.getItem("shopping") || "[]") || []; } catch (e) {}
+    list = list.filter(function (x) { return (x.key || x.slug) !== R.slug; });
+    list.push({ key: R.slug, slug: R.slug, title: R.title, amount: document.getElementById("amt").value + (isWeight ? " " + state.unit : ""), items: items, have: {} });
+    try { localStorage.setItem("shopping", JSON.stringify(list)); } catch (e) {}
+    btn.innerHTML = "✓ Added · <u>view list</u>";
+    btn.onclick = function () { location.href = "/plan/#list"; };
+  });
+  document.getElementById("printbtn").addEventListener("click", function () { window.print(); });
+
+  // ---------- ratings ----------
+  (function () {
+    var box = document.getElementById("rating"), stars = [].slice.call(document.querySelectorAll("#stars button")), msg = document.getElementById("ratemsg");
+    var mine = 0; try { mine = parseInt(localStorage.getItem("rated:" + R.slug) || "0", 10) || 0; } catch (e) {}
+    function mark(n) { stars.forEach(function (b) { var on = +b.dataset.star <= n; b.classList.toggle("on", on); b.setAttribute("aria-checked", +b.dataset.star === n); }); }
+    function show(d) {
+      if (!d || !d.count) { box.hidden = true; return; }
+      var full = Math.round(d.avg);
+      box.innerHTML = "<span class='rstars' aria-hidden='true'>" + "★★★★★".slice(0, full) + "<i>" + "★★★★★".slice(full) + "</i></span> <b>" + d.avg.toFixed(1) + "</b> · " +
+        d.count + " rating" + (d.count > 1 ? "s" : "") + (d.made ? " · " + d.made + " cooked it" : "");
+      box.setAttribute("aria-label", "Rated " + d.avg.toFixed(1) + " out of 5 by " + d.count + " cooks");
+      box.hidden = false;
+    }
+    mark(mine);
+    if (mine) msg.textContent = "Thanks! You rated this " + mine + " star" + (mine > 1 ? "s" : "") + ".";
+    fetch("/api/rate?slug=" + encodeURIComponent(R.slug)).then(function (r) { return r.ok ? r.json() : null; }).then(show).catch(function () {});
+    stars.forEach(function (b) {
+      b.addEventListener("click", function () {
+        var n = +b.dataset.star; mark(n); msg.textContent = "Saving…";
+        fetch("/api/rate", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ slug: R.slug, stars: n }) })
+          .then(function (r) { return r.json().catch(function () { return {}; }); })
+          .then(function (d) {
+            if (d.error === "not_configured") { msg.textContent = "Ratings aren't switched on yet."; return; }
+            if (d.error) { msg.textContent = d.error === "rate_limited" ? "Please try again later." : "Couldn't save that. Please try again."; return; }
+            try { localStorage.setItem("rated:" + R.slug, String(n)); } catch (e) {}
+            msg.textContent = "Thanks! You rated this " + n + " star" + (n > 1 ? "s" : "") + "."; show(d);
+          })
+          .catch(function () { msg.textContent = "You seem to be offline. Try again when you're connected."; });
+      });
+    });
+  })();
+
   // ---------- state ----------
   var state = isWeight ? { unit: scale.defaultUnit || "lb", value: scale.defaultValue, spice: 1 }
                        : { value: scale.base, spice: 1 };
@@ -212,25 +369,9 @@
     R.groups.forEach(function (grp) {
       html += "<h3>" + esc(grp.title) + "</h3><ul class='ing'>";
       grp.items.forEach(function (it) {
-        var q, label = it.name;
-        if (it.unit === "main") {
-          q = fx.g ? fmtWeight(fx.g) : fmtGrams(scale.baseGrams * f);
-        } else {
-          var a = it.amt * Math.pow(f, it.exp != null ? it.exp : 1);
-          if (it.spice) a *= Math.pow(sp, it.spiceExp != null ? it.spiceExp : 1);
-          if (it.unit === "count" || it.unit === "sprig") {
-            var n = Math.max(1, Math.round(a));
-            q = String(n);
-            if (it.unit === "sprig") label = (n === 1 ? "sprig " : "sprigs ") + label;
-            else if (n > 1 && it.plural) label = it.plural;
-          } else if (it.unit === "g") {
-            q = fmtGrams(a);
-          } else {
-            q = volume(a, it.unit);
-          }
-        }
+        var r = ingQty(it, f, fx.g, scale, sp), q = r.q, label = r.label;
         if (it.id) qty[it.id] = q;
-        it._q = q; it._label = label;
+        it._q = q; it._label = label; it._num = r.num; it._unit = r.unit;
         html += "<li tabindex='0'><span class='qty'>" + q + "</span><span>" + esc(label) +
                 (it.note ? "<span class='note'>" + esc(it.note) + "</span>" : "") + "</span></li>";
       });
@@ -246,6 +387,7 @@
     var extra = { pot: pot ? "large (" + pot + ")" : "large" };
 
     var total = R.prepMin || 0, sh = "";
+    cook.steps = [];
     R.steps.forEach(function (s, i) {
       var m = s.min * Math.pow(f, s.exp || 0);
       if (!s.parallel) total += m;
@@ -261,11 +403,20 @@
         return "<span class='chip'><b>" + it._q + "</b> " + esc(short) + (parts[1] ? " <i>(" + esc(parts[1]) + ")</i>" : "") + "</span>";
       }).join("");
       if (used) txt += "<div class='uses'><span class='uses-h'>In this step</span>" + used + "</div>";
-      sh += "<li><span class='st'>" + esc(s.t) + " · " + fmtMin(m) + "</span>" + txt +
+      cook.steps.push({ t: s.t, min: m, html: txt, sec: Math.round(m * 60) });
+      sh += "<li" + (doneSteps[i] ? " class='done'" : "") + "><button type='button' class='stepno' data-step='" + i + "' aria-label='Mark step " + (i + 1) + " done'>" + (i + 1) + "</button><span class='st'>" + esc(s.t) + " · " + fmtMin(m) + "</span>" + txt +
             "<br><button class='timer' data-i='" + i + "' data-sec='" + Math.round(m * 60) + "'>▶ Start " + fmtMin(m) + " timer</button></li>";
     });
     document.getElementById("steps").innerHTML = sh;
-    document.querySelectorAll(".timer").forEach(function (b) { b.addEventListener("click", toggleTimer); });
+    document.querySelectorAll("#steps .timer").forEach(function (b) { b.addEventListener("click", toggleTimer); });
+    document.querySelectorAll("#steps .stepno").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var i = b.dataset.step; doneSteps[i] = !doneSteps[i]; if (!doneSteps[i]) delete doneSteps[i];
+        b.closest("li").classList.toggle("done", !!doneSteps[i]);
+        try { sessionStorage.setItem(doneKey, JSON.stringify(doneSteps)); } catch (e) {}
+      });
+    });
+    if (cook.open) cook.draw();
     tickTimers();
 
     var srvN = Math.max(1, Math.round(R.baseServings * f));
@@ -337,7 +488,7 @@
       pill.style.display = "block";
       document.title = "⏱ " + mmss(running[0].left) + " · " + R.title;
     } else { pill.style.display = "none"; document.title = baseTitle; }
-    keepAwake(running.length > 0);
+    keepAwake(running.length > 0 || cook.open);
   }
   setInterval(tickTimers, 1000);
   document.addEventListener("visibilitychange", function () { if (document.visibilityState === "visible") { tickTimers(); keepAwake(hasRunning(), true); } });
