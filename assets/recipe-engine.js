@@ -107,10 +107,17 @@
       "<div>Total time <b id='total'></b></div>" + (R.pots ? "<div>Pot <b id='pot'></b></div>" : "") + "</div>" +
       "<div class='warn' id='warn'></div>" +
     "</section>" +
-    (R.nutrition ? "<section class='card nutri' aria-label='Nutrition per serving'><h2>Per serving <span class='note' style='display:inline'>(approx.)</span></h2><div class='macros'>" +
-      [["protein", "g", "Protein"], ["fiber", "g", "Fiber"], ["netCarbs", "g", "Net carbs"], ["fat", "g", "Fat"], ["kcal", "", "kcal"]].map(function (m) {
-        return R.nutrition[m[0]] == null ? "" : "<div class='m m-" + m[0] + "'><b>" + R.nutrition[m[0]] + m[1] + "</b><span>" + m[2] + "</span></div>";
-      }).join("") + "</div>" + (R.nutrition.note ? "<p class='note'>" + R.nutrition.note + "</p>" : "") + "</section>" : "") +
+    (R.nutrition ? (function (n) {
+      var good = n.goodFatPct, cells = [["protein", "g", "Protein"], ["carbs", "g", "Carbs"], ["fiber", "g", "Fiber"], ["netCarbs", "g", "Net carbs"], ["fat", "g", "Fat"], ["kcal", "", "kcal"]];
+      return "<section class='card nutri' aria-label='Nutrition per " + esc(n.per || "serving") + "'><h2>Per " + esc(n.per || "serving") + " <span class='note' style='display:inline'>(approx.)</span></h2><div class='macros'>" +
+        cells.map(function (m) {
+          return n[m[0]] == null ? "" : "<div class='m m-" + m[0] + "'><b>" + n[m[0]] + m[1] + "</b><span>" + m[2] + "</span></div>";
+        }).join("") + "</div>" +
+        (good != null ? "<div class='fatq'><div class='fatq-bar' role='img' aria-label='Fat: " + good + "% good, " + (100 - good) + "% bad'>" +
+          "<span class='good' style='width:" + good + "%'></span><span class='bad' style='width:" + (100 - good) + "%'></span></div>" +
+          "<div class='fatq-legend'><span class='good'>Good fat " + good + "%</span><span class='bad'>Bad fat " + (100 - good) + "%" + (n.badFat != null ? " (" + n.badFat + "g)" : "") + "</span></div></div>" : "") +
+        (n.note ? "<p class='note'>" + n.note + "</p>" : "") + "</section>";
+    })(R.nutrition) : "") +
     "<section class='card'><h2>Ingredients</h2><p class='note' style='margin:-6px 0 6px'>Tap an item to tick it off.</p><div id='ingredients'></div></section>" +
     "<section class='card'><h2>Method</h2><p class='note' style='margin:-6px 0 6px'>Tap a step's number to mark it done.</p><ol class='steps' id='steps'></ol></section>" +
     (R.tips && R.tips.length ? "<section class='card'><h2>Tips</h2><ul class='tips' id='tips'></ul></section>" : "") +

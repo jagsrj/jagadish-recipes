@@ -86,14 +86,14 @@
         if (n > 0 && plan.days[d]) { plan.days[d].n = n; if (amountInfo(all.filter(function (x) { return x.slug === plan.days[d].slug; })[0]).label === "people") plan.people = n; save("plan", plan); }
       });
     });
-    // weekly protein / fiber / net carbs from the planned keto meals
+    // weekly protein / carbs / fiber / net carbs from the planned meals (festival snacks are per piece, so left out)
     var meals = DAYS.map(function (d) { return plan.days[d] && all.filter(function (x) { return x.slug === plan.days[d].slug; })[0]; })
-      .filter(function (r) { return r && r.nutrition; });
+      .filter(function (r) { return r && r.nutrition && !r.nutrition.per; });
     var m = document.getElementById("macros");
     if (meals.length) {
       var sum = function (k) { return meals.reduce(function (a, r) { return a + (r.nutrition[k] || 0); }, 0); };
-      m.innerHTML = "<span>Per person, across " + meals.length + " keto meal" + (meals.length > 1 ? "s" : "") + ":</span>" +
-        "<span><b>" + sum("protein") + " g</b> protein</span><span><b>" + sum("fiber") + " g</b> fiber</span><span><b>" + sum("netCarbs") + " g</b> net carbs</span>";
+      m.innerHTML = "<span>Per person, across " + meals.length + " meal" + (meals.length > 1 ? "s" : "") + ":</span>" +
+        "<span><b>" + sum("protein") + " g</b> protein</span><span><b>" + sum("carbs") + " g</b> carbs</span><span><b>" + sum("fiber") + " g</b> fiber</span><span><b>" + sum("netCarbs") + " g</b> net carbs</span>";
     } else m.innerHTML = "";
   }
   document.getElementById("suggest").addEventListener("click", function () {

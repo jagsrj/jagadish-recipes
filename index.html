@@ -53,7 +53,7 @@
 (function () {
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
   var MENUS = {
-    weekday: { title: "Weekday · Healthy keto", intro: "Quick weeknight meals built on protein and fiber, with only the carbs the vegetables bring. Each recipe shows protein, fiber and net carbs per serving." },
+    weekday: { title: "Weekday · Healthy keto", intro: "Quick weeknight meals built on protein and fiber, with only the carbs the vegetables bring. Each recipe shows protein, carbs, fiber and the good-to-bad fat split per serving." },
     weekend: { title: "Weekend · Village style", intro: "Slow-cooked Tamil Nadu village favourites for the weekend: kuzhambu, biryani and more, cooked the traditional way." },
     festival: { title: "Festival · Sweets & snacks", intro: "The sweets and savouries we make for Diwali and other festivals, the way they're made at home in Tamil Nadu." }
   };
@@ -73,7 +73,8 @@
       "<div class='body'><div class='kicker'>" + esc(r.kicker || "") + (!r.image && r.time ? " · " + esc(r.time) : "") + "</div>" +
       "<h2>" + esc(r.title) + "</h2>" + (r.tamil ? "<div class='native' lang='ta'>" + esc(r.tamil) + "</div>" : "") +
       (ratings[r.slug] && ratings[r.slug].count ? "<div class='stars-line'>★ " + ratings[r.slug].avg.toFixed(1) + " <span>(" + ratings[r.slug].count + ")</span></div>" : "") + (r.author ? "<div class='byline'>By " + esc(r.author) + "</div>" : "") +
-      (n ? "<div class='macro-line'>" + n.protein + "g protein · " + n.fiber + "g fiber · " + n.netCarbs + "g net carbs</div>" : "") +
+      (n ? "<div class='macro-line'>" + (n.per ? "Per " + esc(n.per) + ": " : "") + n.protein + "g protein · " + n.carbs + "g carbs · " + n.fiber + "g fiber" +
+        (n.goodFatPct != null ? " · <span class='fat-good'>" + n.goodFatPct + "% good fat</span>" : "") + "</div>" : "") +
       "<p>" + esc(r.blurb || "") + "</p>" +
       "<div class='tags'>" + (r.tags || []).map(function (t) { return "<span class='tag'>" + esc(t) + "</span>"; }).join("") + "</div>" +
       "</div></a>";

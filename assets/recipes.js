@@ -1,5 +1,6 @@
 // The list shown on the home page. Add one entry per recipe folder in /recipes/.
-// menu: "weekday" (healthy keto), "weekend" (village style) or "festival" (Diwali sweets and snacks). nutrition is per serving, shown on weekday cards.
+// menu: "weekday" (healthy keto), "weekend" (village style) or "festival" (Diwali sweets and snacks).
+// nutrition is per serving (or per piece, named in `per`), shown on every card; goodFatPct = unsaturated share of total fat.
 // tamil: the dish name in Tamil, shown on the card and found by search.
 window.RECIPES = [
   {
@@ -14,6 +15,7 @@ window.RECIPES = [
     hero: "/images/chicken-kuzhambu.jpg",
     blurb: "Village-style chicken gravy with a freshly roasted masala. Scales to your chicken weight.",
     time: "1 h 30 min",
+    nutrition: { protein: 29, carbs: 20, fiber: 6, netCarbs: 14, goodFatPct: 70 },
     tags: ["Chicken", "Gravy", "South Indian"]
   },
   {
@@ -29,6 +31,7 @@ window.RECIPES = [
     featured: true,
     blurb: "Rice parboiled to 75% and finished on dum over a spicy mint masala, with an extra spoon of sambar powder.",
     time: "2 h",
+    nutrition: { protein: 36, carbs: 93, fiber: 6, netCarbs: 87, goodFatPct: 66 },
     tags: ["Chicken", "Biryani", "Rice", "South Indian"]
   },
   {
@@ -43,6 +46,7 @@ window.RECIPES = [
     hero: "/images/nandu-kuzhambu.jpg",
     blurb: "Peppery, tangy crab gravy with a roasted coconut masala, tamarind and sesame oil. Scales to your crab weight.",
     time: "1 h 30 min",
+    nutrition: { protein: 15, carbs: 23, fiber: 6, netCarbs: 17, goodFatPct: 74 },
     tags: ["Crab", "Seafood", "Gravy", "South Indian"]
   },
   {
@@ -57,6 +61,7 @@ window.RECIPES = [
     hero: "/images/meen-kuzhambu.jpg",
     blurb: "Tangy tamarind fish gravy with sesame oil, shallots, garlic and fenugreek. Scales to your fish weight.",
     time: "1 h 30 min",
+    nutrition: { protein: 38, carbs: 22, fiber: 5, netCarbs: 17, goodFatPct: 80 },
     tags: ["Fish", "Seafood", "Gravy", "South Indian"]
   },
   {
@@ -69,7 +74,7 @@ window.RECIPES = [
     emoji: "🥬",
     blurb: "Chicken in a garlicky spinach and yogurt gravy. A pot of protein and greens, no rice needed.",
     time: "50 min",
-    nutrition: { protein: 38, fiber: 5, netCarbs: 8 },
+    nutrition: { protein: 38, carbs: 13, fiber: 5, netCarbs: 8, goodFatPct: 55 },
     tags: ["Chicken", "Keto", "High protein"]
   },
   {
@@ -82,7 +87,7 @@ window.RECIPES = [
     emoji: "🌶️",
     blurb: "Dry pepper chicken with a big cabbage-beans poriyal in place of rice.",
     time: "50 min",
-    nutrition: { protein: 32, fiber: 6, netCarbs: 9 },
+    nutrition: { protein: 32, carbs: 15, fiber: 6, netCarbs: 9, goodFatPct: 36 },
     tags: ["Chicken", "Keto", "High fiber"]
   },
   {
@@ -95,7 +100,7 @@ window.RECIPES = [
     emoji: "🥦",
     blurb: "Mint and ghee chicken biryani with cauliflower rice. Biryani on a weeknight.",
     time: "1 h",
-    nutrition: { protein: 38, fiber: 6, netCarbs: 12 },
+    nutrition: { protein: 38, carbs: 18, fiber: 6, netCarbs: 12, goodFatPct: 51 },
     tags: ["Chicken", "Keto", "Biryani"]
   },
   {
@@ -108,7 +113,7 @@ window.RECIPES = [
     emoji: "🧀",
     blurb: "Paneer, broccoli and peppers roasted in tandoori yogurt on one tray.",
     time: "45 min",
-    nutrition: { protein: 26, fiber: 5, netCarbs: 12 },
+    nutrition: { protein: 26, carbs: 17, fiber: 5, netCarbs: 12, goodFatPct: 47 },
     tags: ["Paneer", "Vegetarian", "Keto"]
   },
   {
@@ -121,7 +126,7 @@ window.RECIPES = [
     emoji: "🍳",
     blurb: "Masala eggs with spinach, mushrooms, paneer and flaxseed in 20 minutes.",
     time: "20 min",
-    nutrition: { protein: 30, fiber: 6, netCarbs: 8 },
+    nutrition: { protein: 30, carbs: 14, fiber: 6, netCarbs: 8, goodFatPct: 56 },
     tags: ["Eggs", "Keto", "Breakfast"]
   },
   {
@@ -134,6 +139,7 @@ window.RECIPES = [
     emoji: "🌀",
     blurb: "Crisp rice-flour spirals with roasted urad dal, sesame and cumin.",
     time: "1 h 15 min",
+    nutrition: { per: "murukku", protein: 2, carbs: 11, fiber: 1, netCarbs: 10, goodFatPct: 81 },
     tags: ["Snack", "Diwali", "Fried"]
   },
   {
@@ -146,6 +152,7 @@ window.RECIPES = [
     emoji: "🌶️",
     blurb: "Tirunelveli-style peppery, garlicky besan sev rubbed straight into hot oil.",
     time: "55 min",
+    nutrition: { per: "cup", protein: 9, carbs: 36, fiber: 5, netCarbs: 31, goodFatPct: 83 },
     tags: ["Snack", "Diwali", "Fried"]
   },
   {
@@ -158,6 +165,7 @@ window.RECIPES = [
     emoji: "🟠",
     blurb: "Soft boondi in cardamom syrup with ghee-roasted cashews and raisins.",
     time: "50 min",
+    nutrition: { per: "laddu", protein: 2, carbs: 19, fiber: 1, netCarbs: 18, goodFatPct: 72 },
     tags: ["Sweet", "Diwali", "Laddu"]
   },
   {
@@ -170,6 +178,7 @@ window.RECIPES = [
     emoji: "🍯",
     blurb: "Milk-powder jamuns fried slowly and soaked in rose-cardamom syrup.",
     time: "2 h 45 min",
+    nutrition: { per: "jamun", protein: 2, carbs: 11, fiber: 0, netCarbs: 11, goodFatPct: 36 },
     tags: ["Sweet", "Diwali", "Dessert"]
   }
 ];
