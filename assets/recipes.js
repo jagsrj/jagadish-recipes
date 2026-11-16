@@ -61,7 +61,7 @@ window.RECIPES = [
     hero: "/images/meen-kuzhambu.jpg",
     blurb: "Tangy tamarind fish gravy with sesame oil, shallots, garlic and fenugreek. Scales to your fish weight.",
     time: "1 h 30 min",
-    nutrition: { protein: 38, carbs: 22, fiber: 5, netCarbs: 17, goodFatPct: 80 },
+    nutrition: { protein: 38, carbs: 22, fiber: 5, addedSugar: 1, netCarbs: 17, goodFatPct: 80 },
     tags: ["Fish", "Seafood", "Gravy", "South Indian"]
   },
   {
@@ -165,7 +165,7 @@ window.RECIPES = [
     emoji: "🟠",
     blurb: "Soft boondi in cardamom syrup with ghee-roasted cashews and raisins.",
     time: "50 min",
-    nutrition: { per: "laddu", protein: 2, carbs: 19, fiber: 1, netCarbs: 18, goodFatPct: 72 },
+    nutrition: { per: "laddu", protein: 2, carbs: 19, fiber: 1, addedSugar: 14, netCarbs: 18, goodFatPct: 72 },
     tags: ["Sweet", "Diwali", "Laddu"]
   },
   {
@@ -178,7 +178,7 @@ window.RECIPES = [
     emoji: "🍯",
     blurb: "Milk-powder jamuns fried slowly and soaked in rose-cardamom syrup.",
     time: "2 h 45 min",
-    nutrition: { per: "jamun", protein: 2, carbs: 11, fiber: 0, netCarbs: 11, goodFatPct: 36 },
+    nutrition: { per: "jamun", protein: 2, carbs: 11, fiber: 0, addedSugar: 8, netCarbs: 11, goodFatPct: 36 },
     tags: ["Sweet", "Diwali", "Dessert"]
   }
 ];

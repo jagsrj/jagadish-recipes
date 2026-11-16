@@ -155,7 +155,7 @@ footer { text-align: center; color: var(--muted); font-size: .85rem; margin-top:
 .tabs button.on b { color: var(--accent); }
 .menu-intro { color: var(--muted); margin: -4px 0 14px; font-size: .95rem; }
 .macro-line { font-size: .8rem; font-weight: 700; color: var(--ok); margin: -4px 0 8px; }
-.nutri .macros { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; text-align: center; }
+.nutri .macros { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; text-align: center; }
 .nutri .m { background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 8px 4px; }
 .nutri .m b { display: block; font-size: 1.05rem; }
 .nutri .m span { font-size: .72rem; color: var(--muted); }
@@ -167,8 +167,9 @@ footer { text-align: center; color: var(--muted); font-size: .85rem; margin-top:
 .fatq-bar .bad { background: var(--accent); }
 .fatq-legend { display: flex; justify-content: space-between; font-size: .78rem; font-weight: 700; margin-top: 5px; }
 .fatq-legend .good, .macro-line .fat-good { color: var(--ok); }
-.fatq-legend .bad { color: var(--accent); }
-@media (max-width: 420px) { .nutri .macros { grid-template-columns: repeat(3, 1fr); } }
+.fatq-legend .bad, .macro-line .sugar { color: var(--accent); }
+.nutri .m-addedSugar b { color: var(--accent); }
+@media (max-width: 420px) { .nutri .macros { grid-template-columns: repeat(4, 1fr); gap: 6px; } .nutri .m span { font-size: .66rem; } }
 
 /* ---------- end-of-page navigation ---------- */
 .endnav { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin: 22px 0 10px; }

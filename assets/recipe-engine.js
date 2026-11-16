@@ -108,7 +108,7 @@
       "<div class='warn' id='warn'></div>" +
     "</section>" +
     (R.nutrition ? (function (n) {
-      var good = n.goodFatPct, cells = [["protein", "g", "Protein"], ["carbs", "g", "Carbs"], ["fiber", "g", "Fiber"], ["netCarbs", "g", "Net carbs"], ["fat", "g", "Fat"], ["kcal", "", "kcal"]];
+      var good = n.goodFatPct, cells = [["protein", "g", "Protein"], ["carbs", "g", "Carbs"], ["fiber", "g", "Fiber"], ["netCarbs", "g", "Net carbs"], ["addedSugar", "g", "Added sugar"], ["fat", "g", "Fat"], ["kcal", "", "kcal"]];
       return "<section class='card nutri' aria-label='Nutrition per " + esc(n.per || "serving") + "'><h2>Per " + esc(n.per || "serving") + " <span class='note' style='display:inline'>(approx.)</span></h2><div class='macros'>" +
         cells.map(function (m) {
           return n[m[0]] == null ? "" : "<div class='m m-" + m[0] + "'><b>" + n[m[0]] + m[1] + "</b><span>" + m[2] + "</span></div>";
