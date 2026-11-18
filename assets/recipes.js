@@ -186,7 +186,7 @@ window.RECIPES = [
     menu: "kids",
     title: "Pasta Pomodoro",
     kicker: "Kid favourite",
-    author: "Jagadish",
+    author: "Ashwath",
     emoji: "🍝",
     blurb: "Spaghetti in a garlicky tomato-basil sauce with butter and Parmesan. Mild, simple and ready in 30 minutes.",
     time: "30 min",
