@@ -188,6 +188,8 @@ window.RECIPES = [
     kicker: "Kid favourite",
     author: "Ashwath",
     emoji: "🍝",
+    image: "/images/pasta-pomodoro-card.jpg",
+    hero: "/images/pasta-pomodoro.jpg",
     blurb: "Spaghetti in a garlicky tomato-basil sauce with butter and Parmesan. Mild, simple and ready in 30 minutes.",
     time: "30 min",
     nutrition: { protein: 20, carbs: 85, fiber: 5, netCarbs: 80, goodFatPct: 71 },
