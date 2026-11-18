@@ -179,7 +179,7 @@ footer { text-align: center; color: var(--muted); font-size: .85rem; margin-top:
 button.btn { font: inherit; font-weight: 700; cursor: pointer; }
 @media print { .endnav { display: none; } }
 .unitlbl { color: var(--muted); font-weight: 600; align-self: center; }
-@media (max-width: 480px) { .tabs { gap: 6px; } .tabs button { padding: 9px 9px; } .tabs button b { font-size: .95rem; } .tabs button span { font-size: .72rem; } }
+@media (max-width: 480px) { .tabs { gap: 5px; } .tabs button { padding: 9px 4px; } .tabs button b { font-size: .95rem; } .tabs button span { font-size: .72rem; } }
 
 /* ---------- amounts used in each step ---------- */
 .uses { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 2px; align-items: center; }

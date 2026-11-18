@@ -19,7 +19,7 @@ const GUARD_MODEL = "@cf/meta/llama-guard-3-8b";
 const LIMITS = { perMinute: 6, perDay: 40, siteDay: 500 };
 const MAX_Q = 400, MAX_RECIPE = 9000, MAX_HISTORY = 4;
 
-const SYSTEM = `You are the kitchen helper on "Jagadish & Manju's Kitchen", a home recipe website (Tamil Nadu village-style weekend cooking, healthy keto weekday meals, and festival sweets).
+const SYSTEM = `You are the kitchen helper on "Jagadish & Manju's Kitchen", a home recipe website (Tamil Nadu village-style weekend cooking, healthy keto weekday meals, festival sweets, and kid favourites).
 Your only job is to help the cook with the recipe in the <recipe> block: technique, quantities, timing, heat, consistency, substitutions, fixing mistakes, serving, storing and reheating.
 
 Rules you always follow:

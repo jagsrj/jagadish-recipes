@@ -18,7 +18,7 @@
 <meta property="og:type" content="website">
 <script type="application/ld+json">
 {"@context": "https://schema.org", "@type": "WebSite", "name": "Jagadish & Manju's Kitchen", "url": "/",
- "description": "Healthy keto weekday meals, Tamil Nadu village-style weekend cooking, and festival sweets and snacks. Every recipe scales to what you cook."}
+ "description": "Healthy keto weekday meals, Tamil Nadu village-style weekend cooking, festival sweets and snacks, and kid favourites. Every recipe scales to what you cook."}
 </script>
 <link rel="stylesheet" href="/assets/style.css">
 </head>
@@ -27,12 +27,13 @@
 <main class="wrap wide">
   <section class="hero">
     <h1>Jagadish &amp; Manju's Kitchen</h1>
-    <p>Healthy keto meals for weekdays, Tamil Nadu village cooking for weekends, and sweets and snacks for festivals. Every recipe adjusts to the amount you're cooking.</p>
+    <p>Healthy keto meals for weekdays, Tamil Nadu village cooking for weekends, sweets and snacks for festivals, and kid favourites. Every recipe adjusts to the amount you're cooking.</p>
   </section>
   <div class="tabs" role="tablist" aria-label="Menu">
     <button type="button" role="tab" data-menu="weekday"><b>Weekday</b><span>Healthy keto</span></button>
     <button type="button" role="tab" data-menu="weekend"><b>Weekend</b><span>Village style</span></button>
     <button type="button" role="tab" data-menu="festival"><b>Festival</b><span>Diwali &amp; more</span></button>
+    <button type="button" role="tab" data-menu="kids"><b>Kids</b><span>Kid favourites</span></button>
   </div>
   <p class="menu-intro" id="menu-intro"></p>
   <div id="feature"></div>
@@ -55,14 +56,15 @@
   var MENUS = {
     weekday: { title: "Weekday · Healthy keto", intro: "Quick weeknight meals built on protein and fiber, with only the carbs the vegetables bring. Each recipe shows protein, carbs, fiber, added sugar and the good-to-bad fat split per serving." },
     weekend: { title: "Weekend · Village style", intro: "Slow-cooked Tamil Nadu village favourites for the weekend: kuzhambu, biryani and more, cooked the traditional way." },
-    festival: { title: "Festival · Sweets & snacks", intro: "The sweets and savouries we make for Diwali and other festivals, the way they're made at home in Tamil Nadu." }
+    festival: { title: "Festival · Sweets & snacks", intro: "The sweets and savouries we make for Diwali and other festivals, the way they're made at home in Tamil Nadu." },
+    kids: { title: "Kids · Kid favourites", intro: "Mild, simple dishes kids love to eat, and can help cook. Spice is easy to dial down or leave out." }
   };
   var all = window.RECIPES || [];
   var sections = document.getElementById("sections"), q = document.getElementById("q"), empty = document.getElementById("empty");
   var featureEl = document.getElementById("feature"), introEl = document.getElementById("menu-intro");
   var tabs = [].slice.call(document.querySelectorAll(".tabs button"));
   var day = new Date().getDay();
-  var menu = /^#(weekday|weekend|festival)$/.test(location.hash) ? location.hash.slice(1) : (day === 0 || day === 6 ? "weekend" : "weekday");
+  var menu = /^#(weekday|weekend|festival|kids)$/.test(location.hash) ? location.hash.slice(1) : (day === 0 || day === 6 ? "weekend" : "weekday");
 
   function card(r) {
     var n = r.nutrition;
@@ -110,7 +112,7 @@
         "<div class='ftext'><span class='flabel'>Chef's special</span><h2>" + esc(f.title) + "</h2><p>" + esc(f.blurb || "") + "</p><span class='cta'>Cook it →</span></div></a>"
       : "";
     var shown = 0, html = "";
-    (anyMenu ? ["weekday", "weekend", "festival"] : [menu]).forEach(function (m) {
+    (anyMenu ? ["weekday", "weekend", "festival", "kids"] : [menu]).forEach(function (m) {
       var list = all.filter(function (r) {
         if ((r.menu || "weekend") !== m) return false;
         for (var k in active) if (!FILTERS[k](r)) return false;
@@ -132,7 +134,7 @@
       draw();
     });
   });
-  window.addEventListener("hashchange", function () { if (/^#(weekday|weekend|festival)$/.test(location.hash)) { menu = location.hash.slice(1); draw(); } });
+  window.addEventListener("hashchange", function () { if (/^#(weekday|weekend|festival|kids)$/.test(location.hash)) { menu = location.hash.slice(1); draw(); } });
   q.addEventListener("input", draw);
   draw();
 

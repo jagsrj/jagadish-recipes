@@ -1,5 +1,5 @@
 // The list shown on the home page. Add one entry per recipe folder in /recipes/.
-// menu: "weekday" (healthy keto), "weekend" (village style) or "festival" (Diwali sweets and snacks).
+// menu: "weekday" (healthy keto), "weekend" (village style), "festival" (Diwali sweets and snacks) or "kids" (kid favourites).
 // nutrition is per serving (or per piece, named in `per`), shown on every card; goodFatPct = unsaturated share of total fat.
 // tamil: the dish name in Tamil, shown on the card and found by search.
 window.RECIPES = [
@@ -180,5 +180,17 @@ window.RECIPES = [
     time: "2 h 45 min",
     nutrition: { per: "jamun", protein: 2, carbs: 11, fiber: 0, addedSugar: 8, netCarbs: 11, goodFatPct: 36 },
     tags: ["Sweet", "Diwali", "Dessert"]
+  },
+  {
+    slug: "pasta-pomodoro",
+    menu: "kids",
+    title: "Pasta Pomodoro",
+    kicker: "Kid favourite",
+    author: "Jagadish",
+    emoji: "🍝",
+    blurb: "Spaghetti in a garlicky tomato-basil sauce with butter and Parmesan. Mild, simple and ready in 30 minutes.",
+    time: "30 min",
+    nutrition: { protein: 20, carbs: 85, fiber: 5, netCarbs: 80, goodFatPct: 71 },
+    tags: ["Pasta", "Vegetarian", "Kids", "Italian"]
   }
 ];

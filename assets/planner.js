@@ -8,7 +8,7 @@
   var K = window.RecipeKit, esc = K.esc, all = window.RECIPES || [];
   var DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   var FULL = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-  var MENU_NAME = { weekday: "Weekday · healthy keto", weekend: "Weekend · village style", festival: "Festival" };
+  var MENU_NAME = { weekday: "Weekday · healthy keto", weekend: "Weekend · village style", festival: "Festival", kids: "Kids" };
 
   function load(k, d) { try { var v = JSON.parse(localStorage.getItem(k) || "null"); return v == null ? d : v; } catch (e) { return d; } }
   function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
@@ -55,7 +55,7 @@
   var daysEl = document.getElementById("days");
   function options(sel, dayIndex) {
     var pref = dayIndex < 5 ? "weekday" : "weekend";
-    var order = [pref, pref === "weekday" ? "weekend" : "weekday", "festival"];
+    var order = [pref, pref === "weekday" ? "weekend" : "weekday", "kids", "festival"];
     return "<option value=''>— Nothing planned —</option>" + order.map(function (m) {
       var rs = all.filter(function (r) { return (r.menu || "weekend") === m; });
       return rs.length ? "<optgroup label='" + esc(MENU_NAME[m]) + "'>" + rs.map(function (r) {

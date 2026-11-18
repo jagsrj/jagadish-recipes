@@ -139,7 +139,7 @@
       "<a class='btn ghost' href='#' id='totop'>↑ Back to top</a></nav>";
 
   // back link goes to the recipe's menu on the home page
-  var MENUS = { weekday: "Weekday recipes", weekend: "Weekend recipes", festival: "Festival recipes" };
+  var MENUS = { weekday: "Weekday recipes", weekend: "Weekend recipes", festival: "Festival recipes", kids: "Kids recipes" };
   var back = document.querySelector(".sitebar .back");
   var endback = document.getElementById("endback");
   if (MENUS[R.menu]) {
