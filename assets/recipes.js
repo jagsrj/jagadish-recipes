@@ -65,6 +65,19 @@ window.RECIPES = [
     tags: ["Fish", "Seafood", "Gravy", "South Indian"]
   },
   {
+    slug: "mutton-kuzhambu",
+    menu: "weekend",
+    title: "Mutton Kuzhambu (Kari Kuzhambu)",
+    tamil: "ஆட்டுக்கறி குழம்பு",
+    kicker: "Tamil Nadu village style",
+    author: "Jagadish",
+    emoji: "🍖",
+    blurb: "Sunday-style bone-in goat gravy with a roasted coconut, pepper and fennel masala in sesame oil. Scales to your mutton weight.",
+    time: "1 h 30 min",
+    nutrition: { protein: 31, carbs: 18, fiber: 6, netCarbs: 12, goodFatPct: 71 },
+    tags: ["Mutton", "Goat", "Gravy", "South Indian"]
+  },
+  {
     slug: "keerai-chicken",
     menu: "weekday",
     title: "Keerai Chicken (Spinach Chicken)",
