@@ -72,6 +72,8 @@ window.RECIPES = [
     kicker: "Tamil Nadu village style",
     author: "Jagadish",
     emoji: "🍖",
+    image: "/images/mutton-kuzhambu-card.jpg",
+    hero: "/images/mutton-kuzhambu.jpg",
     blurb: "Sunday-style bone-in goat gravy with a roasted coconut, pepper and fennel masala in sesame oil. Scales to your mutton weight.",
     time: "1 h 30 min",
     nutrition: { protein: 31, carbs: 18, fiber: 6, netCarbs: 12, goodFatPct: 71 },
