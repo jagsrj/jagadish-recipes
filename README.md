@@ -36,6 +36,10 @@ Then run `python3 tools/make-webp.py` to make smaller WebP copies (browsers that
 
 **Shooting tips:** take photos in daylight near a window with no flash, shoot from directly above or at 45°, use a dark wooden board or a banana leaf underneath, and add a garnish and a side dish to the frame.
 
+## Logo
+
+The Spice Sticker logo lives in `images/`: `logo.svg` (full badge, used on the home page), `logo-badge.svg` (small badge in the top bar, set in `assets/style.css` on `.brand`), `favicon.svg` / `favicon.png`, and the app icons `icon-192.png`, `icon-512.png`, `apple-touch-icon.png`. All text in them is drawn as shapes, so they look the same everywhere. To rebuild them, download Bagel Fat One from Google Fonts and run `python3 tools/make-logo.py BagelFatOne-Regular.ttf images` (needs `fonttools` and `rsvg-convert`). Brand colours: chili #FF4F2E, sunny #FFE14D, curry leaf #2F8F4E, pepper #1E1B16, rice #FFF8EE.
+
 ## Preview locally
 
 ```

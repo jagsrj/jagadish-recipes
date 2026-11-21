@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Bagel+Fat+One&display=swap");
 :root {
   --bg: #fbf6ef; --card: #ffffff; --ink: #2b1d14; --muted: #7a6455;
   --accent: #b5401f; --accent-soft: #f6e3d6; --line: #eadccf; --ok: #4f7a3a;
@@ -22,17 +23,24 @@ a { color: var(--accent); }
   padding: 10px max(18px, calc((100% - 964px) / 2)); min-height: 56px;
   background: color-mix(in srgb, var(--bg) 88%, transparent); -webkit-backdrop-filter: saturate(1.6) blur(14px); backdrop-filter: saturate(1.6) blur(14px);
   border-bottom: 1px solid var(--line); }
-.brand { font-family: Georgia, "Times New Roman", serif; font-weight: 700; font-size: 1.15rem; text-decoration: none; color: var(--ink); }
+.brand { display: inline-flex; align-items: center; gap: 10px; font-family: "Bagel Fat One", Georgia, serif; font-weight: 400; font-size: 1.2rem;
+  line-height: 1.1; text-decoration: none; color: var(--ink); }
+.brand::before { content: ""; flex: none; width: 42px; height: 42px; background: url("/images/logo-badge.svg") center / contain no-repeat;
+  transition: transform .25s; }
+.brand:hover::before { transform: rotate(-12deg) scale(1.06); }
 .brand span { color: var(--accent); }
 .back { order: -1; display: inline-flex; align-items: center; gap: 4px; font-size: .95rem; text-decoration: none; font-weight: 700;
   padding: 7px 14px 7px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); white-space: nowrap; }
 .back span { font-size: 1.35rem; line-height: 1; margin-top: -2px; }
 .back:active { transform: scale(.97); }
 .sitebar:has(.back) .brand { font-size: 1rem; text-align: right; }
+.sitebar:has(.back) .brand::before { width: 34px; height: 34px; }
+@media (max-width: 420px) { .sitebar:has(.back) .brand::before { display: none; } }
 
 /* home */
 .hero { text-align: center; padding: 30px 0 18px; }
-.hero h1 { font-family: Georgia, serif; font-size: clamp(2rem, 6vw, 3rem); margin: 0 0 6px; line-height: 1.1; }
+.hero-logo { display: block; width: 190px; height: 190px; margin: 0 auto 10px; transform: rotate(-6deg); }
+.hero h1 { font-family: "Bagel Fat One", Georgia, serif; font-weight: 400; font-size: clamp(2rem, 6vw, 3rem); margin: 0 0 6px; line-height: 1.1; }
 .hero p { color: var(--muted); margin: 0 auto; max-width: 520px; }
 .search {
   display: block; width: 100%; max-width: 460px; margin: 20px auto 26px; font-size: 1rem;

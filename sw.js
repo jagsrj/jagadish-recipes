@@ -2,12 +2,12 @@
 // or no kitchen Wi-Fi. Pages and scripts always try the network first (so updates show up
 // straight away) and fall back to the saved copy; photos come from the saved copy first.
 // All recipe pages are saved in the background the first time someone visits.
-const VERSION = "v1";
+const VERSION = "v2";
 const CORE = "core-" + VERSION, PAGES = "pages-" + VERSION, IMAGES = "images-" + VERSION;
 const CORE_FILES = [
   "/", "/plan/", "/404.html", "/manifest.webmanifest",
   "/assets/style.css", "/assets/recipe-engine.js", "/assets/recipes.js", "/assets/planner.js",
-  "/images/favicon.png", "/images/icon-192.png"
+  "/images/favicon.png", "/images/icon-192.png", "/images/logo-badge.svg"
 ];
 
 self.addEventListener("install", (e) => {
