@@ -35,6 +35,19 @@ window.RECIPES = [
     tags: ["Chicken", "Biryani", "Rice", "South Indian"]
   },
   {
+    slug: "hyderabadi-chicken-biryani",
+    menu: "weekend",
+    title: "Hyderabadi Chicken Biryani",
+    tamil: "ஹைதராபாத் சிக்கன் பிரியாணி",
+    kicker: "Kacchi dum",
+    author: "Jagadish",
+    emoji: "🍗",
+    blurb: "Raw chicken marinated overnight with crisp birista and mint, layered under saffron basmati and slow-cooked on dum.",
+    time: "3 h 25 min",
+    nutrition: { protein: 36, carbs: 88, fiber: 5, netCarbs: 83, goodFatPct: 65 },
+    tags: ["Chicken", "Biryani", "Rice", "Hyderabadi"]
+  },
+  {
     slug: "nandu-kuzhambu",
     menu: "weekend",
     title: "Nandu Kuzhambu (Crab Gravy)",
