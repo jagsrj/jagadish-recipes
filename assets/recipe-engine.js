@@ -154,57 +154,90 @@
     else prompt("Copy this link:", data.url);
   });
   // ---------- ask about this recipe ----------
-  (function () {
-    var log = document.getElementById("asklog"), form = document.getElementById("askform"), input = document.getElementById("askq"),
-        send = document.getElementById("asksend"), chips = document.getElementById("askchips"), history = [];
+  // One conversation per page, shared by the box at the bottom, the "Ask" on each step and the
+  // Ask sheet in cook mode. askAt.step says which step the cook is on, so answers fit that moment.
+  var askAt = { step: null };
+  var askChat = (function () {
+    var history = [], busy = false;
     var defaults = R.menu === "festival"
       ? ["How do I know the oil is at the right temperature?", "How long will these keep?", "What can I substitute if I'm missing something?"]
       : ["How can I make it less spicy?", "What can I substitute if I'm missing something?", "How do I store and reheat leftovers?"];
     var ideas = (R.askIdeas || []).concat(defaults).slice(0, 3);
-    chips.innerHTML = ideas.map(function (q) { return "<button type='button' class='chip ask-idea'>" + esc(q) + "</button>"; }).join("");
-    chips.addEventListener("click", function (e) { var b = e.target.closest(".ask-idea"); if (b) { input.value = b.textContent; ask(); } });
-    form.addEventListener("submit", function (e) { e.preventDefault(); ask(); });
-    var fab = document.createElement("a");
-    fab.href = "#ask"; fab.className = "ask-fab"; fab.textContent = "💬 Ask"; fab.setAttribute("aria-label", "Ask a question about this recipe");
-    fab.addEventListener("click", function (e) { e.preventDefault(); document.getElementById("ask").scrollIntoView({ behavior: "smooth" }); setTimeout(function () { input.focus(); }, 450); });
-    document.body.appendChild(fab);
-    if ("IntersectionObserver" in window) new IntersectionObserver(function (en) { fab.classList.toggle("hide", en[0].isIntersecting); }).observe(document.getElementById("ask"));
     function fmt(t) {
       return esc(t).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/^\s*[-*•]\s+/gm, "• ").replace(/\n/g, "<br>");
     }
     function context() {
       var amt = document.getElementById("amt").value, unit = isWeight ? " " + state.unit : (scale.unitLabel ? " " + scale.unitLabel : " servings");
       var heat = R.spiceLevels ? (state.spice < 1 ? "Mild" : state.spice > 1 ? "Hot" : "Medium") : "";
-      return "Recipe: " + R.title + (R.native ? " (" + R.native + ")" : "") + "\nCooking: " + amt + unit + (heat ? ", heat " + heat : "") +
+      var n = R.steps.length, at = askAt.step;
+      var where = at == null ? "" : at >= n ? "\nThe cook has finished all the steps and is serving or storing the dish."
+        : "\nThe cook is on step " + (at + 1) + " of " + n + " (" + R.steps[at].t + "). Assume the question is about this step unless it clearly isn't.";
+      return "Recipe: " + R.title + (R.native ? " (" + R.native + ")" : "") + "\nCooking: " + amt + unit + (heat ? ", heat " + heat : "") + where +
         "\n\nINGREDIENTS\n" + document.getElementById("ingredients").innerText +
-        "\n\nMETHOD\n" + document.getElementById("steps").innerText.replace(/▶ Start [^\n]+ timer/g, "") +
+        "\n\nMETHOD\n" + document.getElementById("steps").innerText.replace(/▶ Start [^\n]+ timer/g, "").replace(/ ?💬 Ask about this step/g, "") +
         (document.getElementById("tips") ? "\n\nTIPS\n" + document.getElementById("tips").innerText : "");
     }
-    function ask() {
-      var q = input.value.trim();
-      if (q.length < 3 || send.disabled) return;
-      if (history.length >= 15) { log.insertAdjacentHTML("beforeend", "<div class='msg bot'>That's the limit for this page. Reload the page to start a new conversation.</div>"); return; }
-      input.value = ""; send.disabled = true; chips.style.display = "none";
-      log.insertAdjacentHTML("beforeend", "<div class='msg me'>" + esc(q) + "</div>");
-      var bubble = document.createElement("div"); bubble.className = "msg bot thinking"; bubble.textContent = "Thinking…"; log.appendChild(bubble);
+    var logs = [], uis = [];
+    function setBusy(b) { busy = b; uis.forEach(function (u) { u.send.disabled = b; }); }
+    function post(html, cls) {
+      var nodes = logs.map(function (l) { var d = document.createElement("div"); d.className = "msg " + cls; d.innerHTML = html; l.appendChild(d); l.scrollTop = l.scrollHeight; return d; });
+      return { set: function (h, c) { nodes.forEach(function (d) { d.className = "msg " + c; d.innerHTML = h; d.parentNode.scrollTop = d.parentNode.scrollHeight; }); } };
+    }
+    // Wire up one question box: { log, form, input, send, chips, ideas? }
+    function attach(ui) {
+      logs.push(ui.log); uis.push(ui);
+      ui.setIdeas = function (list) {
+        ui.chips.innerHTML = list.map(function (q) { return "<button type='button' class='chip ask-idea'>" + esc(q) + "</button>"; }).join("");
+        ui.chips.style.display = "";
+      };
+      ui.setIdeas(ui.ideas || ideas);
+      ui.chips.addEventListener("click", function (e) { var b = e.target.closest(".ask-idea"); if (b) { ui.input.value = b.textContent; ask(ui); } });
+      ui.form.addEventListener("submit", function (e) { e.preventDefault(); ask(ui); });
+      return ui;
+    }
+    function ask(ui) {
+      var q = ui.input.value.trim();
+      if (q.length < 3 || busy) return;
+      if (history.length >= 15) { post("That's the limit for this page. Reload the page to start a new conversation.", "bot"); return; }
+      ui.input.value = ""; setBusy(true); ui.chips.style.display = "none";
+      var tag = askAt.step != null && askAt.step < R.steps.length ? "<span class='msg-step'>Step " + (askAt.step + 1) + "</span>" : "";
+      post(tag + esc(q), "me");
+      var bubble = post("Thinking…", "bot thinking");
       fetch("/api/ask", { method: "POST", headers: { "content-type": "application/json" },
         body: JSON.stringify({ question: q, recipe: context(), slug: R.slug, history: history }) })
         .then(function (r) { return r.json().catch(function () { return { error: "unavailable" }; }); })
         .then(function (d) {
-          bubble.classList.remove("thinking");
-          if (d.answer) { bubble.innerHTML = fmt(d.answer); history.push({ q: q, a: d.answer }); }
-          else bubble.textContent = ({
+          if (d.answer) { bubble.set(fmt(d.answer), "bot"); history.push({ q: q, a: d.answer }); return; }
+          bubble.set(esc(({
             not_configured: "The recipe assistant isn't switched on yet. Please check back soon.",
             rate_limited: d.scope === "minute" ? "That's a lot of questions at once. Please wait a minute and try again."
                         : d.scope === "site" ? "The assistant has had a busy day. Please try again tomorrow."
                         : "You've reached today's limit for questions. Please try again tomorrow.",
             forbidden: "Please ask from the recipe page on this site.",
             empty: "Please type a question first."
-          })[d.error] || "Sorry, I couldn't answer that right now. Please try again in a minute.";
+          })[d.error] || "Sorry, I couldn't answer that right now. Please try again in a minute."), "bot");
         })
-        .catch(function () { bubble.classList.remove("thinking"); bubble.textContent = "You seem to be offline. Try again when you're connected."; })
-        .then(function () { send.disabled = false; });
+        .catch(function () { bubble.set("You seem to be offline. Try again when you're connected.", "bot"); })
+        .then(function () { setBusy(false); });
     }
+    var main = attach({ log: document.getElementById("asklog"), form: document.getElementById("askform"), input: document.getElementById("askq"),
+      send: document.getElementById("asksend"), chips: document.getElementById("askchips") });
+    function goToBox(step) {
+      askAt.step = step;
+      main.input.placeholder = step == null ? "e.g. Is my gravy too thick?" : "Your question about step " + (step + 1) + "…";
+      document.getElementById("ask").scrollIntoView({ behavior: "smooth" });
+      setTimeout(function () { main.input.focus({ preventScroll: true }); }, 450);
+    }
+    var fab = document.createElement("a");
+    fab.href = "#ask"; fab.className = "ask-fab"; fab.textContent = "💬 Ask"; fab.setAttribute("aria-label", "Ask a question about this recipe");
+    fab.addEventListener("click", function (e) { e.preventDefault(); goToBox(null); });
+    document.body.appendChild(fab);
+    if ("IntersectionObserver" in window) new IntersectionObserver(function (en) { fab.classList.toggle("hide", en[0].isIntersecting); }).observe(document.getElementById("ask"));
+    // "Ask about this step" buttons in the method list (the list is redrawn when amounts change)
+    document.getElementById("steps").addEventListener("click", function (e) {
+      var b = e.target.closest(".step-ask"); if (b) goToBox(parseInt(b.dataset.i, 10));
+    });
+    return { attach: attach };
   })();
 
   document.getElementById("totop").addEventListener("click", function (e) { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); });
@@ -218,11 +251,40 @@
   (function () {
     var ov = document.createElement("div");
     ov.className = "cook"; ov.setAttribute("role", "dialog"); ov.setAttribute("aria-modal", "true"); ov.setAttribute("aria-label", "Cook mode"); ov.hidden = true;
-    ov.innerHTML = "<div class='cook-top'><span id='cookpos'></span><button type='button' class='cook-x' id='cookx' aria-label='Close cook mode'>✕</button></div>" +
+    ov.innerHTML = "<div class='cook-top'><span id='cookpos'></span><span class='cook-tools'><button type='button' class='cook-ask' id='cookask' aria-haspopup='dialog' aria-controls='cooksheet'>💬 Ask</button>" +
+      "<button type='button' class='cook-x' id='cookx' aria-label='Close cook mode'>✕</button></span></div>" +
       "<div class='cook-bar'><i id='cookbar'></i></div>" +
       "<div class='cook-body' id='cookbody' aria-live='polite'></div>" +
-      "<div class='cook-nav'><button type='button' class='btn ghost' id='cookprev'>← Back</button><button type='button' class='btn' id='cooknext'>Next →</button></div>";
+      "<div class='cook-nav'><button type='button' class='btn ghost' id='cookprev'>← Back</button><button type='button' class='btn' id='cooknext'>Next →</button></div>" +
+      "<div class='cook-sheet' id='cooksheet' role='dialog' aria-label='Ask about this step' hidden>" +
+        "<div class='cook-sheet-top'><b id='cooksheett'>Ask about this step</b><button type='button' class='cook-x' id='cooksheetx' aria-label='Close questions'>✕</button></div>" +
+        "<div class='ask-log' id='cooklog' aria-live='polite'></div>" +
+        "<div class='ask-chips' id='cookchips'></div>" +
+        "<form class='ask-form' id='cookform'><input id='cookq' type='text' maxlength='400' autocomplete='off' placeholder='Ask anything about this step' aria-label='Your question'>" +
+        "<button class='btn' type='submit' id='cooksend'>Ask</button></form>" +
+        "<p class='note ask-foot'>AI answers can be wrong, so use your judgement, especially about food safety.</p></div>";
     document.body.appendChild(ov);
+    var sheet = document.getElementById("cooksheet");
+    var cookUi = askChat.attach({ log: document.getElementById("cooklog"), form: document.getElementById("cookform"), input: document.getElementById("cookq"),
+      send: document.getElementById("cooksend"), chips: document.getElementById("cookchips"), ideas: [] });
+    function stepIdeas() {
+      if (cook.i >= cook.steps.length) return ["How do I store and reheat leftovers?", "What goes well with this?", "How long will it keep in the fridge?"];
+      var s = cook.steps[cook.i], list = [];
+      list.push(s.min >= 3 ? "How do I know this step is done?" : "What should it look like now?");
+      list.push("Something went wrong. How do I fix it?");
+      list.push(cook.i < cook.steps.length - 1 ? "Can I prepare the next step meanwhile?" : "How long should it rest before serving?");
+      return list;
+    }
+    function openSheet() {
+      askAt.step = cook.i;
+      document.getElementById("cooksheett").textContent = cook.i >= cook.steps.length ? "Ask about serving" : "Ask about step " + (cook.i + 1);
+      cookUi.setIdeas(stepIdeas());
+      sheet.hidden = false; ov.classList.add("asking");
+      setTimeout(function () { cookUi.input.focus(); }, 50);
+    }
+    function closeSheet() { sheet.hidden = true; ov.classList.remove("asking"); document.getElementById("cookask").focus(); }
+    document.getElementById("cookask").addEventListener("click", function () { if (sheet.hidden) openSheet(); else closeSheet(); });
+    document.getElementById("cooksheetx").addEventListener("click", closeSheet);
     var body = document.getElementById("cookbody"), key = "cookstep:" + R.slug;
     cook.draw = function () {
       var n = cook.steps.length; if (!n) return;
@@ -246,6 +308,7 @@
       tickTimers();
     };
     function go(d) {
+      if (!sheet.hidden) closeSheet();
       if (d > 0 && cook.i < cook.steps.length) { doneSteps[cook.i] = true; try { sessionStorage.setItem(doneKey, JSON.stringify(doneSteps)); } catch (e) {} }
       if (d > 0 && cook.i >= cook.steps.length) { close(); document.getElementById("made").scrollIntoView({ behavior: "smooth" }); return; }
       cook.i += d; cook.draw();
@@ -259,6 +322,7 @@
     }
     function close() {
       cook.open = false; ov.hidden = true; document.documentElement.classList.remove("cooking");
+      sheet.hidden = true; ov.classList.remove("asking"); askAt.step = null;
       keepAwake(hasRunning()); render();
     }
     document.getElementById("cookbtn").addEventListener("click", open);
@@ -267,10 +331,12 @@
     document.getElementById("cooknext").addEventListener("click", function () { go(1); });
     document.addEventListener("keydown", function (e) {
       if (!cook.open) return;
+      if (!sheet.hidden) { if (e.key === "Escape") closeSheet(); return; }
+      if (e.target.closest && e.target.closest("input, textarea")) return;
       if (e.key === "ArrowRight") go(1); else if (e.key === "ArrowLeft") go(-1); else if (e.key === "Escape") close();
     });
     var x0 = null, y0 = null;
-    ov.addEventListener("touchstart", function (e) { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+    ov.addEventListener("touchstart", function (e) { if (!sheet.hidden) { x0 = null; return; } x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
     ov.addEventListener("touchend", function (e) {
       if (x0 == null) return;
       var dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0; x0 = null;
@@ -412,7 +478,8 @@
       if (used) txt += "<div class='uses'><span class='uses-h'>In this step</span>" + used + "</div>";
       cook.steps.push({ t: s.t, min: m, html: txt, sec: Math.round(m * 60) });
       sh += "<li" + (doneSteps[i] ? " class='done'" : "") + "><button type='button' class='stepno' data-step='" + i + "' aria-label='Mark step " + (i + 1) + " done'>" + (i + 1) + "</button><span class='st'>" + esc(s.t) + " · " + fmtMin(m) + "</span>" + txt +
-            "<br><button class='timer' data-i='" + i + "' data-sec='" + Math.round(m * 60) + "'>▶ Start " + fmtMin(m) + " timer</button></li>";
+            "<br><button class='timer' data-i='" + i + "' data-sec='" + Math.round(m * 60) + "'>▶ Start " + fmtMin(m) + " timer</button>" +
+            " <button type='button' class='step-ask' data-i='" + i + "'>💬 Ask about this step</button></li>";
     });
     document.getElementById("steps").innerHTML = sh;
     document.querySelectorAll("#steps .timer").forEach(function (b) { b.addEventListener("click", toggleTimer); });
