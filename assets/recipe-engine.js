@@ -305,10 +305,17 @@
       var s = cook.steps[cook.i];
       var isDone = !!doneSteps[cook.i];
       document.getElementById("cookpos").textContent = "Step " + (cook.i + 1) + " of " + n + (isDone ? " · ✓ done" : "");
-      body.innerHTML = "<h2>" + esc(s.t) + "</h2><div class='cook-text'>" + s.html + "</div>" +
+      var prev = "";
+      if (cook.i > 0) {
+        var pd = !!doneSteps[cook.i - 1];
+        prev = "<button type='button' class='cook-prev" + (pd ? " ok" : "") + "' id='cookprevstep'>" +
+          (pd ? "✓ Step " + cook.i + " completed" : "Step " + cook.i + " not marked done") + " · " + esc(cook.steps[cook.i - 1].t) + "</button>";
+      }
+      body.innerHTML = prev + "<h2>" + esc(s.t) + "</h2><div class='cook-text'>" + s.html + "</div>" +
         "<div class='cook-row'><button class='timer big' data-i='" + cook.i + "' data-sec='" + s.sec + "'>▶ Start " + fmtMin(s.min) + " timer</button>" +
         "<button type='button' class='cook-mark" + (isDone ? " on" : "") + "' id='cookmark'>" + (isDone ? "✓ Done · undo" : "✓ Mark done") + "</button></div>";
       body.querySelector(".timer").addEventListener("click", toggleTimer);
+      if (prev) document.getElementById("cookprevstep").addEventListener("click", function () { cook.i -= 1; cook.draw(); });
       document.getElementById("cookmark").addEventListener("click", function () {
         var i = cook.i;
         if (doneSteps[i]) { delete doneSteps[i]; try { sessionStorage.setItem(doneKey, JSON.stringify(doneSteps)); } catch (e) {} cook.draw(); return; }
