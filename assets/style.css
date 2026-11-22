@@ -262,8 +262,11 @@ html.cooking, html.cooking body { overflow: hidden; }
 html.cooking .timer-pill, html.cooking .ask-fab { display: none !important; }
 .cook-top { display: flex; justify-content: space-between; align-items: center; font-weight: 700; color: var(--muted); }
 .cook-x { font-size: 1.4rem; border: 0; background: var(--accent-soft); color: var(--accent); width: 44px; height: 44px; border-radius: 50%; cursor: pointer; }
-.cook-bar { height: 6px; background: var(--line); border-radius: 99px; margin: 12px 0 8px; overflow: hidden; }
-.cook-bar i { display: block; height: 100%; background: var(--accent); transition: width .3s; }
+.cook-bar { display: flex; gap: 4px; margin: 12px 0 8px; }
+.cook-bar button { flex: 1; min-width: 0; height: 10px; padding: 0; border: 0; border-radius: 99px; cursor: pointer; transition: background .25s; }
+.cook-bar .seg-done { background: var(--ok); }
+.cook-bar .seg-cur { background: #f5c400; box-shadow: 0 0 0 2px color-mix(in srgb, #f5c400 35%, transparent); }
+.cook-bar .seg-todo { background: #e0533a; opacity: .8; }
 .cook-body { flex: 1; overflow-y: auto; max-width: 760px; width: 100%; margin: 0 auto; padding: 10px 0; }
 .cook-body h2 { font-family: Georgia, serif; font-size: clamp(1.6rem, 5vw, 2.4rem); margin: 8px 0 14px; }
 .cook-text { font-size: clamp(1.25rem, 4.2vw, 1.6rem); line-height: 1.5; }

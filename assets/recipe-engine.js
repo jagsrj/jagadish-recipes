@@ -257,7 +257,7 @@
     ov.className = "cook"; ov.setAttribute("role", "dialog"); ov.setAttribute("aria-modal", "true"); ov.setAttribute("aria-label", "Cook mode"); ov.hidden = true;
     ov.innerHTML = "<div class='cook-top'><span id='cookpos'></span><span class='cook-tools'><button type='button' class='cook-ask' id='cookask' aria-haspopup='dialog' aria-controls='cooksheet'>💬 Ask</button>" +
       "<button type='button' class='cook-x' id='cookx' aria-label='Close cook mode'>✕</button></span></div>" +
-      "<div class='cook-bar'><i id='cookbar'></i></div>" +
+      "<div class='cook-bar' id='cookbar' role='group' aria-label='Steps'></div>" +
       "<div class='cook-body' id='cookbody' aria-live='polite'></div>" +
       "<div class='cook-nav'><button type='button' class='btn ghost' id='cookprev'>← Back</button><button type='button' class='btn' id='cooknext'>Next →</button></div>" +
       "<div class='cook-sheet' id='cooksheet' role='dialog' aria-label='Ask about this step' hidden>" +
@@ -293,7 +293,14 @@
     cook.draw = function () {
       var n = cook.steps.length; if (!n) return;
       cook.i = Math.max(0, Math.min(n, cook.i));
-      document.getElementById("cookbar").style.width = (Math.min(cook.i + 1, n) / n * 100) + "%";
+      // One segment per step: green = done, yellow = current, red = not done yet. Tap one to jump to it.
+      var bar = document.getElementById("cookbar"), segs = "";
+      for (var k = 0; k < n; k++) {
+        var st = k === cook.i ? "cur" : doneSteps[k] ? "done" : "todo";
+        segs += "<button type='button' class='seg-" + st + "' data-k='" + k + "' aria-label='Step " + (k + 1) + ": " +
+          (st === "cur" ? "current" : st === "done" ? "done" : "not done") + "'></button>";
+      }
+      bar.innerHTML = segs;
       document.getElementById("cookprev").disabled = cook.i === 0;
       var next = document.getElementById("cooknext");
       if (cook.i >= n) {
@@ -347,6 +354,11 @@
     }
     document.getElementById("cookbtn").addEventListener("click", open);
     document.getElementById("cookx").addEventListener("click", close);
+    document.getElementById("cookbar").addEventListener("click", function (e) {
+      var b = e.target.closest("[data-k]"); if (!b) return;
+      if (!sheet.hidden) closeSheet();
+      cook.i = parseInt(b.dataset.k, 10); cook.draw();
+    });
     document.getElementById("cookprev").addEventListener("click", function () { go(-1); });
     document.getElementById("cooknext").addEventListener("click", function () { go(1); });
     document.addEventListener("keydown", function (e) {
