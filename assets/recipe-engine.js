@@ -320,8 +320,18 @@
       }
       body.innerHTML = prev + "<h2>" + esc(s.t) + "</h2><div class='cook-text'>" + s.html + "</div>" +
         "<div class='cook-row'><button class='timer big' data-i='" + cook.i + "' data-sec='" + s.sec + "'>▶ Start " + fmtMin(s.min) + " timer</button>" +
-        "<button type='button' class='cook-mark" + (isDone ? " on" : "") + "' id='cookmark'>" + (isDone ? "✓ Done · undo" : "✓ Mark done") + "</button></div>";
+        "<button type='button' class='cook-mark" + (isDone ? " on" : "") + "' id='cookmark'>" + (isDone ? "✓ Done · undo" : "✓ Mark done") + "</button></div>" +
+        "<div class='cook-extra'><span>Need more time?</span>" + [1, 2, 4, 5].map(function (m) {
+          return "<button type='button' data-add='" + m + "'>+" + m + " min</button>"; }).join("") + "</div>";
       body.querySelector(".timer").addEventListener("click", toggleTimer);
+      // Extra time: adds to this step's running timer, or starts a new one for just the extra minutes.
+      body.querySelector(".cook-extra").addEventListener("click", function (e) {
+        var b = e.target.closest("[data-add]"); if (!b) return;
+        var i = String(cook.i), add = parseInt(b.dataset.add, 10) * 60000, now = Date.now(), t = T[i];
+        if (t && !t.done) t.end += add; else T[i] = { end: now + add };
+        unlockAudio(); saveTimers(); tickTimers();
+        b.classList.add("added"); setTimeout(function () { b.classList.remove("added"); }, 600);
+      });
       if (prev) document.getElementById("cookprevstep").addEventListener("click", function () { cook.i -= 1; cook.draw(); });
       document.getElementById("cookmark").addEventListener("click", function () {
         var i = cook.i;

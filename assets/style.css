@@ -278,6 +278,10 @@ html.cooking .timer-pill, html.cooking .ask-fab { display: none !important; }
 .cook-prev.ok { background: color-mix(in srgb, var(--ok) 16%, transparent); color: var(--ok); }
 .cook-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; align-items: center; }
 .cook-row .timer.big { margin-top: 0; }
+.cook-extra { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 16px; color: var(--muted); font-weight: 600; }
+.cook-extra button { font: inherit; font-weight: 700; font-size: 1rem; padding: 8px 14px; border-radius: 999px; cursor: pointer;
+  border: 1.5px solid var(--line); background: var(--card); color: var(--ink); transition: background .2s, color .2s; }
+.cook-extra button.added { background: var(--accent); color: #fff; border-color: var(--accent); }
 .cook-mark { font: inherit; font-size: 1.15rem; font-weight: 700; padding: 12px 22px; border-radius: 999px; cursor: pointer;
   border: 1.5px solid var(--ok); background: transparent; color: var(--ok); }
 .cook-mark.on { background: var(--ok); color: #fff; }
