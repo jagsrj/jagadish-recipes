@@ -268,7 +268,12 @@ html.cooking .timer-pill, html.cooking .ask-fab { display: none !important; }
 .cook-body h2 { font-family: Georgia, serif; font-size: clamp(1.6rem, 5vw, 2.4rem); margin: 8px 0 14px; }
 .cook-text { font-size: clamp(1.25rem, 4.2vw, 1.6rem); line-height: 1.5; }
 .cook-text .uses { margin-top: 14px; font-size: 1rem; }
-.timer.big { font-size: 1.15rem; padding: 12px 22px; margin-top: 22px; }
+.timer.big { font-size: 1.15rem; padding: 12px 22px; }
+.cook-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; align-items: center; }
+.cook-row .timer.big { margin-top: 0; }
+.cook-mark { font: inherit; font-size: 1.15rem; font-weight: 700; padding: 12px 22px; border-radius: 999px; cursor: pointer;
+  border: 1.5px solid var(--ok); background: transparent; color: var(--ok); }
+.cook-mark.on { background: var(--ok); color: #fff; }
 .cook-nav { display: flex; gap: 12px; max-width: 760px; width: 100%; margin: 0 auto; }
 .cook-nav .btn { flex: 1; font-size: 1.15rem; padding: 16px; }
 .cook-nav .btn:disabled { opacity: .35; }

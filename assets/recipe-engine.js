@@ -303,10 +303,19 @@
         next.textContent = "Finish"; return;
       }
       var s = cook.steps[cook.i];
-      document.getElementById("cookpos").textContent = "Step " + (cook.i + 1) + " of " + n;
+      var isDone = !!doneSteps[cook.i];
+      document.getElementById("cookpos").textContent = "Step " + (cook.i + 1) + " of " + n + (isDone ? " · ✓ done" : "");
       body.innerHTML = "<h2>" + esc(s.t) + "</h2><div class='cook-text'>" + s.html + "</div>" +
-        "<button class='timer big' data-i='" + cook.i + "' data-sec='" + s.sec + "'>▶ Start " + fmtMin(s.min) + " timer</button>";
+        "<div class='cook-row'><button class='timer big' data-i='" + cook.i + "' data-sec='" + s.sec + "'>▶ Start " + fmtMin(s.min) + " timer</button>" +
+        "<button type='button' class='cook-mark" + (isDone ? " on" : "") + "' id='cookmark'>" + (isDone ? "✓ Done · undo" : "✓ Mark done") + "</button></div>";
       body.querySelector(".timer").addEventListener("click", toggleTimer);
+      document.getElementById("cookmark").addEventListener("click", function () {
+        var i = cook.i;
+        if (doneSteps[i]) { delete doneSteps[i]; try { sessionStorage.setItem(doneKey, JSON.stringify(doneSteps)); } catch (e) {} cook.draw(); return; }
+        // Done already (e.g. used ready-made birista): stop this step's timer and move on.
+        if (T[i] && !T[i].done) { delete T[i]; saveTimers(); }
+        go(1);
+      });
       next.textContent = cook.i === n - 1 ? "Finish →" : "Next →";
       try { localStorage.setItem(key, String(cook.i)); } catch (e) {}
       tickTimers();
