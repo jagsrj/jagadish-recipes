@@ -64,7 +64,7 @@ Then open http://localhost:3000. Paths start with `/`, so open the pages through
 
 ## Recipe assistant ("Ask about this recipe")
 
-Each recipe page has a question box backed by `functions/api/ask.js`, plus an **💬 Ask about this step** button under every method step and an **💬 Ask** button in Cook mode that opens a question sheet over the current step (with step-specific suggested questions). All of them share one conversation, and the question is sent with which step the cook is on, so answers fit that moment. The box which sends the question plus the recipe (with the visitor's current quantities) to Cloudflare Workers AI.
+Each recipe page has a question box backed by `functions/api/ask.js`, plus an **💬 Ask about this step** button under every method step and an **💬 Ask** button in Cook mode that opens a question sheet over the current step (with step-specific suggested questions). All of them share one conversation, and the question is sent with which step the cook is on, so answers fit that moment. Questions are sent with the recipe the recipe (with the visitor's current quantities) to Cloudflare Workers AI.
 
 Guardrails (see the top of `functions/api/ask.js`): same-site requests only, rate limits (6 a minute and 40 a day per visitor, 500 a day site-wide), input length limits, recipe must be one of ours, Llama Guard safety screen on questions, a cooking-only system prompt that treats the recipe text as data, and links/markup stripped from answers.
 
