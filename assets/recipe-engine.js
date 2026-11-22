@@ -596,7 +596,7 @@
       b.classList.toggle("running", !!(t && !t.done));
       b.classList.toggle("finished", !!(t && t.done));
       if (t && !t.done) b.textContent = "⏸ " + mmss(Math.ceil((t.end - now) / 1000)) + " · tap to stop";
-      else if (t && t.done) b.textContent = "✓ Done · tap to restart";
+      else if (t && t.done) b.textContent = "⏰ Time's up · tap to restart";
       else if (!/Restart/.test(b.textContent)) b.textContent = "▶ Start " + fmtMin(parseInt(b.dataset.sec, 10) / 60) + " timer";
     });
     running.sort(function (a, b2) { return a.left - b2.left; });
