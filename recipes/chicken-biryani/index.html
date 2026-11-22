@@ -127,7 +127,7 @@ window.RECIPE = {
   title: "Chennai-Style Chicken Biryani",
   native: "சிக்கன் பிரியாணி · Jabbar Bhai style",
   author: "Jagadish",
-  intro: "A spicy Chennai biryani made the Jabbar Bhai way. The chicken is cooked into a mint-chili masala, the rice is boiled to 75% done, and the two finish together on dum. Our twist is an extra spoon of sambar powder. Enter your chicken weight or how many people you're feeding, and everything scales to match.",
+  intro: "A spicy Chennai biryani made the Jabbar Bhai way. The chicken is cooked into a mint-chili masala, the rice is boiled to 75% done, and the two finish together on dum. Our twist is an extra spoon of sambar powder. Enter your chicken weight and how many people you're feeding: the masala follows the chicken, and the rice follows the people.",
   scale: { type: "weight", label: "How much chicken do you have?", baseGrams: 750, defaultUnit: "lb", defaultValue: 1.65, servingsInput: true },
   baseServings: 4,
   spiceLevels: true,
@@ -167,7 +167,7 @@ window.RECIPE = {
       { id: "mwater", name: "water (for the masala)", amt: 0.5, unit: "cup", exp: 0.8 },
       { id: "salt2", name: "salt", amt: 0.5, unit: "tsp", note: "adjust to taste" }
     ]},
-    { title: "Rice (parboiled to 75%)", items: [
+    { title: "Rice (parboiled to 75%)", by: "people", items: [
       { id: "rice", name: "aged basmati rice", amt: 2, unit: "cup" },
       { id: "bwater", name: "water for boiling", amt: 10, unit: "cup", exp: 0.75, note: "plenty, like boiling pasta" },
       { id: "bsalt", name: "salt for the water", amt: 1.5, unit: "tbsp", exp: 0.85 },
@@ -176,14 +176,14 @@ window.RECIPE = {
       { name: "bay leaf", amt: 1, unit: "count", plural: "bay leaves" },
       { name: "cardamom pods", amt: 2, unit: "count" }
     ]},
-    { title: "To finish", items: [
+    { title: "To finish", by: "people", items: [
       { id: "fghee", name: "ghee", amt: 1, unit: "tbsp", exp: 0.85 },
       { id: "herbs", name: "chopped mint and coriander", amt: 2, unit: "tbsp" },
       { name: "fried onions (optional)", amt: 0.25, unit: "cup" }
     ]}
   ],
   steps: [
-    { t: "Soak the rice", uses: ["Rice: aged basmati"], min: 30,
+    { t: "Soak the rice", by: "people", uses: ["Rice: aged basmati"], min: 30,
       txt: "Rinse the {rice} basmati 3–4 times until the water runs clear, then soak it in fresh water." },
     { t: "Marinate the chicken", uses: ["Marinade: bone-in", "Marinade: thick plain yogurt", "Marinade: kashmiri", "Marinade: turmeric", "Marinade: ginger-garlic", "Marinade: lemon", "Marinade: salt"], min: 30, parallel: true,
       txt: "Mix the {chicken} chicken with the yogurt, chili powder, turmeric, ginger-garlic paste, lemon juice and {salt1} salt. Leave it while the rice soaks. An hour or overnight in the fridge is even better." },
@@ -200,11 +200,11 @@ window.RECIPE = {
     { t: "Cook the chicken fully", uses: ["Chicken masala: water", "Chicken masala: salt"], min: 15, exp: 0.4,
       txt: "Add the chicken with all its marinade and stir on high heat for 3 minutes. Add {mwater} water and {salt2} salt, cover, and cook on medium until the chicken is fully cooked. The masala should be thick but still moist, and slightly saltier than you'd like, because the rice will absorb it. Keep it on low heat.",
       bigNote: "With this much chicken, stir from the bottom now and then so it doesn't catch." },
-    { t: "Boil the rice water", uses: ["Rice: water for boiling", "Rice: salt", "Rice: lemon", "Rice: oil", "Rice: bay leaf", "Rice: cardamom"], min: 10, exp: 0.5, parallel: true,
+    { t: "Boil the rice water", by: "people", uses: ["Rice: water for boiling", "Rice: salt", "Rice: lemon", "Rice: oil", "Rice: bay leaf", "Rice: cardamom"], min: 10, exp: 0.5, parallel: true,
       txt: "Meanwhile, bring {bwater} water to a rolling boil in a separate large pot with {bsalt} salt, the lemon juice, oil, bay leaf and cardamom. It should taste like sea water." },
-    { t: "Parboil the rice to 75%", min: 5, exp: 0.15,
+    { t: "Parboil the rice to 75%", by: "people", min: 5, exp: 0.15,
       txt: "Drain the soaked rice and add it to the boiling water. Boil uncovered and start checking at 4 minutes. It's ready when a grain breaks between your fingers but still has a firm white core, and has grown to about ¾ of its full length. Drain it immediately." },
-    { t: "Combine", uses: ["To finish: ghee", "To finish: chopped", "To finish: fried onions"], min: 2,
+    { t: "Combine", by: "people", uses: ["To finish: ghee", "To finish: chopped", "To finish: fried onions"], min: 2,
       txt: "Make sure the chicken masala is bubbling, then spread the hot rice over it. Drizzle {fghee} ghee and scatter {herbs} mint and coriander, plus fried onions if you're using them. Then, Jabbar Bhai style, gently fold the rice into the masala once or twice without breaking the grains.",
       bigNote: "For a big pot, add the rice in two layers with ghee and herbs between them." },
     { t: "Dum (the last 25%)", min: 20, exp: 0.3,

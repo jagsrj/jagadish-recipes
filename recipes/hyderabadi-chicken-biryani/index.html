@@ -123,7 +123,7 @@ window.RECIPE = {
   title: "Hyderabadi Chicken Biryani",
   native: "ஹைதராபாத் சிக்கன் பிரியாணி · Kacchi dum",
   author: "Jagadish",
-  intro: "The king of biryanis, made the proper Hyderabadi kacchi way: the chicken goes into the pot raw, buried in a rich marinade of birista, yogurt and mint, and the basmati goes on top, part-cooked in two stages. Sealed and slow-cooked on dum, the chicken cooks in its own juices while the steam finishes the rice, so every grain soaks up the flavour. Long, separate, saffron-streaked grains on top and juicy masala chicken underneath. Enter your chicken weight or how many people you're feeding, and everything scales to match.",
+  intro: "The king of biryanis, made the proper Hyderabadi kacchi way: the chicken goes into the pot raw, buried in a rich marinade of birista, yogurt and mint, and the basmati goes on top, part-cooked in two stages. Sealed and slow-cooked on dum, the chicken cooks in its own juices while the steam finishes the rice, so every grain soaks up the flavour. Long, separate, saffron-streaked grains on top and juicy masala chicken underneath. Enter your chicken weight and how many people you're feeding: the chicken masala follows the chicken, and the rice follows the people.",
   scale: { type: "weight", label: "How much chicken do you have?", baseGrams: 750, defaultUnit: "lb", defaultValue: 1.65, servingsInput: true },
   baseServings: 4,
   spiceLevels: true,
@@ -153,7 +153,7 @@ window.RECIPE = {
       { id: "moil", name: "the birista frying oil", amt: 2, unit: "tbsp", exp: 0.9 },
       { name: "raw papaya paste (optional)", amt: 1, unit: "tsp", note: "the Hyderabadi tenderiser; skip for overnight marinating" }
     ]},
-    { title: "Rice", items: [
+    { title: "Rice", by: "people", items: [
       { id: "rice", name: "aged basmati rice (long grain)", amt: 2, unit: "cup" },
       { id: "bwater", name: "water for boiling", amt: 12, unit: "cup", exp: 0.75, note: "plenty, like boiling pasta" },
       { id: "bsalt", name: "salt for the water", amt: 2, unit: "tbsp", exp: 0.85, note: "it should taste like the sea" },
@@ -166,12 +166,12 @@ window.RECIPE = {
       { name: "oil", amt: 1, unit: "tsp" }
     ]},
     { title: "Layering and dum", items: [
-      { id: "saffron", name: "saffron strands", amt: 20, unit: "count", exp: 0.8 },
-      { id: "milk", name: "warm milk", amt: 0.25, unit: "cup", exp: 0.85 },
-      { id: "fghee", name: "ghee", amt: 2, unit: "tbsp", exp: 0.85 },
-      { id: "herbs", name: "chopped mint and coriander", amt: 3, unit: "tbsp" },
-      { id: "rwater", name: "hot rice cooking water (saved before draining)", amt: 0.25, unit: "cup", exp: 0.8 },
-      { name: "kewra water or rose water (optional)", amt: 0.25, unit: "tsp" },
+      { id: "saffron", name: "saffron strands", amt: 20, unit: "count", exp: 0.8, by: "people" },
+      { id: "milk", name: "warm milk", amt: 0.25, unit: "cup", exp: 0.85, by: "people" },
+      { id: "fghee", name: "ghee", amt: 2, unit: "tbsp", exp: 0.85, by: "people" },
+      { id: "herbs", name: "chopped mint and coriander", amt: 3, unit: "tbsp", by: "people" },
+      { id: "rwater", name: "hot rice cooking water (saved before draining)", amt: 0.25, unit: "cup", exp: 0.8, by: "people" },
+      { name: "kewra water or rose water (optional)", amt: 0.25, unit: "tsp", by: "people" },
       { id: "dough", name: "atta (wheat flour) + water for a sealing dough", amt: 0.5, unit: "cup", exp: 0.5, note: "or use foil under the lid" }
     ]}
   ],
@@ -183,11 +183,11 @@ window.RECIPE = {
       txt: "Crush the {saffron} saffron strands lightly between your fingers into {milk} warm milk and set aside." },
     { t: "Marinate the chicken", uses: ["Marinade: bone-in", "Marinade: thick", "Marinade: ginger", "Marinade: kashmiri", "Marinade: turmeric", "Marinade: garam", "Marinade: green cardamom", "Marinade: green chilies", "Marinade: mint", "Marinade: coriander", "Marinade: lemon", "Marinade: salt", "Marinade: ghee", "Marinade: the birista", "Marinade: raw papaya"], min: 120,
       txt: "Make 2–3 small cuts in each chicken piece. In the pot you'll cook in, mix the {chicken} chicken with the yogurt, ginger-garlic paste, chili, turmeric, {gm} garam masala, cardamom, green chilies, mint, coriander, {lemon} lemon juice, {msalt} salt, {mghee} ghee and {moil} of the onion oil. Crush in half the birista with your hands. Massage it all in, cover and refrigerate for at least 2 hours — overnight is best and gives the real Hyderabadi taste. Take it out 30 minutes before cooking." },
-    { t: "Soak the rice", uses: ["Rice: aged basmati"], min: 30, parallel: true,
+    { t: "Soak the rice", by: "people", uses: ["Rice: aged basmati"], min: 30, parallel: true,
       txt: "Gently rinse the {rice} basmati 3–4 times until the water runs clear, then soak it in fresh water. Don't stir hard; the grains break easily." },
-    { t: "Boil the spiced water", uses: ["Rice: water", "Rice: salt", "Rice: shahi", "Rice: bay", "Rice: green cardamom", "Rice: cloves", "Rice: cinnamon", "Rice: mace", "Rice: oil"], min: 10, exp: 0.5, parallel: true,
+    { t: "Boil the spiced water", by: "people", uses: ["Rice: water", "Rice: salt", "Rice: shahi", "Rice: bay", "Rice: green cardamom", "Rice: cloves", "Rice: cinnamon", "Rice: mace", "Rice: oil"], min: 10, exp: 0.5, parallel: true,
       txt: "Bring {bwater} water to a rolling boil with {bsalt} salt, the shahi jeera, whole spices and oil. Taste it — it should be properly salty, because this is the only salt the rice gets." },
-    { t: "Two-stage rice", min: 6, exp: 0.15,
+    { t: "Two-stage rice", by: "people", min: 6, exp: 0.15,
       txt: "Drain the soaked rice and add it to the boiling water. Before draining anything, scoop out {rwater} of the hot water and keep it. At about 3–4 minutes the rice is 70% done: a grain snaps between your fingers with a clear white core. Lift out half the rice with a slotted spoon and spread it straight over the chicken in an even layer. Boil the rest for 1–2 minutes more, until 85% done (soft outside, tiny firm dot inside), then drain it and spread it on top.",
       bigNote: "For a big pot, the rice may take a minute or two longer; trust the finger test, not the clock." },
     { t: "Finish the layers", uses: ["Layering: ghee", "Layering: chopped", "Layering: hot rice", "Layering: kewra"], min: 3,

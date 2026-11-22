@@ -142,7 +142,7 @@ window.RECIPE = {
       { name: "mint leaves", amt: 0.5, unit: "cup" },
       { name: "coriander leaves", amt: 0.5, unit: "cup" }
     ]},
-    { title: "Cauliflower rice", items: [
+    { title: "Cauliflower rice", by: "people", items: [
       { id: "cauli", name: "cauliflower florets", amt: 800, unit: "g", note: "1 large head, or 2 bags of frozen cauliflower rice" },
       { id: "ghee2", name: "ghee", amt: 1, unit: "tbsp", exp: 0.85 },
       { name: "cumin seeds", amt: 0.5, unit: "tsp" },
@@ -160,7 +160,7 @@ window.RECIPE = {
       txt: "Add the tomato, green chilies and half the mint and coriander. Cook until the tomato softens." },
     { t: "Cook the chicken", min: 15, exp: 0.4,
       txt: "Add the marinated chicken, cover and cook on medium-low until tender and the masala is thick and clinging, not watery." },
-    { t: "Make the cauliflower rice", uses: ["Cauliflower rice: ghee", "Cauliflower rice: cumin", "Cauliflower rice: salt", "Cauliflower rice: biryani masala"], min: 5, exp: 0.4,
+    { t: "Make the cauliflower rice", by: "people", uses: ["Cauliflower rice: ghee", "Cauliflower rice: cumin", "Cauliflower rice: salt", "Cauliflower rice: biryani masala"], min: 5, exp: 0.4,
       txt: "In a separate wide pan, heat the {ghee2} ghee, add cumin, then the cauliflower, {salt2} salt and biryani masala. Stir-fry on high, uncovered, for 4–5 minutes until just tender. Don't cover it or it turns mushy.",
       bigNote: "Cook the cauliflower in batches so it toasts instead of steaming." },
     { t: "Layer and dum", uses: ["Chicken masala: mint|the rest", "Chicken masala: coriander leaves|the rest", "Cauliflower rice: lemon juice"], min: 8, exp: 0.2,

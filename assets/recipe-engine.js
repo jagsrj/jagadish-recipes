@@ -7,7 +7,9 @@
  *     unit: "tsp" | "tbsp" | "cup" | "g" | "count" | "sprig" | "main" (the main ingredient itself)
  *     exp:  how it grows with f (1 = linear, default). Use < 1 for water, oil, chilies.
  *   image: optional hero photo, e.g. "/images/my-dish.jpg" (16:10 works best).
- *   scale.servingsInput: true adds a "cooking for N people" box that sets the main-ingredient weight.
+ *   scale.servingsInput: true adds a "Cooking for N people" box. It's independent of the main-ingredient weight:
+ *     ingredients and steps marked by: "people" (on the item, step or whole group) scale with the people count,
+ *     everything else scales with the weight. E.g. biryani rice follows people, the chicken masala follows the chicken.
  *   Step        { t, min, exp?, txt, bigNote?, parallel? }  (parallel: happens alongside another step, not counted in total time)
  *     txt can use {id} to show an ingredient's scaled quantity, e.g. "Add {water} water".
  *     bigNote is appended when the batch is more than 1.6× the base.
@@ -99,8 +101,9 @@
       "<div class='row'><input id='amt' type='number' inputmode='decimal' min='0.1' step='" + (isWeight ? "0.1" : (scale.step || 1)) + "'>" + (!isWeight && scale.unitLabel ? "<span class='unitlbl'>" + esc(scale.unitLabel) + "</span>" : "") +
       (isWeight ? "<div class='seg' role='group' aria-label='Unit'><button type='button' data-unit='lb'>lb</button><button type='button' data-unit='kg'>kg</button></div>" : "") +
       "</div>" +
-      (isWeight && scale.servingsInput ? "<div class='row srvrow'><label for='srv'>or cooking for</label>" +
-        "<input id='srv' type='number' inputmode='numeric' min='1' step='1'><span>people</span></div>" : "") +
+      (isWeight && scale.servingsInput ? "<div class='row srvrow'><label for='srv'>Cooking for</label>" +
+        "<input id='srv' type='number' inputmode='numeric' min='1' step='1'><span>people</span></div>" +
+        "<div class='srvhint' id='srvhint'></div>" : "") +
       (R.spiceLevels ? "<div class='spice'><span>Heat</span><div class='seg' role='group' aria-label='Spice level'>" +
         "<button type='button' data-spice='0.75'>Mild</button><button type='button' data-spice='1'>Medium</button><button type='button' data-spice='1.35'>Hot</button></div></div>" : "") +
       "<div class='stats'>" + (isWeight && !scale.servingsInput ? "<div>Serves <b id='serves'></b></div>" : "") +
@@ -172,7 +175,8 @@
       var n = R.steps.length, at = askAt.step;
       var where = at == null ? "" : at >= n ? "\nThe cook has finished all the steps and is serving or storing the dish."
         : "\nThe cook is on step " + (at + 1) + " of " + n + " (" + R.steps[at].t + "). Assume the question is about this step unless it clearly isn't.";
-      return "Recipe: " + R.title + (R.native ? " (" + R.native + ")" : "") + "\nCooking: " + amt + unit + (heat ? ", heat " + heat : "") + where +
+      var srv = document.getElementById("srv"), ppl = srv && parseFloat(srv.value) > 0 ? ", for " + srv.value + " people" : "";
+      return "Recipe: " + R.title + (R.native ? " (" + R.native + ")" : "") + "\nCooking: " + amt + unit + ppl + (heat ? ", heat " + heat : "") + where +
         "\n\nINGREDIENTS\n" + document.getElementById("ingredients").innerText +
         "\n\nMETHOD\n" + document.getElementById("steps").innerText.replace(/▶ Start [^\n]+ timer/g, "").replace(/ ?💬 Ask about this step/g, "") +
         (document.getElementById("tips") ? "\n\nTIPS\n" + document.getElementById("tips").innerText : "");
@@ -402,13 +406,23 @@
   } catch (e) {}
   var $amt = document.getElementById("amt");
   $amt.value = state.value;
+  var $srvIn = document.getElementById("srv");
+  if ($srvIn) {
+    // Older saves had no people count (it used to follow the weight), so start from what the weight implied.
+    if (!(state.people > 0)) {
+      var g0 = state.unit === "kg" ? state.value * 1000 : state.value * LB;
+      state.people = Math.max(1, Math.round(R.baseServings * g0 / scale.baseGrams)) || R.baseServings;
+    }
+    $srvIn.value = state.people;
+  }
 
   function factor() {
     var v = parseFloat($amt.value);
     if (!(v > 0)) return null;
-    if (!isWeight) return { f: v / scale.base, g: null };
-    var g = state.unit === "lb" ? v * LB : v * 1000;
-    return { f: g / scale.baseGrams, g: g };
+    if (!isWeight) { var fs = v / scale.base; return { f: fs, g: null, p: fs }; }
+    var g = state.unit === "lb" ? v * LB : v * 1000, fw = g / scale.baseGrams, p = fw;
+    if ($srvIn) { var n = parseFloat($srvIn.value); if (n > 0) p = n / R.baseServings; }
+    return { f: fw, g: g, p: p };
   }
 
   // Find an ingredient for a step's `uses` list.
@@ -433,16 +447,16 @@
   function render() {
     var fx = factor(), warn = document.getElementById("warn");
     if (!fx) { warn.style.display = "block"; warn.textContent = "Enter an amount to see the recipe."; return; }
-    var f = fx.f, sp = state.spice;
-    warn.style.display = f > 6.5 || f < 0.27 ? "block" : "none";
-    warn.textContent = f > 6.5 ? "That's a big batch. Consider cooking it in two pots so it browns properly."
+    var f = fx.f, pf = fx.p, sp = state.spice, big = Math.max(f, pf);
+    warn.style.display = big > 6.5 || f < 0.27 ? "block" : "none";
+    warn.textContent = big > 6.5 ? "That's a big batch. Consider cooking it in two pots so it browns properly."
                                : "That's a very small amount. Quantities are rounded, so go by taste.";
 
     var qty = {}, html = "";
     R.groups.forEach(function (grp) {
       html += "<h3>" + esc(grp.title) + "</h3><ul class='ing'>";
       grp.items.forEach(function (it) {
-        var r = ingQty(it, f, fx.g, scale, sp), q = r.q, label = r.label;
+        var r = ingQty(it, (it.by || grp.by) === "people" ? pf : f, fx.g, scale, sp), q = r.q, label = r.label;
         if (it.id) qty[it.id] = q;
         it._q = q; it._label = label; it._num = r.num; it._unit = r.unit;
         html += "<li tabindex='0'><span class='qty'>" + q + "</span><span>" + esc(label) +
@@ -456,19 +470,19 @@
     });
 
     var pot = "";
-    if (R.pots) { for (var i = 0; i < R.pots.length; i++) { pot = R.pots[i][1]; if (f <= R.pots[i][0]) break; } }
+    if (R.pots) { for (var i = 0; i < R.pots.length; i++) { pot = R.pots[i][1]; if (big <= R.pots[i][0]) break; } }
     var extra = { pot: pot ? "large (" + pot + ")" : "large" };
 
     var total = R.prepMin || 0, sh = "";
     cook.steps = [];
     R.steps.forEach(function (s, i) {
-      var m = s.min * Math.pow(f, s.exp || 0);
+      var sf = s.by === "people" ? pf : f, m = s.min * Math.pow(sf, s.exp || 0);
       if (!s.parallel) total += m;
       var txt = esc(s.txt).replace(/\{(\w+)\}/g, function (_, k) {
         if (qty[k] != null) return "<span class='q'>" + qty[k] + "</span>";
         return extra[k] != null ? extra[k] : "";
       });
-      if (s.bigNote && f > 1.6) txt += " " + esc(s.bigNote);
+      if (s.bigNote && sf > 1.6) txt += " " + esc(s.bigNote);
       var used = (s.uses || []).map(function (u) {
         var parts = u.split("|"), it = findIng(parts[0]);
         if (!it) return "";
@@ -495,8 +509,7 @@
 
     var srvN = Math.max(1, Math.round(R.baseServings * f));
     if (isWeight && !scale.servingsInput) document.getElementById("serves").textContent = srvN;
-    var $srv = document.getElementById("srv");
-    if ($srv && document.activeElement !== $srv) $srv.value = srvN;
+    if ($srvIn) srvHint(fx);
     document.getElementById("total").textContent = "~" + fmtMin(total);
     if (R.pots) document.getElementById("pot").textContent = pot;
 
@@ -510,6 +523,7 @@
     try {
       var out = { value: parseFloat($amt.value), spice: state.spice };
       if (isWeight) out.unit = state.unit;
+      if ($srvIn && parseFloat($srvIn.value) > 0) out.people = parseFloat($srvIn.value);
       localStorage.setItem(storeKey, JSON.stringify(out));
     } catch (e) {}
   }
@@ -629,14 +643,33 @@
     b.addEventListener("click", function () { state.spice = parseFloat(b.dataset.spice); setOn("[data-spice]", "data-spice", b.dataset.spice); render(); });
   });
   $amt.addEventListener("input", render);
-  var $srvIn = document.getElementById("srv");
-  if ($srvIn) $srvIn.addEventListener("input", function () {
-    var n = parseFloat($srvIn.value);
-    if (!(n > 0)) return;
-    var g = n * scale.baseGrams / R.baseServings;
-    $amt.value = state.unit === "lb" ? Math.round(g / LB * 100) / 100 : Math.round(g / 10) / 100;
-    render();
-  });
+  // People and weight are separate inputs: changing one never changes the other.
+  if ($srvIn) {
+    $srvIn.addEventListener("input", function () { if (parseFloat($srvIn.value) > 0) render(); });
+    document.getElementById("srvhint").addEventListener("click", function (e) {
+      if (!e.target.closest(".srvfit")) return;
+      var g = parseFloat($srvIn.value) * scale.baseGrams / R.baseServings;
+      $amt.value = state.unit === "lb" ? Math.round(g / LB * 100) / 100 : Math.round(g / 10) / 100;
+      render();
+    });
+  }
+  // Under the people box: how much of the main ingredient each person gets, what follows the
+  // people count, and a one-tap way to match the weight to the people if they want.
+  function srvHint(fx) {
+    var n = parseFloat($srvIn.value), box = document.getElementById("srvhint");
+    if (!(n > 0)) { box.innerHTML = ""; return; }
+    var main = ((R.groups.map(function (g) { return g.items.filter(function (it) { return it.unit === "main"; })[0]; }).filter(Boolean)[0] || {}).name || "").split(/,| \(/)[0];
+    var each = fx.g / n, typical = scale.baseGrams / R.baseServings;
+    var byPeople = R.groups.filter(function (g) { return g.by === "people"; }).map(function (g) { return g.title.split(" (")[0].toLowerCase(); });
+    var html = "≈ <b>" + fmtGrams(each) + "</b> " + esc(main || "per person") + (main ? " per person" : "");
+    if (byPeople.length) html += " · " + esc(byPeople.join(" and ").replace(/^./, function (c) { return c.toUpperCase(); })) + " for " + n + (n === 1 ? " person" : " people");
+    if (Math.abs(each / typical - 1) > 0.35) {
+      var g = n * typical, show = state.unit === "lb" ? (Math.round(g / LB * 100) / 100) + " lb" : (Math.round(g / 10) / 100) + " kg";
+      html += "<br><span class='note' style='display:inline'>Usually about " + fmtGrams(typical) + " a person. </span>" +
+        "<button type='button' class='srvfit'>Use " + show + " for " + n + "</button>";
+    }
+    box.innerHTML = html;
+  }
   setOn("[data-unit]", "data-unit", state.unit);
   setOn("[data-spice]", "data-spice", state.spice);
   render();

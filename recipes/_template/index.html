@@ -29,6 +29,8 @@
  *
  * scale — pick ONE:
  *   Weight-based (meat, fish, veg):  { type: "weight", label: "How much mutton do you have?", baseGrams: 500, defaultUnit: "lb", defaultValue: 1.1 }
+ *     Add servingsInput: true for a separate "Cooking for N people" box. Then mark what should follow the people
+ *     count rather than the weight with by: "people" — on a group (e.g. the rice in a biryani), an ingredient or a step.
  *   Servings-based (rice, dosa):     { type: "servings", base: 4 }
  *   Count-based (sweets, snacks):    { type: "servings", base: 20, step: 5, label: "How many laddus do you want to make?", unitLabel: "laddus" }
  *
