@@ -318,11 +318,12 @@
         prev = "<button type='button' class='cook-prev" + (pd ? " ok" : "") + "' id='cookprevstep'>" +
           (pd ? "✓ Step " + cook.i + " completed" : "Step " + cook.i + " not marked done") + " · " + esc(cook.steps[cook.i - 1].t) + "</button>";
       }
-      body.innerHTML = prev + "<h2>" + esc(s.t) + "</h2><div class='cook-text'>" + s.html + "</div>" +
+      body.innerHTML = prev + "<h2>" + esc(s.t) + "</h2><div class='relax' id='relax' hidden></div><div class='cook-text'>" + s.html + "</div>" +
         "<div class='cook-row'><button class='timer big' data-i='" + cook.i + "' data-sec='" + s.sec + "'>▶ Start " + fmtMin(s.min) + " timer</button>" +
         "<button type='button' class='cook-mark" + (isDone ? " on" : "") + "' id='cookmark'>" + (isDone ? "✓ Done · undo" : "✓ Mark done") + "</button></div>" +
         "<div class='cook-extra'><span>Need more time?</span>" + [1, 2, 4, 5].map(function (m) {
           return "<button type='button' data-add='" + m + "'>+" + m + " min</button>"; }).join("") + "</div>";
+      relaxPick.step = -1;
       body.querySelector(".timer").addEventListener("click", toggleTimer);
       // Extra time: adds to this step's running timer, or starts a new one for just the extra minutes.
       body.querySelector(".cook-extra").addEventListener("click", function (e) {
@@ -615,8 +616,56 @@
       document.title = "⏱ " + mmss(running[0].left) + " · " + R.title;
     } else { pill.style.display = "none"; document.title = baseTitle; }
     keepAwake(running.length > 0 || cook.open);
+    relaxTick(now);
   }
   setInterval(tickTimers, 1000);
+
+  // ---------- "sit back and relax" card in cook mode, for long waits ----------
+  // Shows while the current step's timer runs and the step is a long one (20+ min), or 20+ min are left.
+  var RELAX_HEAD = ["Sit back and relax", "The pot's got this", "Put your feet up", "Slow and steady", "Time for a chai?"];
+  var RELAX_IDEAS = [
+    "The hard part is done. Now the heat and the steam do the work.",
+    "Wash the prep bowls and knives now, so cleanup is nearly done by dinner.",
+    "Put on a favourite song or two. The timer will call you.",
+    "Drink a glass of water. Kitchens are warm places.",
+    "Roll your shoulders and stretch your back. You've been standing a while.",
+    "Set the table and warm the plates.",
+    "Call the family and tell them dinner's on its way.",
+    "Wipe down the counter and the stove top while it's quiet.",
+    "No peeking! Every time the lid opens, the steam and the flavour escape.",
+    "Good food can't be rushed. That's the whole secret."
+  ];
+  var RELAX_FACTS = R.relaxFacts || [
+    "Your phone will beep and buzz when the timer ends, so you can step away.",
+    "Low heat and a closed lid let flavours blend slowly, which is why slow-cooked food tastes deeper.",
+    "Food keeps cooking from its own heat for a few minutes after the flame goes off."
+  ];
+  var relaxPick = { step: -1, n: 0 };
+  function relaxTick(now) {
+    var box = document.getElementById("relax");
+    if (!box || !cook.open || cook.i >= cook.steps.length) return;
+    var t = T[String(cook.i)], s = cook.steps[cook.i];
+    var left = t && !t.done ? Math.ceil((t.end - now) / 1000) : 0;
+    var show = left > 0 && (s.min >= 20 || left >= 20 * 60);
+    box.hidden = !show;
+    if (!show) return;
+    var tips = RELAX_IDEAS.concat(RELAX_FACTS, R.serveWith ? ["Meanwhile, get the sides ready. " + R.serveWith] : []);
+    if (relaxPick.step !== cook.i) { relaxPick = { step: cook.i, n: Math.floor(Math.random() * tips.length), at: now, head: RELAX_HEAD[cook.i % RELAX_HEAD.length] }; box.innerHTML = ""; }
+    if (now - relaxPick.at > 15000) { relaxPick.n++; relaxPick.at = now; }
+    var next = cook.steps[cook.i + 1];
+    if (!box.firstChild) {
+      box.innerHTML = "<div class='relax-pot' aria-hidden='true'><i></i><i></i><i></i>" +
+        "<svg viewBox='0 0 120 70'><rect x='14' y='22' width='92' height='42' rx='10'/><rect x='6' y='16' width='108' height='9' rx='4.5'/>" +
+        "<rect x='50' y='8' width='20' height='8' rx='4'/><rect x='0' y='32' width='14' height='6' rx='3'/><rect x='106' y='32' width='14' height='6' rx='3'/></svg></div>" +
+        "<div class='relax-head'></div><div class='relax-left'></div><p class='relax-tip' aria-live='polite'></p><div class='relax-next'></div>";
+    }
+    var almost = left <= 120;
+    box.querySelector(".relax-head").textContent = almost ? "Almost there!" : relaxPick.head;
+    box.querySelector(".relax-left").textContent = mmss(left) + " to go";
+    var tip = box.querySelector(".relax-tip"), txt = almost ? "Get ready for the next step." : tips[relaxPick.n % tips.length];
+    if (tip.textContent !== txt) { tip.classList.remove("in"); void tip.offsetWidth; tip.textContent = txt; tip.classList.add("in"); }
+    box.querySelector(".relax-next").innerHTML = next ? "Next up: <b>" + esc(next.t) + "</b>" : "Next up: <b>serve and enjoy!</b>";
+  }
   document.addEventListener("visibilitychange", function () { if (document.visibilityState === "visible") { tickTimers(); keepAwake(hasRunning(), true); } });
   window.addEventListener("pageshow", tickTimers);
   function hasRunning() { return Object.keys(T).some(function (i) { return !T[i].done; }); }
