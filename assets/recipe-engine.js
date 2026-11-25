@@ -128,6 +128,10 @@
     "<section class='card'><h2>Ingredients</h2><p class='note' style='margin:-6px 0 6px'>Tap an item to tick it off.</p><div id='ingredients'></div></section>" +
     "<section class='card'><h2>Method</h2><p class='note' style='margin:-6px 0 6px'>Tap a step's number to mark it done.</p><ol class='steps' id='steps'></ol></section>" +
     (R.tips && R.tips.length ? "<section class='card'><h2>Tips</h2><ul class='tips' id='tips'></ul></section>" : "") +
+    (R.credit && R.credit.youtube ? "<section class='card video-card no-print'><h2>Watch the original</h2>" +
+      "<p class='muted'>The video this recipe comes from, by " + esc(R.credit.name) + ".</p>" +
+      "<div class='video" + (R.credit.short ? " short" : "") + "'><iframe src='https://www.youtube-nocookie.com/embed/" + esc(R.credit.youtube) +
+      "' title='" + esc(R.title) + " video by " + esc(R.credit.name) + "' loading='lazy' allow='encrypted-media; picture-in-picture; fullscreen' allowfullscreen referrerpolicy='strict-origin-when-cross-origin'></iframe></div></section>" : "") +
     "<section class='card ask' id='ask' aria-label='Ask about this recipe'><h2>Ask about this recipe</h2>" +
       "<p class='note'>Stuck on a step? Ask anything, like substitutes, spice, gravy thickness or storing. Answers use your current quantities.</p>" +
       "<div class='ask-log' id='asklog' aria-live='polite'></div>" +
