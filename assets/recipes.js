@@ -158,10 +158,10 @@ window.RECIPES = [
     tags: ["Eggs", "Keto", "Breakfast"]
   },
   {
-    slug: "egg-yoghurt-tadka-wrap",
+    slug: "egg-chukauni",
     menu: "weekday",
-    title: "Egg & Yoghurt Tadka Wrap",
-    tamil: "முட்டை தயிர் ரோல்",
+    title: "Egg Chukauni",
+    tamil: "முட்டை சுக்கௌனி",
     kicker: "Recipe by Dr Pal",
     author: "Jagadish",
     emoji: "🌯",
