@@ -82,16 +82,20 @@
   // ---------- build page shell ----------
   document.title = R.title + " – Jagadish & Manju's Kitchen";
   var root = document.getElementById("recipe");
+  // credit: { name, url, via } — the original creator when a recipe comes from someone else
+  var creditHtml = R.credit ? "<div class='credit'>Original recipe by " +
+    (R.credit.url ? "<a href='" + esc(R.credit.url) + "' target='_blank' rel='noopener'>" + esc(R.credit.name) + " ↗</a>" : esc(R.credit.name)) +
+    (R.credit.via ? " on " + esc(R.credit.via) : "") + "</div>" : "";
   var isWeight = scale.type === "weight";
   root.innerHTML =
     (R.image
       ? "<header class='rhero'><img src='" + esc(R.image) + "' alt='" + esc(R.title) + "' width='1600' height='1000' fetchpriority='high'>" +
         "<div class='rhero-text'>" + (R.native ? "<div class='native'>" + esc(R.native) + "</div>" : "") +
-        "<h1>" + esc(R.title) + "</h1>" + (R.author ? "<div class='byline'>By " + esc(R.author) + "</div>" : "") +
+        "<h1>" + esc(R.title) + "</h1>" + (R.author ? "<div class='byline'>By " + esc(R.author) + "</div>" : "") + creditHtml +
         "</div></header><p class='lede'>" + esc(R.intro || "") + "</p>"
       : "<header>" + (R.native ? "<div class='native'>" + esc(R.native) + "</div>" : "") +
         "<h1>" + esc(R.title) + "</h1>" +
-        (R.author ? "<div class='byline'>By " + esc(R.author) + "</div>" : "") + "<p class='lede'>" + esc(R.intro || "") + "</p></header>") +
+        (R.author ? "<div class='byline'>By " + esc(R.author) + "</div>" : "") + creditHtml + "<p class='lede'>" + esc(R.intro || "") + "</p></header>") +
     "<div class='rating' id='rating' hidden></div>" +
     "<div class='actions'><button type='button' class='btn' id='cookbtn'>👩‍🍳 Cook mode</button>" +
       "<button type='button' class='btn ghost' id='listbtn'>🛒 Add to shopping list</button>" +

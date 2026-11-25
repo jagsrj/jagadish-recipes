@@ -158,6 +158,19 @@ window.RECIPES = [
     tags: ["Eggs", "Keto", "Breakfast"]
   },
   {
+    slug: "egg-yoghurt-tadka-wrap",
+    menu: "weekday",
+    title: "Egg & Yoghurt Tadka Wrap",
+    tamil: "முட்டை தயிர் ரோல்",
+    kicker: "Recipe by Dr Pal",
+    author: "Jagadish",
+    emoji: "🌯",
+    blurb: "Boiled egg and egg whites in spiced Greek yoghurt with a kasuri methi tadka, rolled in a roti.",
+    time: "15 min",
+    nutrition: { protein: 31, carbs: 16, fiber: 3, netCarbs: 13, goodFatPct: 67 },
+    tags: ["Eggs", "High protein", "Breakfast"]
+  },
+  {
     slug: "murukku",
     menu: "festival",
     title: "Murukku",

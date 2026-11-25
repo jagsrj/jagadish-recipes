@@ -128,6 +128,9 @@ footer { text-align: center; color: var(--muted); font-size: .85rem; margin-top:
 .rhero-text { position: absolute; left: 0; right: 0; bottom: 0; padding: 22px 22px 20px; z-index: 1; color: #fff; }
 .rhero-text h1 { color: #fff; margin: 4px 0 4px; font-size: clamp(1.9rem, 6vw, 3rem); text-shadow: 0 2px 12px rgba(0,0,0,.5); }
 .rhero-text .native { color: #ffc89a; }
+.credit { color: var(--muted); font-size: .88rem; margin: -6px 0 10px; }
+.credit a { color: inherit; font-weight: 700; }
+.rhero-text .credit { color: rgba(255,255,255,.85); margin: 2px 0 0; }
 .rhero-text .byline { color: rgba(255,255,255,.85); margin: 0; }
 @media (max-width: 600px) {
   .wrap > .rhero { margin-left: -18px; margin-right: -18px; border-radius: 0 0 22px 22px; }
