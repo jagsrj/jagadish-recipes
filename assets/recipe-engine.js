@@ -99,6 +99,7 @@
     "<div class='rating' id='rating' hidden></div>" +
     "<div class='actions'><button type='button' class='btn' id='cookbtn'>👩‍🍳 Cook mode</button>" +
       "<button type='button' class='btn ghost' id='listbtn'>🛒 Add to shopping list</button>" +
+      "<button type='button' class='btn ghost' id='savebtn' aria-pressed='false'>♡ Save</button>" +
       "<button type='button' class='btn ghost' id='printbtn'>🖨 Print</button></div>" +
     "<section class='card scaler' aria-label='Recipe scaler'>" +
       "<label class='title' for='amt'>" + esc(scale.label || (isWeight ? "How much do you have?" : "How many servings?")) + "</label>" +
@@ -411,6 +412,20 @@
     btn.onclick = function () { location.href = "/plan/#list"; };
   });
   document.getElementById("printbtn").addEventListener("click", function () { window.print(); });
+
+  // ---------- save (favourites kept on this phone, shown with the ♥ Saved filter on the home page) ----------
+  (function () {
+    var b = document.getElementById("savebtn");
+    function get() { try { return JSON.parse(localStorage.getItem("saved") || "[]") || []; } catch (e) { return []; } }
+    function show() { var on = get().indexOf(R.slug) > -1; b.textContent = on ? "♥ Saved" : "♡ Save"; b.setAttribute("aria-pressed", on); b.classList.toggle("saved", on); }
+    b.addEventListener("click", function () {
+      var list = get(), i = list.indexOf(R.slug);
+      if (i > -1) list.splice(i, 1); else list.unshift(R.slug);
+      try { localStorage.setItem("saved", JSON.stringify(list)); } catch (e) {}
+      show();
+    });
+    show();
+  })();
 
   // ---------- ratings ----------
   (function () {

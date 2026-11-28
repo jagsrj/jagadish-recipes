@@ -353,3 +353,43 @@ html.cooking .timer-pill, html.cooking .ask-fab { display: none !important; }
 .video.short { aspect-ratio: 9 / 16; max-width: 340px; margin: 0 auto; }
 .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 @media print { .video-card { display: none; } }
+
+/* ---------- ♥ save ---------- */
+.cardwrap { position: relative; display: flex; }
+.cardwrap > .rcard { flex: 1; }
+.heart { position: absolute; top: 10px; right: 10px; z-index: 2; width: 40px; height: 40px; border-radius: 50%;
+  border: none; background: rgba(255,255,255,.92); color: #c0392b; font-size: 1.3rem; line-height: 1; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.18); transition: transform .15s; }
+@media (hover: hover) { .heart:hover { transform: scale(1.1); } .quiz-opts button:hover { border-color: var(--accent); background: var(--accent-soft); } }
+.heart.on { background: #c0392b; color: #fff; }
+.btn.saved { background: var(--accent-soft); }
+
+/* ---------- ✨ find my recipe quiz ---------- */
+.quiz-open { margin-top: 16px; font-size: 1rem; }
+body.noscroll { overflow: hidden; }
+.quiz { position: fixed; inset: 0; z-index: 50; background: rgba(20,12,8,.55); display: flex; align-items: center; justify-content: center; padding: 16px; }
+.quiz[hidden] { display: none; }
+.quiz-panel { background: var(--bg); color: var(--ink); width: 100%; max-width: 560px; max-height: 92vh; border-radius: 22px;
+  display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,.35); }
+.quiz-top { display: flex; align-items: center; gap: 10px; padding: 14px 16px 6px; }
+.quiz-top button { border: none; background: none; color: var(--muted); font-size: 1.3rem; cursor: pointer; width: 36px; height: 36px; border-radius: 50%; }
+.quiz-top button:hover { background: var(--accent-soft); color: var(--accent); }
+.quiz-bar { flex: 1; height: 8px; border-radius: 999px; background: var(--line); overflow: hidden; }
+.quiz-bar span { display: block; height: 100%; width: 0; background: var(--ok); border-radius: 999px; transition: width .3s; }
+.quiz-body { padding: 8px 22px 24px; overflow-y: auto; }
+.quiz-body h2 { font-family: Georgia, serif; font-size: 1.5rem; margin: 4px 0 16px; }
+.quiz-count { color: var(--muted); font-size: .85rem; margin: 6px 0 0; }
+.quiz-sub { color: var(--muted); margin: -8px 0 16px; font-size: .95rem; }
+.quiz-opts { display: grid; gap: 10px; }
+.quiz-opts button { display: flex; align-items: center; gap: 12px; text-align: left; font: inherit; font-weight: 600; font-size: 1.02rem;
+  padding: 14px 16px; border-radius: 14px; border: 2px solid var(--line); background: var(--card); color: var(--ink); cursor: pointer; transition: border-color .15s, background .15s; }
+.quiz-opts button span { font-size: 1.4rem; }
+.quiz-opts button.on { border-color: var(--accent); background: var(--accent-soft); }
+.quiz-results { display: grid; gap: 18px; }
+.quiz-pick { display: grid; gap: 8px; }
+.quiz-why { color: var(--ok); font-weight: 700; font-size: .9rem; }
+.quiz-nope { font-size: .88rem; padding: 8px 14px; justify-self: start; }
+.quiz-nope[disabled] { display: none; }
+.quiz-end { display: flex; gap: 10px; justify-content: space-between; margin-top: 22px; }
+@media (max-width: 600px) { .quiz { padding: 0; align-items: stretch; } .quiz-panel { max-height: none; border-radius: 0; } }
+@media print { .heart, .quiz, .quiz-open { display: none !important; } }
