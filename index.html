@@ -30,6 +30,7 @@
     <img class="hero-logo" src="/images/logo.svg" alt="Jagadish &amp; Manju's Kitchen logo" width="190" height="190">
     <h1>Jagadish &amp; Manju's Kitchen</h1>
     <p>Healthy keto meals for weekdays, Tamil Nadu village cooking for weekends, sweets and snacks for festivals, and kid favourites. Every recipe adjusts to the amount you're cooking.</p>
+    <button type="button" class="btn quiz-open" id="quizbtn">✨ Find my recipe</button>
   </section>
   <div class="tabs" role="tablist" aria-label="Menu">
     <button type="button" role="tab" data-menu="weekday"><b>Weekday</b><span>Healthy keto</span></button>
@@ -46,6 +47,7 @@
     <button type="button" data-f="chicken" aria-pressed="false">🍗 Chicken</button>
     <button type="button" data-f="seafood" aria-pressed="false">🐟 Seafood</button>
     <button type="button" data-f="veg" aria-pressed="false">🥚 Veg &amp; egg</button>
+    <button type="button" data-f="saved" aria-pressed="false" id="savedchip">♥ Saved</button>
   </div>
   <div id="sections"></div>
   <p class="empty" id="empty">No recipes match that search.</p>
@@ -68,9 +70,11 @@
   var day = new Date().getDay();
   var menu = /^#(weekday|weekend|festival|kids)$/.test(location.hash) ? location.hash.slice(1) : (day === 0 || day === 6 ? "weekend" : "weekday");
 
+  function getSaved() { try { return JSON.parse(localStorage.getItem("saved") || "[]") || []; } catch (e) { return []; } }
   function card(r) {
-    var n = r.nutrition;
-    return "<a class='rcard' href='/recipes/" + encodeURIComponent(r.slug) + "/'>" +
+    var n = r.nutrition, on = getSaved().indexOf(r.slug) > -1;
+    return "<div class='cardwrap'><button type='button' class='heart" + (on ? " on" : "") + "' data-save='" + esc(r.slug) + "' aria-pressed='" + on + "' aria-label='" + (on ? "Remove " : "Save ") + esc(r.title) + "'>" + (on ? "♥" : "♡") + "</button>" +
+      "<a class='rcard' href='/recipes/" + encodeURIComponent(r.slug) + "/'>" +
       (r.image
         ? "<div class='photo'><img src='" + esc(r.image) + "' alt='" + esc(r.title) + "' width='800' height='500' loading='lazy' decoding='async'>" + (r.time ? "<span class='badge'>⏱ " + esc(r.time) + "</span>" : "") + "</div>"
         : "<div class='band'>" + esc(r.emoji || "🍽️") + "</div>") +
@@ -81,8 +85,24 @@
         (n.goodFatPct != null ? " · <span class='fat-good'>" + n.goodFatPct + "% good fat</span>" : "") + "</div>" : "") +
       "<p>" + esc(r.blurb || "") + "</p>" +
       "<div class='tags'>" + (r.tags || []).map(function (t) { return "<span class='tag'>" + esc(t) + "</span>"; }).join("") + "</div>" +
-      "</div></a>";
+      "</div></a></div>";
   }
+  // ♥ buttons on cards (here and in the quiz results)
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest("[data-save]");
+    if (!b) return;
+    e.preventDefault();
+    var slug = b.getAttribute("data-save"), list = getSaved(), i = list.indexOf(slug);
+    if (i > -1) list.splice(i, 1); else list.unshift(slug);
+    try { localStorage.setItem("saved", JSON.stringify(list)); } catch (err) {}
+    [].slice.call(document.querySelectorAll("[data-save]")).forEach(function (h) {
+      if (h.getAttribute("data-save") !== slug) return;
+      var on = i === -1; h.classList.toggle("on", on); h.textContent = on ? "♥" : "♡"; h.setAttribute("aria-pressed", on);
+    });
+    updateSavedChip();
+    if (active.saved) draw();
+  });
+  function updateSavedChip() { var c = document.getElementById("savedchip"), n = getSaved().length; c.textContent = "♥ Saved" + (n ? " (" + n + ")" : ""); }
   // quick filters
   var ratings = {}, active = {};
   function minutes(t) { var h = /(\d+)\s*h/.exec(t || ""), m = /(\d+)\s*min/.exec(t || ""); return (h ? +h[1] * 60 : 0) + (m ? +m[1] : 0); }
@@ -92,7 +112,8 @@
     protein: function (r) { return r.nutrition && r.nutrition.protein >= 30; },
     chicken: function (r) { return has(r, ["chicken"]); },
     seafood: function (r) { return has(r, ["seafood", "fish", "crab", "prawn"]); },
-    veg: function (r) { return has(r, ["vegetarian", "egg", "paneer"]); }
+    veg: function (r) { return has(r, ["vegetarian", "egg", "paneer"]); },
+    saved: function (r) { return getSaved().indexOf(r.slug) > -1; }
   };
   var filterBtns = [].slice.call(document.querySelectorAll(".filters button"));
   filterBtns.forEach(function (b) {
@@ -101,7 +122,7 @@
       b.classList.toggle("on", !!active[k]); b.setAttribute("aria-pressed", !!active[k]); draw();
     });
   });
-  fetch("/api/rate").then(function (r) { return r.ok ? r.json() : {}; }).then(function (d) { if (d && !d.error) { ratings = d; draw(); } }).catch(function () {});
+  fetch("/api/rate").then(function (r) { return r.ok ? r.json() : {}; }).then(function (d) { if (d && !d.error) { ratings = window.JMK_RATINGS = d; draw(); } }).catch(function () {});
 
   function draw() {
     var term = q.value.trim().toLowerCase(), filtering = Object.keys(active).length > 0;
@@ -127,7 +148,7 @@
     });
     sections.innerHTML = html;
     empty.style.display = shown || !anyMenu ? "none" : "block";
-    empty.textContent = term ? "No recipes match that search." : "No recipes match those filters yet.";
+    empty.textContent = term ? "No recipes match that search." : (active.saved && !getSaved().length ? "Nothing saved yet. Tap ♡ on any recipe to keep it here." : "No recipes match those filters yet.");
   }
   tabs.forEach(function (b) {
     b.addEventListener("click", function () {
@@ -138,7 +159,9 @@
   });
   window.addEventListener("hashchange", function () { if (/^#(weekday|weekend|festival|kids)$/.test(location.hash)) { menu = location.hash.slice(1); draw(); } });
   q.addEventListener("input", draw);
+  updateSavedChip();
   draw();
+  window.JMK = { card: card, minutes: minutes, all: function () { return all; } };
 
   // When you come back to an open page (or a Home Screen shortcut resumes it),
   // check for an updated recipe list and redraw without a full reload.
@@ -165,5 +188,6 @@
   }
 })();
 </script>
+<script src="/assets/quiz.js"></script>
 </body>
 </html>

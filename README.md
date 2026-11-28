@@ -89,6 +89,11 @@ One-time setup: Cloudflare dashboard → **Workers & Pages** → this project �
 
 Quick filters (under 1 hour, 30 g+ protein, chicken, seafood, veg & egg) work from `time`, `nutrition` and `tags` in `assets/recipes.js`. Add `tamil: "..."` to an entry to show the Tamil name on its card; search finds Tamil names too.
 
+## Find my recipe quiz and ♥ Save
+
+- **✨ Find my recipe** (button under the logo, or link to `/#quiz`, code in `assets/quiz.js`) asks up to four questions (occasion, mood, time, what matters most) and suggests the three best matches, with a short "why" line for each and a **Not for me** button to swap one out. It scores recipes from `menu`, `tags`, `time` and `nutrition` in `assets/recipes.js`, so new recipes join the quiz automatically. Keep tags like `Chicken`, `Seafood`, `Mutton`, `Eggs`, `Vegetarian`/`Paneer`, `Sweet`, `Snack` accurate.
+- **♡ Save** on every card and recipe page keeps favourites on the phone; the **♥ Saved** filter on the home page lists them.
+
 ## Offline
 
 `sw.js` saves the site on the phone, including every recipe page, so recipes open with weak or no Wi-Fi. If you change the list of core files in `sw.js`, bump `VERSION` at the top.
